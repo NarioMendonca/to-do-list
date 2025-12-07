@@ -1,0 +1,45 @@
+{
+  "name": "to-do-list",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/server.js",
+    "dev": "tsx src/server.ts",
+    "build": "tsc",
+    "eslint": "eslint .",
+    "eslint:fix": "eslint --fix"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NarioMendonca/to-do-list.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/NarioMendonca/to-do-list/issues"
+  },
+  "homepage": "https://github.com/NarioMendonca/to-do-list#readme",
+  "devDependencies": {
+    "@tsconfig/node24": "24.0.3",
+    "@types/node": "24.10.1",
+    "eslint": "9.39.1",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-prettier": "5.5.4",
+    "prettier": "3.7.3",
+    "tsx": "4.21.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.48.0"
+  },
+  "dependencies": {
+    "module-alias": "2.2.3"
+  },
+  "_moduleAliases": {
+    "@": "dist/"
+  },
+  "engines": {
+    "node": ">=24.11.1"
+  }
+}
