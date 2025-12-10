@@ -1,6 +1,7 @@
 {
   "editor.formatOnSave": true,
+  // install vscode eslint plugin to make this option works
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.eslint": "always"
   }
 }
