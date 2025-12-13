@@ -39,7 +39,11 @@ export class UserEntity {
   }
 
   public getEmail() {
-    return this.email;
+    return this.email.getEmail();
+  }
+
+  public isUserEmailVerified() {
+    return this.email.getIsEmailVerified();
   }
 
   public getPasswordHash() {
