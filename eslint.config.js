@@ -1,25 +1,23 @@
 import eslintPluginPrettier from "eslint-plugin-prettier";
 import eslintConfigPrettier from "eslint-config-prettier";
-import tseslint from "typescript-eslint"
+import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
 
-export default [
-  tseslint.configs.recommended,
-  {
-    files: ["**/*.ts", "**/*.tsx", "**/*.js"],
-    ignores: ["dist", "node_modules"],
+export default defineConfig(tseslint.configs.recommended, {
+  files: ["**/*.ts", "**/*.tsx", "**/*.js"],
+  ignores: ["dist", "node_modules"],
 
-    languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-    },
-
-    plugins: {
-      prettier: eslintPluginPrettier,
-    },
-
-    rules: {
-      ...eslintConfigPrettier.rules,
-      "prettier/prettier": "error",
-    },
+  languageOptions: {
+    ecmaVersion: "latest",
+    sourceType: "module",
   },
-];
+
+  plugins: {
+    prettier: eslintPluginPrettier,
+  },
+
+  rules: {
+    ...eslintConfigPrettier.rules,
+    "prettier/prettier": "error",
+  },
+});
