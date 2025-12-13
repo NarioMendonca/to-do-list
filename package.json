@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "tsx src/server.ts",
+    "test": "npx vitest",
     "build": "tsc",
     "eslint": "eslint .",
     "eslint:fix": "eslint --fix"
