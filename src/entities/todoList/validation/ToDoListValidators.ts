@@ -49,4 +49,15 @@ export class TodoListValidators {
     }
     return todoMotivationPhrase;
   }
+
+  public validateToDoFinished({
+    isFinished,
+  }: Pick<ToDoListParams, "isFinished">) {
+    if (!isFinished) {
+      return null;
+    }
+    const isFinishedDate = new Date(isFinished);
+
+    return isFinishedDate;
+  }
 }

@@ -10,7 +10,7 @@ export type ToDoListParams = {
   todoMotivationPhrase?: string;
   plannedDayToMake?: string | Date;
   daysWeekToRepeat?: number[];
-  isFinished: boolean;
+  isFinished?: string | Date;
 };
 
 export class TodoList {
@@ -21,6 +21,7 @@ export class TodoList {
   private todoMotivationPhrase: string | null;
   private plannedDayToMake: Date | null;
   private daysWeekToRepeat: DayWeek[];
+  private isFinished: Date | null;
 
   constructor({
     id,
@@ -30,6 +31,7 @@ export class TodoList {
     daysWeekToRepeat,
     plannedDayToMake,
     todoMotivationPhrase,
+    isFinished,
   }: ToDoListParams) {
     const todoListValidators = new TodoListValidators();
     this.id = id;
@@ -47,6 +49,7 @@ export class TodoList {
     this.todoMotivationPhrase = todoListValidators.validateTodoMotivationPhrase(
       { todoMotivationPhrase },
     );
+    this.isFinished = todoListValidators.validateToDoFinished({ isFinished });
   }
 
   public static create(params: ToDoListParams) {
@@ -79,6 +82,17 @@ export class TodoList {
 
   public getTodoMotivationPhrase() {
     return this.todoMotivationPhrase;
+  }
+
+  public getIsFinished() {
+    return this.isFinished;
+  }
+
+  public isListCompleted() {
+    if (this.isFinished) {
+      return true;
+    }
+    return false;
   }
 
   public isListActive() {
