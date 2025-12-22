@@ -18,7 +18,7 @@ describe("Todo list entity test suite", () => {
       title: "weekly things todo",
       createdAt: "2025-01-02",
       daysWeekToRepeat: [0, 1, 2, 3],
-      expirationAt: "2025-01-08",
+      expirationDt: "2025-01-08",
       plannedDayToMake: "2025-01-05",
       todoMotivationPhrase: "My house will go beauty after that!",
     };

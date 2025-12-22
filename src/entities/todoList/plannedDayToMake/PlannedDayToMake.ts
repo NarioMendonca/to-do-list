@@ -9,7 +9,7 @@ export class PlannedDayToMake {
       this.plannedDayToMake = null;
     } else {
       const plannedDayToMakeFormated = new Date(plannedDayToMake);
-      if (!isNaN(plannedDayToMakeFormated.getTime())) {
+      if (isNaN(plannedDayToMakeFormated.getTime())) {
         throw new InvalidDateError();
       }
       this.plannedDayToMake = plannedDayToMakeFormated;

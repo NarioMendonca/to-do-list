@@ -9,7 +9,7 @@ export class ExpirationDt {
       this.expirationDt = null;
     } else {
       const expirationDtFormated = new Date(expirationDt);
-      if (!isNaN(expirationDtFormated.getTime())) {
+      if (isNaN(expirationDtFormated.getTime())) {
         throw new InvalidDateError();
       }
       this.expirationDt = expirationDtFormated;
