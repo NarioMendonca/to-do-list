@@ -2,8 +2,8 @@ import { DayWeek } from "./dayWeek/DayWeek.js";
 import { ExpirationDt } from "./expirationDt/ExpirationDt.js";
 import { TodoListFinished as TodoListFinished } from "./finishedState/IsFinishedState.js";
 import { MotivationPhrase } from "./motivationPhrase/MotivationPhrase.js";
+import { PlannedDayToMake } from "./plannedDayToMake/PlannedDayToMake.js";
 import { Title } from "./title/Title.js";
-import { TodoListValidators } from "./validation/ToDoListValidators.js";
 
 export type TodoListParams = {
   id: string;
@@ -33,7 +33,7 @@ export class TodoList {
   private createdAt: Date;
   private expirationDt: ExpirationDt;
   private todoMotivationPhrase: MotivationPhrase;
-  private plannedDayToMake: Date | null;
+  private plannedDayToMake: PlannedDayToMake;
   private daysWeekToRepeat: DayWeek[];
   private isFinished: TodoListFinished;
 
@@ -47,7 +47,6 @@ export class TodoList {
     todoMotivationPhrase,
     isFinished,
   }: TodoListConstructorParams) {
-    const todoListValidators = new TodoListValidators();
     this.id = id;
     this.title = new Title(title);
     this.createdAt = createdAt;
@@ -55,9 +54,7 @@ export class TodoList {
     this.daysWeekToRepeat = daysWeekToRepeat
       ? daysWeekToRepeat.map((dayWeek) => new DayWeek(dayWeek))
       : [];
-    this.plannedDayToMake = todoListValidators.validatePlannedDayToMake({
-      plannedDayToMake,
-    });
+    this.plannedDayToMake = new PlannedDayToMake(plannedDayToMake);
     this.todoMotivationPhrase = new MotivationPhrase(todoMotivationPhrase);
     this.isFinished = new TodoListFinished(isFinished);
   }
