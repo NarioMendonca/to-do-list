@@ -1,28 +1,8 @@
-import { InvalidExpirationDate } from "../../erros/todoList/InvalidExpirationDate.js";
 import { InvalidMotivationPhrase } from "../../erros/todoList/InvalidMotivationPhrase.js";
 import { InvalidPlannedDayToMake } from "../../erros/todoList/InvalidPlannedDayToMake.js";
 import { TodoListParams } from "../TodoList.js";
 
 export class TodoListValidators {
-  public validateCreatedAt({ createdAt }: Pick<TodoListParams, "createdAt">) {
-    return new Date(createdAt);
-  }
-
-  public validateExpirationAt({
-    expirationAt,
-  }: Pick<TodoListParams, "expirationAt">) {
-    if (!expirationAt) {
-      return null;
-    }
-    const actualTime = new Date();
-    const expirationAtDate = new Date(expirationAt);
-    if (new Date(expirationAt) < actualTime) {
-      throw new InvalidExpirationDate();
-    }
-
-    return expirationAtDate;
-  }
-
   public validatePlannedDayToMake({
     plannedDayToMake,
   }: Pick<TodoListParams, "plannedDayToMake">) {

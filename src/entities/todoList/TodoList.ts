@@ -1,4 +1,5 @@
 import { DayWeek } from "./dayWeek/DayWeek.js";
+import { ExpirationDt } from "./expirationDt/ExpirationDt.js";
 import { TodoListFinished as TodoListFinished } from "./finishedState/IsFinishedState.js";
 import { Title } from "./title/Title.js";
 import { TodoListValidators } from "./validation/ToDoListValidators.js";
@@ -7,22 +8,29 @@ export type TodoListParams = {
   id: string;
   title: string;
   createdAt: string | Date;
-  expirationAt?: string | Date;
+  expirationDt?: string | Date;
   todoMotivationPhrase?: string;
   plannedDayToMake?: string | Date;
   daysWeekToRepeat?: number[];
   isFinished?: string | Date;
 };
 
-type TodoListConstructorParams = TodoListParams & {
+type TodoListConstructorParams = {
+  id: string;
+  title: string;
   createdAt: Date;
+  expirationDt?: Date | string | null;
+  todoMotivationPhrase?: string;
+  plannedDayToMake?: string | Date;
+  daysWeekToRepeat?: number[];
+  isFinished?: string | Date;
 };
 
 export class TodoList {
   private id: string;
   private title: Title;
   private createdAt: Date;
-  private expirationAt: Date | null;
+  private expirationDt: ExpirationDt;
   private todoMotivationPhrase: string | null;
   private plannedDayToMake: Date | null;
   private daysWeekToRepeat: DayWeek[];
@@ -32,7 +40,7 @@ export class TodoList {
     id,
     title,
     createdAt,
-    expirationAt,
+    expirationDt,
     daysWeekToRepeat,
     plannedDayToMake,
     todoMotivationPhrase,
@@ -42,9 +50,7 @@ export class TodoList {
     this.id = id;
     this.title = new Title(title);
     this.createdAt = createdAt;
-    this.expirationAt = todoListValidators.validateExpirationAt({
-      expirationAt,
-    });
+    this.expirationDt = new ExpirationDt(expirationDt);
     this.daysWeekToRepeat = daysWeekToRepeat
       ? daysWeekToRepeat.map((dayWeek) => new DayWeek(dayWeek))
       : [];
@@ -63,6 +69,7 @@ export class TodoList {
     const todoListParams: TodoListConstructorParams = {
       ...params,
       createdAt: new Date(),
+      expirationDt: ExpirationDt.create(params.expirationDt).getExpirationDt(),
     };
     return new TodoList(todoListParams);
   }
@@ -84,7 +91,7 @@ export class TodoList {
   }
 
   public getExpirationAt() {
-    return this.expirationAt;
+    return this.expirationDt;
   }
 
   public getPlannedDayToMake() {
@@ -104,11 +111,11 @@ export class TodoList {
   }
 
   public isListActive() {
-    if (!this.expirationAt) {
+    const expirationDt = this.expirationDt.getExpirationDt();
+    if (!expirationDt) {
       return true;
     }
-    const listDate = new Date(this.expirationAt);
-    if (listDate > new Date()) {
+    if (expirationDt > new Date()) {
       return true;
     }
     return false;
