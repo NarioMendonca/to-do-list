@@ -1,6 +1,7 @@
 import { DayWeek } from "./dayWeek/DayWeek.js";
 import { ExpirationDt } from "./expirationDt/ExpirationDt.js";
 import { TodoListFinished as TodoListFinished } from "./finishedState/IsFinishedState.js";
+import { MotivationPhrase } from "./motivationPhrase/MotivationPhrase.js";
 import { Title } from "./title/Title.js";
 import { TodoListValidators } from "./validation/ToDoListValidators.js";
 
@@ -31,7 +32,7 @@ export class TodoList {
   private title: Title;
   private createdAt: Date;
   private expirationDt: ExpirationDt;
-  private todoMotivationPhrase: string | null;
+  private todoMotivationPhrase: MotivationPhrase;
   private plannedDayToMake: Date | null;
   private daysWeekToRepeat: DayWeek[];
   private isFinished: TodoListFinished;
@@ -57,9 +58,7 @@ export class TodoList {
     this.plannedDayToMake = todoListValidators.validatePlannedDayToMake({
       plannedDayToMake,
     });
-    this.todoMotivationPhrase = todoListValidators.validateTodoMotivationPhrase(
-      { todoMotivationPhrase },
-    );
+    this.todoMotivationPhrase = new MotivationPhrase(todoMotivationPhrase);
     this.isFinished = new TodoListFinished(isFinished);
   }
 

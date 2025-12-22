@@ -1,4 +1,3 @@
-import { InvalidMotivationPhrase } from "../../erros/todoList/InvalidMotivationPhrase.js";
 import { InvalidPlannedDayToMake } from "../../erros/todoList/InvalidPlannedDayToMake.js";
 import { TodoListParams } from "../TodoList.js";
 
@@ -15,19 +14,6 @@ export class TodoListValidators {
       throw new InvalidPlannedDayToMake();
     }
     return plannedDayToMakeDate;
-  }
-
-  public validateTodoMotivationPhrase({
-    todoMotivationPhrase,
-  }: Pick<TodoListParams, "todoMotivationPhrase">) {
-    if (!todoMotivationPhrase) {
-      return null;
-    }
-
-    if (todoMotivationPhrase.length > 255 || todoMotivationPhrase.length < 2) {
-      throw new InvalidMotivationPhrase();
-    }
-    return todoMotivationPhrase;
   }
 
   public validateToDoFinished({
