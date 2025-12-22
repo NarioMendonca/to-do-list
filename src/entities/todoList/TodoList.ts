@@ -79,7 +79,7 @@ export class TodoList {
   }
 
   public getTitle() {
-    return this.title;
+    return this.title.getTitle();
   }
 
   public getCreatedAt() {
@@ -87,15 +87,15 @@ export class TodoList {
   }
 
   public getExpirationAt() {
-    return this.expirationDt;
+    return this.expirationDt.getExpirationDt();
   }
 
   public getPlannedDayToMake() {
-    return this.plannedDayToMake;
+    return this.plannedDayToMake.getPlannedDayToMake();
   }
 
   public getTodoMotivationPhrase() {
-    return this.todoMotivationPhrase;
+    return this.todoMotivationPhrase.getMotivationPhrase();
   }
 
   public getIsFinished() {
