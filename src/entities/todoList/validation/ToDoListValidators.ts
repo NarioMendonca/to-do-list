@@ -1,16 +1,16 @@
 import { InvalidExpirationDate } from "../../erros/todoList/InvalidExpirationDate.js";
 import { InvalidMotivationPhrase } from "../../erros/todoList/InvalidMotivationPhrase.js";
 import { InvalidPlannedDayToMake } from "../../erros/todoList/InvalidPlannedDayToMake.js";
-import { ToDoListParams } from "../TodoList.js";
+import { TodoListParams } from "../TodoList.js";
 
 export class TodoListValidators {
-  public validateCreatedAt({ createdAt }: Pick<ToDoListParams, "createdAt">) {
+  public validateCreatedAt({ createdAt }: Pick<TodoListParams, "createdAt">) {
     return new Date(createdAt);
   }
 
   public validateExpirationAt({
     expirationAt,
-  }: Pick<ToDoListParams, "expirationAt">) {
+  }: Pick<TodoListParams, "expirationAt">) {
     if (!expirationAt) {
       return null;
     }
@@ -25,7 +25,7 @@ export class TodoListValidators {
 
   public validatePlannedDayToMake({
     plannedDayToMake,
-  }: Pick<ToDoListParams, "plannedDayToMake">) {
+  }: Pick<TodoListParams, "plannedDayToMake">) {
     if (!plannedDayToMake) {
       return null;
     }
@@ -39,7 +39,7 @@ export class TodoListValidators {
 
   public validateTodoMotivationPhrase({
     todoMotivationPhrase,
-  }: Pick<ToDoListParams, "todoMotivationPhrase">) {
+  }: Pick<TodoListParams, "todoMotivationPhrase">) {
     if (!todoMotivationPhrase) {
       return null;
     }
@@ -52,7 +52,7 @@ export class TodoListValidators {
 
   public validateToDoFinished({
     isFinished,
-  }: Pick<ToDoListParams, "isFinished">) {
+  }: Pick<TodoListParams, "isFinished">) {
     if (!isFinished) {
       return null;
     }

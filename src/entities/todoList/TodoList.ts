@@ -1,8 +1,9 @@
 import { DayWeek } from "./dayWeek/DayWeek.js";
+import { TodoListFinished as TodoListFinished } from "./finishedState/IsFinishedState.js";
 import { Title } from "./title/Title.js";
 import { TodoListValidators } from "./validation/ToDoListValidators.js";
 
-export type ToDoListParams = {
+export type TodoListParams = {
   id: string;
   title: string;
   createdAt: string | Date;
@@ -13,17 +14,21 @@ export type ToDoListParams = {
   isFinished?: string | Date;
 };
 
+type TodoListConstructorParams = TodoListParams & {
+  createdAt: Date;
+};
+
 export class TodoList {
   private id: string;
   private title: Title;
-  private createdAt: Date | null;
+  private createdAt: Date;
   private expirationAt: Date | null;
   private todoMotivationPhrase: string | null;
   private plannedDayToMake: Date | null;
   private daysWeekToRepeat: DayWeek[];
-  private isFinished: Date | null;
+  private isFinished: TodoListFinished;
 
-  constructor({
+  private constructor({
     id,
     title,
     createdAt,
@@ -32,11 +37,11 @@ export class TodoList {
     plannedDayToMake,
     todoMotivationPhrase,
     isFinished,
-  }: ToDoListParams) {
+  }: TodoListConstructorParams) {
     const todoListValidators = new TodoListValidators();
     this.id = id;
     this.title = new Title(title);
-    this.createdAt = todoListValidators.validateCreatedAt({ createdAt });
+    this.createdAt = createdAt;
     this.expirationAt = todoListValidators.validateExpirationAt({
       expirationAt,
     });
@@ -49,11 +54,17 @@ export class TodoList {
     this.todoMotivationPhrase = todoListValidators.validateTodoMotivationPhrase(
       { todoMotivationPhrase },
     );
-    this.isFinished = todoListValidators.validateToDoFinished({ isFinished });
+    this.isFinished = new TodoListFinished(isFinished);
   }
 
-  public static create(params: ToDoListParams) {
-    return new TodoList(params);
+  public static create(
+    params: Omit<TodoListParams, "createdAt" | "isFinished">,
+  ) {
+    const todoListParams: TodoListConstructorParams = {
+      ...params,
+      createdAt: new Date(),
+    };
+    return new TodoList(todoListParams);
   }
 
   public getId() {
@@ -85,14 +96,11 @@ export class TodoList {
   }
 
   public getIsFinished() {
-    return this.isFinished;
+    return this.isFinished.getIsFinished();
   }
 
   public isListCompleted() {
-    if (this.isFinished) {
-      return true;
-    }
-    return false;
+    return this.isFinished.isFinished();
   }
 
   public isListActive() {
