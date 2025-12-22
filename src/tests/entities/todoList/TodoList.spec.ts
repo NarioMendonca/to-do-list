@@ -4,6 +4,8 @@ import {
   TodoListParams,
 } from "../../../entities/todoList/TodoList.js";
 import { createMockTodoList } from "./MockTodoListCreationDate.js";
+import { mockTodoItemCreation } from "../todoItem/mockTodoItemCreation.js";
+import { TodoItem } from "../../../entities/todoItem/TodoItem.js";
 
 describe("Todo list entity test suite", () => {
   const sut = TodoList;
@@ -45,5 +47,21 @@ describe("Todo list entity test suite", () => {
     const createdTodoList = sut.create(newTodoListData);
 
     expect(createdTodoList.shouldListRepeatToday()).toBe(true);
+  });
+
+  it("should add todo items in a todo list", () => {
+    const ITEMS_TO_CREATE_COUNT = 3;
+    const newTodoListData = createMockTodoList();
+
+    const createdTodoList = sut.create(newTodoListData);
+    for (let c = 0; c < ITEMS_TO_CREATE_COUNT; c++) {
+      createdTodoList.addTodoItem(TodoItem.create(mockTodoItemCreation()));
+    }
+
+    const todoItemsCreated = createdTodoList.getTodoItems();
+    expect(todoItemsCreated.length).toBe(3);
+    for (let i = 0; i < ITEMS_TO_CREATE_COUNT; i++) {
+      expect(todoItemsCreated[i].getIsCompleted()).toBe(false);
+    }
   });
 });

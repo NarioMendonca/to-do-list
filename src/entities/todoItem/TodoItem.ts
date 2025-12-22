@@ -1,6 +1,6 @@
 import { ItemAlreadyCompleted } from "../erros/todoItem/ItemAlreadyCompleted.js";
 
-type TodoItemParams = {
+export type TodoItemParams = {
   id: string;
   title: string;
   description: string;
@@ -15,6 +15,11 @@ type TodoItemsConstructorParams = {
   isCompleted: boolean;
   createdAt: Date;
 };
+
+export type TodoItemCreationParams = Omit<
+  TodoItemParams,
+  "createdAt" | "isCompleted"
+>;
 
 export class TodoItem {
   id: string;
@@ -37,11 +42,7 @@ export class TodoItem {
     this.createdAt = createdAt;
   }
 
-  public static create({
-    id,
-    title,
-    description,
-  }: Omit<TodoItemParams, "createdAt" | "isCompleted">) {
+  public static create({ id, title, description }: TodoItemCreationParams) {
     return new TodoItem({
       id,
       title,

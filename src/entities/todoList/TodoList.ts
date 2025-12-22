@@ -1,3 +1,5 @@
+import { TodoListFull } from "../erros/todoList/TodoListFull.js";
+import { TodoItem } from "../todoItem/TodoItem.js";
 import { DayWeek } from "./dayWeek/DayWeek.js";
 import { ExpirationDt } from "./expirationDt/ExpirationDt.js";
 import { TodoListFinished as TodoListFinished } from "./finishedState/IsFinishedState.js";
@@ -25,6 +27,7 @@ type TodoListConstructorParams = {
   plannedDayToMake?: string | Date;
   daysWeekToRepeat?: number[];
   isFinished?: string | Date;
+  todoItems: TodoItem[];
 };
 
 export class TodoList {
@@ -36,6 +39,8 @@ export class TodoList {
   private plannedDayToMake: PlannedDayToMake;
   private daysWeekToRepeat: DayWeek[];
   private isFinished: TodoListFinished;
+  private todoItems: TodoItem[];
+  private itemsLimit = 50;
 
   private constructor({
     id,
@@ -57,6 +62,7 @@ export class TodoList {
     this.plannedDayToMake = new PlannedDayToMake(plannedDayToMake);
     this.todoMotivationPhrase = new MotivationPhrase(todoMotivationPhrase);
     this.isFinished = new TodoListFinished(isFinished);
+    this.todoItems = [];
   }
 
   public static create(
@@ -66,6 +72,7 @@ export class TodoList {
       ...params,
       createdAt: new Date(),
       expirationDt: ExpirationDt.create(params.expirationDt).getExpirationDt(),
+      todoItems: [],
     };
     return new TodoList(todoListParams);
   }
@@ -102,6 +109,10 @@ export class TodoList {
     return this.isFinished.getIsFinished();
   }
 
+  public getTodoItems() {
+    return this.todoItems;
+  }
+
   public isListCompleted() {
     return this.isFinished.isFinished();
   }
@@ -129,5 +140,12 @@ export class TodoList {
       }
     });
     return listRepeatsToday;
+  }
+
+  public addTodoItem(todoItem: TodoItem) {
+    if (this.todoItems.length >= this.itemsLimit) {
+      throw new TodoListFull();
+    }
+    this.todoItems.push(todoItem);
   }
 }
