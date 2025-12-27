@@ -1,4 +1,4 @@
-import { ItemAlreadyCompleted } from "../erros/todoItem/ItemAlreadyCompleted.js";
+import { ItemAlreadyCompleted } from "../../errors/entitys/todoItem/ItemAlreadyCompleted.js";
 
 export type TodoItemParams = {
   id: string;

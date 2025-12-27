@@ -1,4 +1,4 @@
-import { InvalidDateError } from "../../erros/InvalidDateError.js";
+import { InvalidDateError } from "../../../errors/genericErros/InvalidDateError.js";
 
 export class TodoListFinished {
   private todoListFinishment: Date | null;

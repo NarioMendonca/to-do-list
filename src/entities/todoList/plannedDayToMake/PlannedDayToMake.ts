@@ -1,5 +1,5 @@
-import { InvalidDateError } from "../../erros/InvalidDateError.js";
-import { InvalidExpirationDate } from "../../erros/todoList/InvalidExpirationDate.js";
+import { InvalidExpirationDate } from "../../../errors/entitys/todoList/InvalidExpirationDate.js";
+import { InvalidDateError } from "../../../errors/genericErros/InvalidDateError.js";
 
 export class PlannedDayToMake {
   private plannedDayToMake: Date | null;
