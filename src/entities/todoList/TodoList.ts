@@ -1,4 +1,4 @@
-import { TodoListFull } from "../erros/todoList/TodoListFull.js";
+import { TodoListFull } from "../../errors/entitys/todoList/TodoListFull.js";
 import { TodoItem } from "../todoItem/TodoItem.js";
 import { DayWeek } from "./dayWeek/DayWeek.js";
 import { ExpirationDt } from "./expirationDt/ExpirationDt.js";

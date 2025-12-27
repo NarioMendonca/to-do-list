@@ -1,4 +1,4 @@
-import { EntityError } from "../EntityError.js";
+import { EntityError } from "../../../errors/entitys/EntityError.js";
 
 export class InvalidMotivationPhrase extends EntityError {
   constructor(

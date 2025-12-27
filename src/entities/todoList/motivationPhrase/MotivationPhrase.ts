@@ -1,4 +1,4 @@
-import { InvalidMotivationPhrase } from "../../erros/todoList/InvalidMotivationPhrase.js";
+import { InvalidMotivationPhrase } from "../../../errors/entitys/todoList/InvalidMotivationPhrase.js";
 
 export class MotivationPhrase {
   private motivationPhrase: string | null;
