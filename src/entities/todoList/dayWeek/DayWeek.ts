@@ -1,4 +1,4 @@
-type DayNumber = keyof typeof DayWeek.nameOfDaysWeek;
+export type DayNumber = keyof typeof DayWeek.nameOfDaysWeek;
 
 export class DayWeek {
   private dayNumber: DayNumber;
