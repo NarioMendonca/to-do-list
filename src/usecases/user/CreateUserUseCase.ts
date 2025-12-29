@@ -1,5 +1,5 @@
 import { Email } from "../../entities/email/Email.js";
-import { IdGenerator } from "../../entities/user/services/IdGenerator.js";
+import { IdGenerator } from "../../entities/shared/IdGenerator.js";
 import { PasswordHashModel } from "../../entities/user/services/PasswordHashModel.js";
 import { UserEntity } from "../../entities/user/User.js";
 import { AlreadyExistsError } from "../../errors/usecases/AlreadyExistsError.js";
