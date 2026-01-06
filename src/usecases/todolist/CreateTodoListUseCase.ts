@@ -39,6 +39,6 @@ export class CreateTodoListUseCase implements UseCase<
       todoMotivationPhrase,
     });
 
-    this.todoListRepository.create(todoList);
+    await this.todoListRepository.create(todoList);
   }
 }

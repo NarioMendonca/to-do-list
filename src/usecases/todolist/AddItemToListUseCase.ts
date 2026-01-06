@@ -36,5 +36,6 @@ export class AddItemToListUseCase implements UseCase<
       description,
     });
     todoList.addTodoItem(todoItem);
+    await this.todoListRepository.save(todoList);
   }
 }
