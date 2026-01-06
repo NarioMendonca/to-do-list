@@ -1,6 +1,8 @@
 import { TodoListFull } from "../../errors/entitys/todoList/TodoListFull.js";
 import { TodoItem } from "../todoItem/TodoItem.js";
 import { DayWeek } from "./dayWeek/DayWeek.js";
+import { ItemAddedToListEvent } from "./events/ItemAddedToListEvent.js";
+import { TodoListEvents } from "./events/TodoListEvents.js";
 import { ExpirationDt } from "./expirationDt/ExpirationDt.js";
 import { TodoListFinished as TodoListFinished } from "./finishedState/IsFinishedState.js";
 import { MotivationPhrase } from "./motivationPhrase/MotivationPhrase.js";
@@ -28,6 +30,7 @@ type TodoListConstructorParams = {
   daysWeekToRepeat?: number[];
   isFinished?: string | Date;
   todoItems: TodoItem[];
+  totalItems: number;
 };
 
 export class TodoList {
@@ -40,7 +43,9 @@ export class TodoList {
   private daysWeekToRepeat: DayWeek[];
   private isFinished: TodoListFinished;
   private todoItems: TodoItem[];
-  private itemsLimit = 50;
+  private totalItems: number;
+  private readonly itemsLimit = 50;
+  private events: TodoListEvents[] = [];
 
   private constructor({
     id,
@@ -51,6 +56,7 @@ export class TodoList {
     plannedDayToMake,
     todoMotivationPhrase,
     isFinished,
+    totalItems,
   }: TodoListConstructorParams) {
     this.id = id;
     this.title = new Title(title);
@@ -63,6 +69,7 @@ export class TodoList {
     this.todoMotivationPhrase = new MotivationPhrase(todoMotivationPhrase);
     this.isFinished = new TodoListFinished(isFinished);
     this.todoItems = [];
+    this.totalItems = totalItems;
   }
 
   public static create(
@@ -73,15 +80,12 @@ export class TodoList {
       createdAt: new Date(),
       expirationDt: ExpirationDt.create(params.expirationDt).getExpirationDt(),
       todoItems: [],
+      totalItems: 0,
     };
     return new TodoList(todoListParams);
   }
 
   public getId() {
-    return this.id;
-  }
-
-  public getUserId() {
     return this.id;
   }
 
@@ -111,6 +115,12 @@ export class TodoList {
 
   public getTodoItems() {
     return this.todoItems;
+  }
+
+  public pullEvents() {
+    const events = [...this.events];
+    this.events = [];
+    return events;
   }
 
   public isListCompleted() {
@@ -143,9 +153,17 @@ export class TodoList {
   }
 
   public addTodoItem(todoItem: TodoItem) {
-    if (this.todoItems.length >= this.itemsLimit) {
+    if (this.totalItems >= this.itemsLimit) {
       throw new TodoListFull();
     }
+    this.totalItems++;
+
     this.todoItems.push(todoItem);
+    this.events.push(
+      new ItemAddedToListEvent({
+        itemAdded: todoItem,
+        todoListId: this.getId(),
+      }),
+    );
   }
 }
