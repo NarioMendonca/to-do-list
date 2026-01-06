@@ -39,6 +39,6 @@ export class CreateUserUseCase implements UseCase<InputDTO, OutputDTO> {
       createdAt: new Date(),
     });
 
-    this.userRepository.create(user);
+    await this.userRepository.create(user);
   }
 }
