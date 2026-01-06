@@ -6,6 +6,7 @@ import {
 import { createMockTodoList } from "./MockTodoListCreationDate.js";
 import { mockTodoItemCreation } from "../todoItem/mockTodoItemCreation.js";
 import { TodoItem } from "../../../entities/todoItem/TodoItem.js";
+import { ItemAddedToListEvent } from "../../../entities/todoList/events/ItemAddedToListEvent.js";
 
 describe("Todo list entity test suite", () => {
   const sut = TodoList;
@@ -52,16 +53,26 @@ describe("Todo list entity test suite", () => {
   it("should add todo items in a todo list", () => {
     const ITEMS_TO_CREATE_COUNT = 3;
     const newTodoListData = createMockTodoList();
+    const createdTodoList = TodoList.create(newTodoListData);
 
-    const createdTodoList = sut.create(newTodoListData);
-    for (let c = 0; c < ITEMS_TO_CREATE_COUNT; c++) {
-      createdTodoList.addTodoItem(TodoItem.create(mockTodoItemCreation()));
-    }
+    Array.from({ length: ITEMS_TO_CREATE_COUNT }).forEach(() =>
+      createdTodoList.addTodoItem(TodoItem.create(mockTodoItemCreation())),
+    );
 
     const todoItemsCreated = createdTodoList.getTodoItems();
-    expect(todoItemsCreated.length).toBe(3);
-    for (let i = 0; i < ITEMS_TO_CREATE_COUNT; i++) {
+
+    // assert
+    const todoListEvents: ItemAddedToListEvent[] =
+      createdTodoList.pullEvents() as ItemAddedToListEvent[];
+
+    expect(todoItemsCreated.length).toBe(ITEMS_TO_CREATE_COUNT);
+    expect(todoListEvents.length).toBe(ITEMS_TO_CREATE_COUNT);
+
+    Array.from({ length: ITEMS_TO_CREATE_COUNT }).forEach((_, i) => {
       expect(todoItemsCreated[i].getIsCompleted()).toBe(false);
-    }
+      expect(todoListEvents[i].getTodoListToAddItemId()).toBe(
+        createdTodoList.getId(),
+      );
+    });
   });
 });
