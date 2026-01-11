@@ -35,10 +35,8 @@ export class ExpirationDt {
     return this.expirationDt;
   }
 
-  public IsExpirationDtExists() {
-    if (this.expirationDt) {
-      return true;
-    }
-    return false;
+  public hasExpired() {
+    if (!this.expirationDt || this.expirationDt > new Date()) return false;
+    return true;
   }
 }

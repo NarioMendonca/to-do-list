@@ -177,7 +177,7 @@ export class TodoList {
   }
 
   public markTodoItemAsFinished(todoItem: TodoItem) {
-    if (this.expirationDt.getExpirationDt()) {
+    if (this.expirationDt.hasExpired()) {
       throw new ListExpired();
     }
     if (this.finishedDt.getFinishedDt()) {
