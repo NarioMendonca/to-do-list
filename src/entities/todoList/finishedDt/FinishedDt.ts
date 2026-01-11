@@ -1,6 +1,7 @@
+import { ListAlreadyFinished } from "../../../errors/entitys/todoList/ListAlreadyFinished.js";
 import { InvalidDateError } from "../../../errors/genericErros/InvalidDateError.js";
 
-export class TodoListFinished {
+export class TodoListFinishedDt {
   private todoListFinishment: Date | null;
 
   constructor(isFinished?: string | Date | null) {
@@ -15,7 +16,7 @@ export class TodoListFinished {
     }
   }
 
-  public getIsFinished() {
+  public getFinishedDt() {
     return this.todoListFinishment;
   }
 
@@ -24,5 +25,12 @@ export class TodoListFinished {
       return false;
     }
     return true;
+  }
+
+  public markAsFinished() {
+    if (this.isFinished()) {
+      throw new ListAlreadyFinished();
+    }
+    this.todoListFinishment = new Date();
   }
 }

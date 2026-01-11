@@ -2,9 +2,10 @@ import { TodoListFull } from "../../errors/entitys/todoList/TodoListFull.js";
 import { TodoItem } from "../todoItem/TodoItem.js";
 import { DayWeek } from "./dayWeek/DayWeek.js";
 import { ItemAddedToListEvent } from "./events/ItemAddedToListEvent.js";
+import { ListFinishedEvent } from "./events/ListFinishedEvent.js";
 import { TodoListEvents } from "./events/TodoListEvents.js";
 import { ExpirationDt } from "./expirationDt/ExpirationDt.js";
-import { TodoListFinished as TodoListFinished } from "./finishedState/IsFinishedState.js";
+import { TodoListFinishedDt } from "./finishedDt/FinishedDt.js";
 import { MotivationPhrase } from "./motivationPhrase/MotivationPhrase.js";
 import { PlannedDayToMake } from "./plannedDayToMake/PlannedDayToMake.js";
 import { Title } from "./title/Title.js";
@@ -28,7 +29,7 @@ type TodoListConstructorParams = {
   todoMotivationPhrase?: string;
   plannedDayToMake?: string | Date;
   daysWeekToRepeat?: number[];
-  isFinished?: string | Date;
+  finishedDt?: string | Date;
   todoItems: TodoItem[];
   totalItems: number;
 };
@@ -41,7 +42,7 @@ export class TodoList {
   private todoMotivationPhrase: MotivationPhrase;
   private plannedDayToMake: PlannedDayToMake;
   private daysWeekToRepeat: DayWeek[];
-  private isFinished: TodoListFinished;
+  private finishedDt: TodoListFinishedDt;
   private todoItems: TodoItem[];
   private totalItems: number;
   private readonly itemsLimit = 50;
@@ -55,7 +56,7 @@ export class TodoList {
     daysWeekToRepeat,
     plannedDayToMake,
     todoMotivationPhrase,
-    isFinished,
+    finishedDt,
     totalItems,
   }: TodoListConstructorParams) {
     this.id = id;
@@ -67,7 +68,7 @@ export class TodoList {
       : [];
     this.plannedDayToMake = new PlannedDayToMake(plannedDayToMake);
     this.todoMotivationPhrase = new MotivationPhrase(todoMotivationPhrase);
-    this.isFinished = new TodoListFinished(isFinished);
+    this.finishedDt = new TodoListFinishedDt(finishedDt);
     this.todoItems = [];
     this.totalItems = totalItems;
   }
@@ -109,8 +110,8 @@ export class TodoList {
     return this.todoMotivationPhrase.getMotivationPhrase();
   }
 
-  public getIsFinished() {
-    return this.isFinished.getIsFinished();
+  public getFinishedDt() {
+    return this.finishedDt.getFinishedDt();
   }
 
   public getTodoItems() {
@@ -124,7 +125,7 @@ export class TodoList {
   }
 
   public isListCompleted() {
-    return this.isFinished.isFinished();
+    return this.finishedDt.isFinished();
   }
 
   public isListActive() {
@@ -150,6 +151,11 @@ export class TodoList {
       }
     });
     return listRepeatsToday;
+  }
+
+  public markListAsFinished() {
+    this.finishedDt.markAsFinished();
+    this.events.push(new ListFinishedEvent(this.finishedDt.getFinishedDt()!));
   }
 
   public addTodoItem(todoItem: TodoItem) {
