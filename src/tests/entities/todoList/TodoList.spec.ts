@@ -8,6 +8,8 @@ import { mockTodoItemCreation } from "../todoItem/mockTodoItemCreation.js";
 import { TodoItem } from "../../../entities/todoItem/TodoItem.js";
 import { ItemAddedToListEvent } from "../../../entities/todoList/events/ItemAddedToListEvent.js";
 import { ListAlreadyFinished } from "../../../errors/entitys/todoList/ListAlreadyFinished.js";
+import { ItemMarkedAsCompletedEvent } from "../../../entities/todoList/events/ItemMarkedAsCompletedEvent.js";
+import { ListExpired } from "../../../errors/entitys/todoList/ListExpired.js";
 
 describe("Todo list entity test suite", () => {
   const sut = TodoList;
@@ -97,5 +99,38 @@ describe("Todo list entity test suite", () => {
       todoList.markListAsFinished();
     };
     expect(markListAsFinishedTwice).toThrow(new ListAlreadyFinished());
+  });
+
+  it("should mark todo item as completed", () => {
+    const todoList = TodoList.create(createMockTodoList());
+    const todoItem = TodoItem.create(mockTodoItemCreation());
+    todoList.markTodoItemAsFinished(todoItem);
+    expect(todoItem.getIsCompleted()).toBe(true);
+    expect(todoList.pullEvents()).toEqual([
+      new ItemMarkedAsCompletedEvent(todoItem),
+    ]);
+  });
+
+  it("should throw error if try to mark todo item as completed in a expired todolist", () => {
+    vi.setSystemTime("2026-01-01");
+    const todoListData: TodoListParams = {
+      ...createMockTodoList(),
+      expirationDt: "2026-01-02",
+    };
+    const todoList = TodoList.create(todoListData);
+    const todoItem = TodoItem.create(mockTodoItemCreation());
+    vi.setSystemTime("2026-01-03");
+    const markTodoItemAsFinished = () =>
+      todoList.markTodoItemAsFinished(todoItem);
+    expect(markTodoItemAsFinished).toThrow(new ListExpired());
+  });
+
+  it("should throw error if try to mark todo item as completed in a finished todolist", () => {
+    const todoList = TodoList.create(createMockTodoList());
+    const todoItem = TodoItem.create(mockTodoItemCreation());
+    todoList.markListAsFinished();
+    const markTodoItemAsFinished = () =>
+      todoList.markTodoItemAsFinished(todoItem);
+    expect(markTodoItemAsFinished).toThrow(new ListAlreadyFinished());
   });
 });

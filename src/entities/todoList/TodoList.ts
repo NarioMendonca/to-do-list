@@ -1,7 +1,10 @@
+import { ListAlreadyFinished } from "../../errors/entitys/todoList/ListAlreadyFinished.js";
+import { ListExpired } from "../../errors/entitys/todoList/ListExpired.js";
 import { TodoListFull } from "../../errors/entitys/todoList/TodoListFull.js";
 import { TodoItem } from "../todoItem/TodoItem.js";
 import { DayWeek } from "./dayWeek/DayWeek.js";
 import { ItemAddedToListEvent } from "./events/ItemAddedToListEvent.js";
+import { ItemMarkedAsCompletedEvent } from "./events/ItemMarkedAsCompletedEvent.js";
 import { ListFinishedEvent } from "./events/ListFinishedEvent.js";
 import { TodoListEvents } from "./events/TodoListEvents.js";
 import { ExpirationDt } from "./expirationDt/ExpirationDt.js";
@@ -171,5 +174,17 @@ export class TodoList {
         todoListId: this.getId(),
       }),
     );
+  }
+
+  public markTodoItemAsFinished(todoItem: TodoItem) {
+    if (this.expirationDt.hasExpired()) {
+      throw new ListExpired();
+    }
+    if (this.finishedDt.getFinishedDt()) {
+      throw new ListAlreadyFinished();
+    }
+
+    todoItem.markItemAsCompleted();
+    this.events.push(new ItemMarkedAsCompletedEvent(todoItem));
   }
 }
