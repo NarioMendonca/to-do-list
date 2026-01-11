@@ -7,6 +7,7 @@ import { createMockTodoList } from "./MockTodoListCreationDate.js";
 import { mockTodoItemCreation } from "../todoItem/mockTodoItemCreation.js";
 import { TodoItem } from "../../../entities/todoItem/TodoItem.js";
 import { ItemAddedToListEvent } from "../../../entities/todoList/events/ItemAddedToListEvent.js";
+import { ListAlreadyFinished } from "../../../errors/entitys/todoList/ListAlreadyFinished.js";
 
 describe("Todo list entity test suite", () => {
   const sut = TodoList;
@@ -20,7 +21,7 @@ describe("Todo list entity test suite", () => {
     const createdTodoList = sut.create(newTodoListData);
 
     expect(createdTodoList.getId()).toBe(newTodoListData.id);
-    expect(createdTodoList.getIsFinished()).toBe(null);
+    expect(createdTodoList.getFinishedDt()).toBe(null);
     expect(createdTodoList.getTitle()).toBe(newTodoListData.title);
   });
 
@@ -74,5 +75,27 @@ describe("Todo list entity test suite", () => {
         createdTodoList.getId(),
       );
     });
+  });
+
+  it("should mark a list as finished", () => {
+    const dateNow = new Date();
+    vi.useFakeTimers({ now: dateNow });
+    const todoList = TodoList.create(createMockTodoList());
+
+    expect(todoList.getFinishedDt()).toBe(null);
+    todoList.markListAsFinished();
+    expect(todoList.getFinishedDt()).toStrictEqual(dateNow);
+  });
+
+  it("should throw error if try finish a already finished list", () => {
+    const dateNow = new Date();
+    vi.useFakeTimers({ now: dateNow });
+    const todoList = TodoList.create(createMockTodoList());
+
+    const markListAsFinishedTwice = () => {
+      todoList.markListAsFinished();
+      todoList.markListAsFinished();
+    };
+    expect(markListAsFinishedTwice).toThrow(new ListAlreadyFinished());
   });
 });
