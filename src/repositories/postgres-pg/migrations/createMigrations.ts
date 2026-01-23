@@ -37,7 +37,6 @@ async function runMigrations() {
       title TEXT NOT NULL,
       motivation_phrase TEXT,
       total_items SMALLINT NOT NULL,
-      days_to_repeat SMALLINT,
       planned_day_to_make TIMESTAMP WITH TIME ZONE,
       expiration_dt TIMESTAMP WITH TIME ZONE,
       finished_dt TIMESTAMP WITH TIME ZONE,
