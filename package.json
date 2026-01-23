@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node dist/server.js",
     "migrations": "node --env-file=.env src/repositories/postgres-pg/migrations/createMigrations.js",
-    "dev": "tsx src/server.ts",
+    "dev": "tsx --env-file=.env --watch src/infra/http/server.ts",
     "migrations:dev": "tsx --env-file=.env src/repositories/postgres-pg/migrations/createMigrations.ts",
     "test": "npx vitest",
     "build": "tsc",
