@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/server.js",
+    "migrations": "node --env-file=.env src/repositories/postgres-pg/migrations/createMigrations.js",
     "dev": "tsx src/server.ts",
+    "migrations:dev": "tsx --env-file=.env src/repositories/postgres-pg/migrations/createMigrations.ts",
     "test": "npx vitest",
     "build": "tsc",
     "eslint": "eslint .",
@@ -27,6 +29,7 @@
     "@faker-js/faker": "10.1.0",
     "@tsconfig/node24": "24.0.3",
     "@types/node": "24.10.1",
+    "@types/pg": "8.16.0",
     "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-prettier": "5.5.4",
@@ -38,7 +41,8 @@
   },
   "dependencies": {
     "bcryptjs": "3.0.3",
-    "module-alias": "2.2.3"
+    "module-alias": "2.2.3",
+    "pg": "8.17.2"
   },
   "_moduleAliases": {
     "@": "dist/"
