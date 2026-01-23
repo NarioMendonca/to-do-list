@@ -27,7 +27,8 @@ async function runMigrations() {
 
   await client.query(
     `INSERT INTO week_days (id, day) VALUES
-    (0, 'Sunday'), (1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thursday'), (5, 'Friday'), (6, 'Saturday')`,
+    (0, 'Sunday'), (1, 'Monday'), (2, 'Tuesday'), (3, 'Wednesday'), (4, 'Thursday'), (5, 'Friday'), (6, 'Saturday')
+    ON CONFLICT (id) DO NOTHING`,
   );
 
   await client.query(
