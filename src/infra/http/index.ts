@@ -1,7 +1,8 @@
 import { AddressInfo } from "net";
 import { server } from "./server.js";
+import env from "../env/getEnvs.js";
 
-if (process.env.NODE_ENV !== "test") {
+if (env.NODE_ENV !== "test") {
   const PORT = process.env.PORT;
   server.listen(PORT, () => {
     const serverAdress = server.address() as AddressInfo;
@@ -10,3 +11,5 @@ if (process.env.NODE_ENV !== "test") {
     );
   });
 }
+
+export default server;

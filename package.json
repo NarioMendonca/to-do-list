@@ -8,7 +8,7 @@
     "migrations": "node --env-file=.env src/repositories/postgres-pg/migrations/createMigrations.js",
     "dev": "tsx --env-file=.env --watch src/infra/http/index.ts",
     "migrations:dev": "tsx --env-file=.env src/repositories/postgres-pg/migrations/createMigrations.ts",
-    "test": "npx vitest",
+    "test": "node --env-file=.env ./node_modules/vitest/vitest.mjs",
     "build": "tsc",
     "eslint": "eslint .",
     "eslint:fix": "eslint --fix"
