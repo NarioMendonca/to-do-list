@@ -8,7 +8,7 @@ export type Res = ServerResponse<IncomingMessage> & {
 
 const userController = new UserController();
 
-const server = createServer((req, res) => {
+export const server = createServer((req, res) => {
   res.setHeader("Content-Type", "application/json");
 
   if (req.url === "/" && req.method === "GET") {
@@ -25,8 +25,4 @@ const server = createServer((req, res) => {
     "content-type": "application/json",
   });
   res.end(JSON.stringify({ message: "Route not Found" }));
-});
-const PORT = process.env.PORT;
-server.listen(PORT, () => {
-  console.log(`Server running on ${PORT}`);
 });
