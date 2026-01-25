@@ -18,7 +18,7 @@ export class UserController {
     );
   }
 
-  async create(req: Req, res: Res) {
+  create = async (req: Req, res: Res) => {
     const isRequestFinished = new Promise((resolve, reject) => {
       req.once("close", () => resolve(""));
       req.once("error", (error) => reject(error));
@@ -34,5 +34,5 @@ export class UserController {
     await this.createUserUseCase.handle(validatedUserData);
     res.writeHead(201, "Created");
     res.end();
-  }
+  };
 }
