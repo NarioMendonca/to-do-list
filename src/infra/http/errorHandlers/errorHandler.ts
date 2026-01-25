@@ -17,6 +17,12 @@ export function errorHandler(req: Req, res: Res, error: unknown) {
     return;
   }
 
+  if (error instanceof Error) {
+    res.writeHead(500, "Internal Server Error");
+    res.end(JSON.stringify({ message: error.message }));
+    return;
+  }
+
   res.writeHead(500, "Internal Server Error");
   res.end(JSON.stringify({ message: "Internal Server Error", error }));
 }
