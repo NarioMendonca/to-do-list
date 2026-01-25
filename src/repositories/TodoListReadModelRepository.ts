@@ -1,13 +1,6 @@
-import { TodoItem } from "../entities/todoItem/TodoItem.js";
-import { TodoList } from "../entities/todoList/TodoList.js";
+import { TodoListDTO } from "../model/TodoList.js";
 
 export interface TodoListReadModelRepository {
-  getList(listId: string): Promise<TodoList | null>;
-  getTodoItem({
-    todoItemId,
-    todoListId,
-  }: {
-    todoListId: string;
-    todoItemId: string;
-  }): Promise<TodoItem | null>;
+  get(listId: string): Promise<TodoListDTO | null>;
+  fetch(listId: string[]): Promise<TodoListDTO[]>;
 }
