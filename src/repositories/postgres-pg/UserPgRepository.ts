@@ -27,7 +27,7 @@ export class UserPgRepository implements UserRepository {
 
   async alreadyExists(email: string): Promise<boolean> {
     const emailExists = await db.query(
-      "SELECT email FROM users WHERE EXISTS email = $1",
+      "SELECT email FROM users WHERE email = $1",
       [email],
     );
     return emailExists.rows[0];

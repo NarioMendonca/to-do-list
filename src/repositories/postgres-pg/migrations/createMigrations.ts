@@ -1,6 +1,6 @@
 import { Client } from "pg";
 
-async function runMigrations() {
+export async function runMigrations() {
   const client = new Client({
     connectionString: process.env.DATABASE_URL,
   });
