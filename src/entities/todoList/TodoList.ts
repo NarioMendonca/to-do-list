@@ -15,6 +15,7 @@ import { Title } from "./title/Title.js";
 
 export type TodoListParams = {
   id: string;
+  ownerId: string;
   title: string;
   createdAt: string | Date;
   expirationDt?: string | Date;
@@ -26,6 +27,7 @@ export type TodoListParams = {
 
 type TodoListConstructorParams = {
   id: string;
+  ownerId: string;
   title: string;
   createdAt: Date;
   expirationDt?: Date | string | null;
@@ -39,6 +41,7 @@ type TodoListConstructorParams = {
 
 export class TodoList {
   private id: string;
+  private ownerId: string;
   private title: Title;
   private createdAt: Date;
   private expirationDt: ExpirationDt;
@@ -54,6 +57,7 @@ export class TodoList {
   private constructor({
     id,
     title,
+    ownerId,
     createdAt,
     expirationDt,
     daysWeekToRepeat,
@@ -64,6 +68,7 @@ export class TodoList {
   }: TodoListConstructorParams) {
     this.id = id;
     this.title = new Title(title);
+    this.ownerId = ownerId;
     this.createdAt = createdAt;
     this.expirationDt = new ExpirationDt(expirationDt);
     this.daysWeekToRepeat = daysWeekToRepeat
@@ -91,6 +96,10 @@ export class TodoList {
 
   public getId() {
     return this.id;
+  }
+
+  public getOwnerId() {
+    return this.ownerId;
   }
 
   public getTitle() {

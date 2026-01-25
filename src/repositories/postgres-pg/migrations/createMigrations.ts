@@ -34,14 +34,17 @@ export async function runMigrations() {
   await client.query(
     `CREATE TABLE IF NOT EXISTS todo_lists (
       id UUID PRIMARY KEY,
+      owner_id UUID,
       title TEXT NOT NULL,
       motivation_phrase TEXT,
       total_items SMALLINT NOT NULL,
       planned_day_to_make TIMESTAMP WITH TIME ZONE,
       expiration_dt TIMESTAMP WITH TIME ZONE,
       finished_dt TIMESTAMP WITH TIME ZONE,
-      created_at TIMESTAMP WITH TIME ZONE DEFAULT now()
-    )
+      created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
+
+    CONSTRAINT fk_owner_id FOREIGN KEY(owner_id) REFERENCES users(id) ON DELETE CASCADE
+  )
     `,
   );
 
