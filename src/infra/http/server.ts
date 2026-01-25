@@ -1,14 +1,24 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
 import { UserController } from "./controllers/UserController.js";
+import { errorHandler } from "./errorHandlers/errorHandler.js";
 
 export type Req = IncomingMessage;
 export type Res = ServerResponse<IncomingMessage> & {
   req: IncomingMessage;
 };
 
-const userController = new UserController();
+type Route = {
+  path: string;
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  controller: (req: Req, res: Res) => Promise<void>;
+};
 
-export const server = createServer((req, res) => {
+const userController = new UserController();
+const routes: Route[] = [
+  { path: "/users", method: "POST", controller: userController.create },
+];
+
+export const server = createServer(async (req, res) => {
   res.setHeader("Content-Type", "application/json");
 
   if (req.url === "/" && req.method === "GET") {
@@ -16,9 +26,16 @@ export const server = createServer((req, res) => {
     return;
   }
 
-  if (req.url === "/users" && req.method === "POST") {
-    userController.create(req, res);
-    return;
+  for (const route of routes) {
+    if (req.url === route.path && req.method === route.method) {
+      try {
+        await route.controller(req, res);
+        return;
+      } catch (error) {
+        errorHandler(req, res, error);
+        return;
+      }
+    }
   }
 
   res.writeHead(404, "Not Found", {
