@@ -19,18 +19,20 @@ export class UserController {
   }
 
   async create(req: Req, res: Res) {
+    const isRequestFinished = new Promise((resolve, reject) => {
+      req.once("close", () => resolve(""));
+      req.once("error", (error) => reject(error));
+    });
     let data = "";
     req.on("data", (chunk) => {
       data += chunk;
     });
-
-    req.on("close", async () => {
-      const userData: unknown = JSON.parse(data);
-      const validatedUserData =
-        UserInputValidators.validateCreateUserInput(userData);
-      await this.createUserUseCase.handle(validatedUserData);
-      res.writeHead(201, "Created");
-      res.end();
-    });
+    await isRequestFinished;
+    const userData: unknown = JSON.parse(data);
+    const validatedUserData =
+      UserInputValidators.validateCreateUserInput(userData);
+    await this.createUserUseCase.handle(validatedUserData);
+    res.writeHead(201, "Created");
+    res.end();
   }
 }
