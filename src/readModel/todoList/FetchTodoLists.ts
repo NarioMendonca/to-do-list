@@ -1,5 +1,5 @@
 import { TodoListDTO } from "../../model/TodoList.js";
-import { TodoListReadModelRepository } from "../../repositories/todoListReadModelRepository.js";
+import { TodoListReadModelRepository } from "../../repositories/TodoListReadModelRepository.js";
 import { ReadModel } from "../ReadModel.js";
 
 type FetchTodoListInput = {

@@ -3,6 +3,7 @@ import { IdGenerator } from "../../entities/shared/IdGenerator.js";
 import { PasswordHashModel } from "../../entities/user/services/PasswordHashModel.js";
 import { UserEntity } from "../../entities/user/User.js";
 import { AlreadyExistsError } from "../../errors/usecases/AlreadyExistsError.js";
+import { UserReadModelRepository } from "../../repositories/UserReadModelRepository.js";
 import { UserRepository } from "../../repositories/UserRepository.js";
 import { UseCase } from "../UseCase.js";
 
@@ -19,10 +20,13 @@ export class CreateUserUseCase implements UseCase<InputDTO, OutputDTO> {
     private idGeneratorService: IdGenerator,
     private passwordHashService: PasswordHashModel,
     private userRepository: UserRepository,
+    private userReadModelRepository: UserReadModelRepository,
   ) {}
 
   async handle({ name, email, password }: InputDTO): Promise<void> {
-    const userAlreadyExists = await this.userRepository.alreadyExists(email);
+    const userAlreadyExists =
+      await this.userReadModelRepository.alreadyExists(email);
+    console.log(userAlreadyExists);
 
     if (userAlreadyExists) {
       throw new AlreadyExistsError("User already exists");
