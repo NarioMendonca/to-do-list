@@ -5,7 +5,6 @@ import { IdGeneratorService } from "../../entities/shared/IdGeneratorService.js"
 import { PasswordHash } from "../../entities/user/passwordHash.js";
 import { Req, Res } from "../server.js";
 import { Controller } from "./Controller.js";
-import { UserInputValidators } from "./UserValidators.js";
 
 export class UserController extends Controller {
   private createUserUseCase: CreateUserUseCase;
@@ -24,12 +23,20 @@ export class UserController extends Controller {
   }
 
   public create = async (req: Req, res: Res) => {
+    const schema = {
+      name: "string",
+      email: "string",
+      password: "string",
+    } as const;
     const data = await this.getBody(req);
-    const userData = UserInputValidators.validateCreateUserInput(data);
+    const userData = this.validateData({ data, schema });
     await this.createUserUseCase.handle(userData);
     res.writeHead(201, "Created");
     res.end();
   };
 
-  // public auth = async (req: Req, res: Res) => {};
+  // public auth = async (req: Req, res: Res) => {
+  //   const data = await this.getBody(req);
+  //   const userData = UserInputValidators.validateCreateUserInput;
+  // };
 }
