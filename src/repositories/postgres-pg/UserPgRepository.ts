@@ -18,7 +18,7 @@ export class UserPgRepository implements UserRepository {
         userEntity.getId(),
         userEntity.getName(),
         userEntity.getEmail(),
-        userEntity.isUserEmailVerified(),
+        userEntity.getIsEmailVerified(),
         userEntity.getPasswordHash(),
         userEntity.getCreatedAt(),
       ],

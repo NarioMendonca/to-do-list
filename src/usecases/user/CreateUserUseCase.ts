@@ -1,4 +1,3 @@
-import { Email } from "../../entities/email/Email.js";
 import { IdGenerator } from "../../entities/shared/IdGenerator.js";
 import { PasswordHashModel } from "../../entities/user/services/PasswordHashModel.js";
 import { UserEntity } from "../../entities/user/User.js";
@@ -37,9 +36,8 @@ export class CreateUserUseCase implements UseCase<InputDTO, OutputDTO> {
     const user = UserEntity.create({
       id,
       name,
-      email: new Email(email),
+      email: email,
       passwordHash,
-      createdAt: new Date(),
     });
 
     await this.userRepository.create(user);
