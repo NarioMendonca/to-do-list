@@ -1,5 +1,5 @@
 import { IdGenerator } from "../../entities/shared/IdGenerator.js";
-import { PasswordHashModel } from "../../entities/user/services/PasswordHasher.js";
+import { PasswordHasherService } from "../../entities/user/services/PasswordHasher.js";
 import { UserEntity } from "../../entities/user/User.js";
 import { AlreadyExistsError } from "../../errors/usecases/AlreadyExistsError.js";
 import { UserReadModelRepository } from "../../repositories/UserReadModelRepository.js";
@@ -17,7 +17,7 @@ type OutputDTO = void;
 export class CreateUserUseCase implements UseCase<InputDTO, OutputDTO> {
   constructor(
     private idGeneratorService: IdGenerator,
-    private passwordHashService: PasswordHashModel,
+    private passwordHashService: PasswordHasherService,
     private userRepository: UserRepository,
     private userReadModelRepository: UserReadModelRepository,
   ) {}

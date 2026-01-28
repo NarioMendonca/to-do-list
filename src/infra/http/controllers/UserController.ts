@@ -2,7 +2,7 @@ import { UserPgReadModelRepository } from "../../../repositories/postgres-pg/Use
 import { UserPgRepository } from "../../../repositories/postgres-pg/UserPgRepository.js";
 import { CreateUserUseCase } from "../../../usecases/user/CreateUserUseCase.js";
 import { IdGeneratorService } from "../../entities/shared/IdGeneratorService.js";
-import { PasswordHash } from "../../entities/user/passwordHash.js";
+import { PasswordHasher } from "../../entities/user/passwordHasher.js";
 import { Req, Res } from "../server.js";
 import { Controller } from "./Controller.js";
 
@@ -11,7 +11,7 @@ export class UserController extends Controller {
   constructor() {
     super();
     const idGeneratorService = new IdGeneratorService();
-    const passwordHashService = new PasswordHash();
+    const passwordHashService = new PasswordHasher();
     const userRepository = new UserPgRepository();
     const userReadModelRepository = new UserPgReadModelRepository();
     this.createUserUseCase = new CreateUserUseCase(

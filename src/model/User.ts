@@ -2,7 +2,7 @@ export type UserDTO = {
   id: string;
   name: string;
   email: string;
-  isEmailVerified: string;
+  isEmailVerified: boolean;
 };
 
 export type UserWithPassword = UserDTO & {
