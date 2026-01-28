@@ -4,11 +4,12 @@ import { CreateUserUseCase } from "../../../usecases/user/CreateUserUseCase.js";
 import { IdGeneratorService } from "../../entities/shared/IdGeneratorService.js";
 import { PasswordHash } from "../../entities/user/passwordHash.js";
 import { Req, Res } from "../server.js";
-import { UserInputValidators } from "./UserValidators.js";
+import { Controller } from "./Controller.js";
 
-export class UserController {
+export class UserController extends Controller {
   private createUserUseCase: CreateUserUseCase;
   constructor() {
+    super();
     const idGeneratorService = new IdGeneratorService();
     const passwordHashService = new PasswordHash();
     const userRepository = new UserPgRepository();
@@ -21,21 +22,21 @@ export class UserController {
     );
   }
 
-  create = async (req: Req, res: Res) => {
-    const isRequestFinished = new Promise((resolve, reject) => {
-      req.once("close", () => resolve(""));
-      req.once("error", (error) => reject(error));
-    });
-    let data = "";
-    req.on("data", (chunk) => {
-      data += chunk;
-    });
-    await isRequestFinished;
-    const userData: unknown = JSON.parse(data);
-    const validatedUserData =
-      UserInputValidators.validateCreateUserInput(userData);
-    await this.createUserUseCase.handle(validatedUserData);
+  public create = async (req: Req, res: Res) => {
+    const schema = {
+      name: "string",
+      email: "string",
+      password: "string",
+    } as const;
+    const data = await this.getBody(req);
+    const userData = this.validateData({ data, schema });
+    await this.createUserUseCase.handle(userData);
     res.writeHead(201, "Created");
     res.end();
   };
+
+  // public auth = async (req: Req, res: Res) => {
+  //   const data = await this.getBody(req);
+  //   const userData = UserInputValidators.validateCreateUserInput;
+  // };
 }

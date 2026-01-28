@@ -1,4 +1,4 @@
-import { UserDTO } from "../../model/User.js";
+import { UserDTO, UserWithPassword } from "../../model/User.js";
 import {
   isEmailVerifiedParams,
   UserReadModelRepository,
@@ -16,6 +16,25 @@ export class UserPgReadModelRepository implements UserReadModelRepository {
       ...data,
       isEmailVerified: data.is_email_verified,
       is_email_verified: undefined,
+    };
+    return user;
+  }
+
+  async getAllDataByEmail(email: string): Promise<UserWithPassword | null> {
+    const userQuery = await db.query(
+      `SELECT id, name, email, is_email_verified, password_hash FROM users WHERE email = $1`,
+      [email],
+    );
+    const data = userQuery.rows[0];
+    if (!data) {
+      return null;
+    }
+
+    const user: UserWithPassword = {
+      ...data,
+      isEmailVerified: data.is_email_verified,
+      is_email_verified: undefined,
+      passwordHash: data.password_hash,
     };
     return user;
   }

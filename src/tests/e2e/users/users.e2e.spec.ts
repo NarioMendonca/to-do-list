@@ -4,6 +4,7 @@ import { describe, it, beforeAll, expect, afterAll, afterEach } from "vitest";
 import { InvalidBodyError } from "../../../errors/controller/InvalidBodyError.js";
 import { clearDatabase } from "../clearDatabase.js";
 import { AlreadyExistsError } from "../../../errors/usecases/AlreadyExistsError.js";
+import { db } from "../../../repositories/postgres-pg/client.js";
 
 function testIfServerHasStarted(server: Server) {
   return new Promise((resolve, reject) => {
@@ -40,8 +41,11 @@ describe("Users e2e test suite", () => {
         body: JSON.stringify({ name: "Roger" }),
       });
 
+      const userDBData = await db.query(`SELECT * FROM users`);
+
       expect(response.status).toBe(400);
       expect(response.statusText).toBe(InvalidBodyError.name);
+      expect(userDBData.rowCount).toBe(0);
     });
 
     it("should return 409 if user already exists", async () => {
@@ -58,11 +62,15 @@ describe("Users e2e test suite", () => {
 
       const response = await fetch(`${_serverAddress}/users`, {
         method: "POST",
-        body: JSON.stringify(userData),
+        body: JSON.stringify({ ...userData }),
       });
+
+      const userDBData = await db.query(`SELECT * FROM users`);
 
       expect(response.status).toBe(409);
       expect(response.statusText).toBe(AlreadyExistsError.name);
+      expect(userDBData.rowCount).toBe(1);
+      expect(userDBData.rows[0].email).toBe("roger@gmail.com");
     });
 
     it("should returns 201 if user was successfully created", async () => {
@@ -77,8 +85,12 @@ describe("Users e2e test suite", () => {
         body: JSON.stringify(userData),
       });
 
+      const userDBData = await db.query(`SELECT * FROM users`);
+
       expect(response.status).toBe(201);
       expect(response.statusText).toBe("Created");
+      expect(userDBData.rowCount).toBe(1);
+      expect(userDBData.rows[0].email).toBe("roger@gmail.com");
     });
   });
 });

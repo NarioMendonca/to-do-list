@@ -4,3 +4,7 @@ export type UserDTO = {
   email: string;
   isEmailVerified: string;
 };
+
+export type UserWithPassword = UserDTO & {
+  passwordHash: string;
+};

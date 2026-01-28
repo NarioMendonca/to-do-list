@@ -1,13 +1,14 @@
 export class Email {
   private email: string;
-  private isEmailVerified: boolean = false;
+  private isEmailVerified: boolean;
 
-  constructor(email: string) {
+  constructor(email: string, isEmailVerified: boolean) {
     const isEmailValid = this.isEmailValid(email);
     if (!isEmailValid) {
       throw new Error("Invalid email");
     }
     this.email = email;
+    this.isEmailVerified = isEmailVerified;
   }
 
   private isEmailValid(email: string): boolean {
@@ -24,7 +25,7 @@ export class Email {
     return this.isEmailVerified;
   }
 
-  public varifyEmail(): void {
+  public verifyEmail(): void {
     this.isEmailVerified = true;
   }
 }
