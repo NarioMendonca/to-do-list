@@ -1,5 +1,5 @@
 import { IdGenerator } from "../../entities/shared/IdGenerator.js";
-import { PasswordHashModel } from "../../entities/user/services/PasswordHashModel.js";
+import { PasswordHashModel } from "../../entities/user/services/PasswordHasher.js";
 import { UserEntity } from "../../entities/user/User.js";
 import { AlreadyExistsError } from "../../errors/usecases/AlreadyExistsError.js";
 import { UserReadModelRepository } from "../../repositories/UserReadModelRepository.js";

@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { PasswordHashModel } from "../../../entities/user/services/PasswordHashModel.js";
+import { PasswordHashModel } from "../../../entities/user/services/PasswordHasher.js";
 
 export class PasswordHash implements PasswordHashModel {
   async hash(password: string): Promise<string> {
