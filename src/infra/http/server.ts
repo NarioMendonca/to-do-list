@@ -1,5 +1,5 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
-import { UserController } from "./controllers/UserController.js";
+import { CreateUserController } from "./controllers/user/CreateUserController.js";
 import { errorHandler } from "./errorHandlers/errorHandler.js";
 import { AuthController } from "./controllers/user/AuthController.js";
 import { RefreshSessionController } from "./controllers/user/RefreshSessionController.js";
@@ -15,7 +15,7 @@ type Route = {
   controller: (req: Req, res: Res) => Promise<void>;
 };
 
-const userController = new UserController();
+const userController = new CreateUserController();
 const authController = new AuthController();
 const refreshSessionController = new RefreshSessionController();
 const routes: Route[] = [
