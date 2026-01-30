@@ -1,6 +1,8 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
 import { UserController } from "./controllers/UserController.js";
 import { errorHandler } from "./errorHandlers/errorHandler.js";
+import { AuthController } from "./controllers/user/AuthController.js";
+import { RefreshSessionController } from "./controllers/user/RefreshSessionController.js";
 
 export type Req = IncomingMessage;
 export type Res = ServerResponse<IncomingMessage> & {
@@ -14,13 +16,15 @@ type Route = {
 };
 
 const userController = new UserController();
+const authController = new AuthController();
+const refreshSessionController = new RefreshSessionController();
 const routes: Route[] = [
   { path: "/users", method: "POST", controller: userController.create },
-  { path: "/login", method: "POST", controller: userController.auth },
+  { path: "/login", method: "POST", controller: authController.handle },
   {
     path: "/sessions/refresh",
     method: "POST",
-    controller: userController.refreshSession,
+    controller: refreshSessionController.handle,
   },
 ];
 

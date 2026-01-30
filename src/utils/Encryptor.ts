@@ -10,7 +10,7 @@ export type PayLoad = {
 
 const randomBytesAsync = util.promisify(crypto.randomBytes);
 
-export class Encrytor {
+export class Encryptor {
   async encrypt(text: string): Promise<PayLoad> {
     const cipheriv = await randomBytesAsync(12);
     const cipher = crypto.createCipheriv(
