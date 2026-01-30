@@ -1,3 +1,4 @@
+import { CookieNotFoundError } from "../../../errors/controller/CookieNotFoundError.js";
 import { InvalidBodyError } from "../../../errors/controller/InvalidBodyError.js";
 import { Req } from "../server.js";
 
@@ -72,4 +73,25 @@ export class Controller {
     return validBody;
   }
   /* eslint-enable @typescript-eslint/no-explicit-any */
+
+  protected getCookie(req: Req, cookieName: string) {
+    const cookies = req.headers.cookie;
+    if (!cookies) {
+      throw new CookieNotFoundError();
+    }
+    const cookiePosition = cookies.indexOf(cookieName);
+    if (cookiePosition === -1) {
+      throw new CookieNotFoundError();
+    }
+    const startOfCookie = cookiePosition + (cookieName.length + 1); // cookieName.length + 1, ex: refreshToken={  <- starts here
+    if (cookies[startOfCookie - 1] !== "=") {
+      throw new CookieNotFoundError();
+    }
+    const endOfCookie = cookies.indexOf(";", cookiePosition);
+    const expectedCookie = cookies.slice(
+      startOfCookie,
+      endOfCookie === -1 ? cookies.length : endOfCookie,
+    );
+    return expectedCookie;
+  }
 }
