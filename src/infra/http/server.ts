@@ -16,6 +16,7 @@ type Route = {
 const userController = new UserController();
 const routes: Route[] = [
   { path: "/users", method: "POST", controller: userController.create },
+  { path: "/login", method: "POST", controller: userController.auth },
 ];
 
 export const server = createServer(async (req, res) => {
