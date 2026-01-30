@@ -33,7 +33,6 @@ export class UserPgRepository implements UserRepository {
     if (queryResult.rowCount === 0) {
       return null;
     }
-    console.log(queryResult);
     const data = queryResult.rows[0];
     const userData: User = {
       ...data,
