@@ -19,7 +19,7 @@ export function errorHandler(req: Req, res: Res, error: unknown) {
 
   if (error instanceof Error) {
     res.writeHead(500, "Internal Server Error");
-    res.end(JSON.stringify({ message: error.stack }));
+    res.end(JSON.stringify({ message: error.message }));
     return;
   }
 

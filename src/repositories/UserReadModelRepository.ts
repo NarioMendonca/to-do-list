@@ -1,4 +1,4 @@
-import { UserDTO } from "../model/User.js";
+import { UserDTO, UserWithPassword } from "../model/User.js";
 
 export type isEmailVerifiedParams =
   | { id: string; email: undefined }
@@ -6,6 +6,7 @@ export type isEmailVerifiedParams =
 
 export interface UserReadModelRepository {
   get(userId: string): Promise<UserDTO>;
+  getAllDataByEmail(email: string): Promise<UserWithPassword | null>;
   fetch(usersId: string[]): Promise<UserDTO[]>;
   alreadyExists(email: string): Promise<boolean>;
   isEmailVerified(params: isEmailVerifiedParams): Promise<boolean>;
