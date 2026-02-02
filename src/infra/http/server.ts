@@ -1,6 +1,6 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
-import { UserController } from "./controllers/UserController.js";
 import { errorHandler } from "./errorHandlers/errorHandler.js";
+import { UserControllers } from "./controllers/user/UserControllers.js";
 
 export type Req = IncomingMessage;
 export type Res = ServerResponse<IncomingMessage> & {
@@ -13,9 +13,15 @@ type Route = {
   controller: (req: Req, res: Res) => Promise<void>;
 };
 
-const userController = new UserController();
+const userController = new UserControllers();
 const routes: Route[] = [
   { path: "/users", method: "POST", controller: userController.create },
+  { path: "/login", method: "POST", controller: userController.auth },
+  {
+    path: "/sessions/refresh",
+    method: "POST",
+    controller: userController.refreshSession,
+  },
 ];
 
 export const server = createServer(async (req, res) => {

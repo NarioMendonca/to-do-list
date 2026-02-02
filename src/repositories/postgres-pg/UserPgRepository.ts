@@ -1,4 +1,5 @@
 import { UserEntity } from "../../entities/user/User.js";
+import { User } from "../../model/User.js";
 import { UserRepository } from "../UserRepository.js";
 import { db } from "./client.js";
 
@@ -18,10 +19,27 @@ export class UserPgRepository implements UserRepository {
         userEntity.getId(),
         userEntity.getName(),
         userEntity.getEmail(),
-        userEntity.isUserEmailVerified(),
+        userEntity.getIsEmailVerified(),
         userEntity.getPasswordHash(),
         userEntity.getCreatedAt(),
       ],
     );
+  }
+
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    const queryResult = await db.query("SELECT * FROM users WHERE email = $1", [
+      email,
+    ]);
+    if (queryResult.rowCount === 0) {
+      return null;
+    }
+    const data = queryResult.rows[0];
+    const userData: User = {
+      ...data,
+      isEmailVerified: data.is_email_verified,
+      createdAt: data.created_at,
+      passwordHash: data.password_hash,
+    };
+    return UserEntity.restore(userData);
   }
 }
