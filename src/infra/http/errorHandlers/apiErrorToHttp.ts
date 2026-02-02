@@ -2,6 +2,7 @@ import { ApiError } from "../../../errors/apiError.js";
 import { AlreadyExistsError } from "../../../errors/usecases/AlreadyExistsError.js";
 import { InvalidCredentialsError } from "../../../errors/usecases/InvalidCredentialsError.js";
 import { NotFoundError } from "../../../errors/usecases/NotFoundError.js";
+import env from "../../env/getEnvs.js";
 
 export function apiErrorToHttp(apiError: ApiError) {
   let errorStatusCode: number | null = null;
@@ -17,5 +18,8 @@ export function apiErrorToHttp(apiError: ApiError) {
     errorStatusCode = 401;
   }
 
-  return { message: apiError.message, statusCode: errorStatusCode ?? 400 };
+  const errorMessage =
+    env.NODE_ENV !== "test" ? apiError.message : apiError.stack;
+
+  return { message: errorMessage, statusCode: errorStatusCode ?? 400 };
 }
