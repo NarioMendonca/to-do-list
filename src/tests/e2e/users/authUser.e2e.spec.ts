@@ -1,35 +1,27 @@
 import { Server } from "node:http";
-import { AddressInfo } from "node:net";
-import { afterAll, describe, beforeAll, it, expect } from "vitest";
-import { clearDatabase } from "../clearDatabase.js";
+import { afterAll, describe, beforeAll, it, expect, beforeEach } from "vitest";
 import { InvalidBodyError } from "../../../errors/controller/InvalidBodyError.js";
 import { InvalidCredentialsError } from "../../../errors/usecases/InvalidCredentialsError.js";
-import { afterEach } from "node:test";
-
-function serverIfRunning(server: Server) {
-  return new Promise((resolve, reject) => {
-    server.once("error", (err) => reject(err));
-    server.once("listening", () => resolve(""));
-  });
-}
+import { UserDTO } from "../../../model/User.js";
+import { clearDatabase } from "../../utils/clearDatabase.js";
+import { serverInstance } from "../serverInstance.js";
 
 describe("Auth user e2e tests", async () => {
-  let _testServer: Server;
   let _serverAddress: string;
-  beforeAll(async () => {
-    const { default: server } = await import("../../../infra/http/index.js");
-    _testServer = server.listen();
-    await serverIfRunning(_testServer);
+  let _testServer: Server;
 
-    const address = server.address() as AddressInfo;
-    _serverAddress = `http://localhost:${address.port}`;
+  beforeAll(async () => {
+    const { testServer, serverAddress } = await serverInstance();
+    _serverAddress = serverAddress;
+    _testServer = testServer;
   });
 
-  afterEach(async () => {
+  beforeEach(async () => {
     await clearDatabase();
   });
 
-  afterAll(() => {
+  afterAll(async () => {
+    await clearDatabase();
     _testServer.close();
   });
 
@@ -73,7 +65,6 @@ describe("Auth user e2e tests", async () => {
         password: "roger123",
       }),
     });
-
     const SecondLoginTry = await fetch(`${_serverAddress}/login`, {
       method: "POST",
       body: JSON.stringify({
@@ -81,7 +72,6 @@ describe("Auth user e2e tests", async () => {
         password: "roger",
       }),
     });
-
     expect(firstLoginTry.status).toBe(401);
     expect(SecondLoginTry.status).toBe(401);
     expect(firstLoginTry.statusText).toBe(InvalidCredentialsError.name);
@@ -106,6 +96,9 @@ describe("Auth user e2e tests", async () => {
       }),
     });
 
+    const data = (await response.json()) as UserDTO;
+
     expect(response.status).toBe(200);
+    expect(data.email).toBe("roger@gmail.com");
   });
 });

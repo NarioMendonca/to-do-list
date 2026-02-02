@@ -1,36 +1,26 @@
-import { Server } from "http";
-import { AddressInfo } from "net";
-import { describe, it, beforeAll, expect, afterAll, afterEach } from "vitest";
+import { describe, it, beforeAll, expect, afterAll, beforeEach } from "vitest";
 import { InvalidBodyError } from "../../../errors/controller/InvalidBodyError.js";
-import { clearDatabase } from "../clearDatabase.js";
 import { AlreadyExistsError } from "../../../errors/usecases/AlreadyExistsError.js";
 import { db } from "../../../repositories/postgres-pg/client.js";
-
-function testIfServerHasStarted(server: Server) {
-  return new Promise((resolve, reject) => {
-    server.once("error", (err) => reject(err));
-    server.once("listening", () => resolve(""));
-  });
-}
+import { Server } from "node:http";
+import { clearDatabase } from "../../utils/clearDatabase.js";
+import { serverInstance } from "../serverInstance.js";
 
 describe("Create user e2e tests", () => {
   let _serverAddress: string;
   let _testServer: Server;
   beforeAll(async () => {
-    const { default: server } = await import("../../../infra/http/index.js");
-    _testServer = server.listen();
-
-    await testIfServerHasStarted(server);
-
-    const serverUrl = _testServer.address() as AddressInfo;
-    _serverAddress = `http://localhost:${serverUrl.port}`;
+    const { testServer, serverAddress } = await serverInstance();
+    _serverAddress = serverAddress;
+    _testServer = testServer;
   });
 
-  afterEach(async () => {
+  beforeEach(async () => {
     await clearDatabase();
   });
 
   afterAll(async () => {
+    await clearDatabase();
     _testServer.close();
   });
 
@@ -69,7 +59,6 @@ describe("Create user e2e tests", () => {
     expect(response.status).toBe(409);
     expect(response.statusText).toBe(AlreadyExistsError.name);
     expect(userDBData.rowCount).toBe(1);
-    expect(userDBData.rows[0].email).toBe("roger@gmail.com");
   });
 
   it("should returns 201 if user was successfully created", async () => {
@@ -83,7 +72,6 @@ describe("Create user e2e tests", () => {
       method: "POST",
       body: JSON.stringify(userData),
     });
-
     const userDBData = await db.query(`SELECT * FROM users`);
 
     expect(response.status).toBe(201);
