@@ -1,4 +1,4 @@
-import { UserPgReadModelRepository } from "../../../../repositories/postgres-pg/UserPgReadModelRepository.js";
+import { UserPgReadModelRepository } from "../../../../repositories/postgres-pg/UserPgReadRepository.js";
 import { Req, Res } from "../../server.js";
 import { Controller } from "../Controller.js";
 
