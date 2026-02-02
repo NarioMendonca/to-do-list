@@ -32,6 +32,19 @@ export class Controller {
     return JSON.parse(data);
   }
 
+  protected getQueryParams = (req: Req) => {
+    const queryParams: Record<string, string> = {};
+    if (req.url?.includes("?")) {
+      const urlValues = req.url.split("?");
+      urlValues.shift();
+      for (const value of urlValues) {
+        const keyValuePair = value.split("=");
+        queryParams[keyValuePair[0]] = keyValuePair[1];
+      }
+    }
+    return queryParams;
+  };
+
   /* eslint-disable @typescript-eslint/no-explicit-any */
   protected validateData<Tschema extends Schema>({
     data,
