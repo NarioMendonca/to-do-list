@@ -130,6 +130,10 @@ export class TodoList {
     return this.todoItems;
   }
 
+  public getTotalItems() {
+    return this.totalItems;
+  }
+
   public pullEvents() {
     const events = [...this.events];
     this.events = [];
