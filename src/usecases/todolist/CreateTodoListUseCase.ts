@@ -11,8 +11,8 @@ type CreateTodoListUseCaseInputDTO = {
   title: string;
   todoMotivationPhrase?: string;
   expirationDt?: string | Date;
-  plannedDayToMake: string | Date;
-  daysWeekToRepeat: DayNumber[];
+  plannedDayToMake?: string | Date;
+  daysWeekToRepeat?: DayNumber[];
 };
 
 type CreateTodoListUseCaseOutputDTO = void;
