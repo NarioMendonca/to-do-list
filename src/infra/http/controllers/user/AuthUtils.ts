@@ -1,4 +1,4 @@
-import { InvalidSession } from "../../../../errors/controller/InvalidSessionError.js";
+import { InvalidSession } from "../../../../errors/infra/controller/InvalidSessionError.js";
 import { Encryptor, PayLoad } from "../../../../utils/Encryptor.js";
 
 export const weekInSeconds = 60 * 60 * 24 * 7;

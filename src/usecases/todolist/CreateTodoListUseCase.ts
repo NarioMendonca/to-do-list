@@ -3,7 +3,7 @@ import { TodoList } from "../../entities/todoList/TodoList.js";
 import { IdGenerator } from "../../entities/shared/IdGenerator.js";
 import { TodoListRepository } from "../../repositories/TodoListRepository.js";
 import { UseCase } from "../UseCase.js";
-import { UserReadModelRepository } from "../../repositories/UserReadModelRepository.js";
+import { UserReadModelRepository } from "../../repositories/UserReadRepository.js";
 import { NotFoundError } from "../../errors/usecases/NotFoundError.js";
 
 type CreateTodoListUseCaseInputDTO = {

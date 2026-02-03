@@ -2,7 +2,7 @@ import { UserDTO, UserWithPassword } from "../../model/User.js";
 import {
   isEmailVerifiedParams,
   UserReadModelRepository,
-} from "../UserReadModelRepository.js";
+} from "../UserReadRepository.js";
 import { db } from "./client.js";
 
 export class UserPgReadModelRepository implements UserReadModelRepository {

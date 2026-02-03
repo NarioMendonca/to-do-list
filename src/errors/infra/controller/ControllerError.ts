@@ -1,4 +1,4 @@
-import { ApiError } from "../apiError.js";
+import { ApiError } from "../../apiError.js";
 
 export class ControllerError extends ApiError {
   statusCode: number;

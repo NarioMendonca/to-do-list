@@ -1,5 +1,5 @@
 import { describe, it, beforeAll, expect, afterAll, beforeEach } from "vitest";
-import { InvalidBodyError } from "../../../errors/controller/InvalidBodyError.js";
+import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyError.js";
 import { AlreadyExistsError } from "../../../errors/usecases/AlreadyExistsError.js";
 import { db } from "../../../repositories/postgres-pg/client.js";
 import { Server } from "node:http";

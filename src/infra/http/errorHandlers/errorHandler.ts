@@ -1,5 +1,5 @@
 import { ApiError } from "../../../errors/apiError.js";
-import { ControllerError } from "../../../errors/controller/ControllerError.js";
+import { ControllerError } from "../../../errors/infra/controller/ControllerError.js";
 import env from "../../env/getEnvs.js";
 import { Req, Res } from "../server.js";
 import { apiErrorToHttp } from "./apiErrorToHttp.js";

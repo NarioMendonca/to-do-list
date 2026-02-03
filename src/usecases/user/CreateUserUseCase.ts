@@ -2,7 +2,7 @@ import { IdGenerator } from "../../entities/shared/IdGenerator.js";
 import { PasswordHasherService } from "../../entities/user/services/PasswordHasher.js";
 import { UserEntity } from "../../entities/user/User.js";
 import { AlreadyExistsError } from "../../errors/usecases/AlreadyExistsError.js";
-import { UserReadModelRepository } from "../../repositories/UserReadModelRepository.js";
+import { UserReadModelRepository } from "../../repositories/UserReadRepository.js";
 import { UserRepository } from "../../repositories/UserRepository.js";
 import { UseCase } from "../UseCase.js";
 

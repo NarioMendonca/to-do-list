@@ -1,6 +1,6 @@
 import { IdGeneratorService } from "../../../infra/entities/shared/IdGeneratorService.js";
 import { PasswordHasher } from "../../../infra/entities/user/passwordHasher.js";
-import { UserPgReadModelRepository } from "../../../repositories/postgres-pg/UserPgReadModelRepository.js";
+import { UserPgReadModelRepository } from "../../../repositories/postgres-pg/UserPgReadRepository.js";
 import { UserPgRepository } from "../../../repositories/postgres-pg/UserPgRepository.js";
 import { CreateUserUseCase } from "../CreateUserUseCase.js";
 

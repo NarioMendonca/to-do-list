@@ -1,5 +1,5 @@
-import { CookieNotFoundError } from "../../../errors/controller/CookieNotFoundError.js";
-import { InvalidBodyError } from "../../../errors/controller/InvalidBodyError.js";
+import { CookieNotFoundError } from "../../../errors/infra/controller/CookieNotFoundError.js";
+import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyError.js";
 import { Req } from "../server.js";
 
 type Schema = "string" | "number" | "boolean" | { [key: string]: Schema };
@@ -31,6 +31,19 @@ export class Controller {
     const data = await getBodyData;
     return JSON.parse(data);
   }
+
+  protected getQueryParams = (req: Req) => {
+    const queryParams: Record<string, string> = {};
+    if (req.url?.includes("?")) {
+      const urlValues = req.url.split("?");
+      urlValues.shift();
+      for (const value of urlValues) {
+        const keyValuePair = value.split("=");
+        queryParams[keyValuePair[0]] = keyValuePair[1];
+      }
+    }
+    return queryParams;
+  };
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
   protected validateData<Tschema extends Schema>({
