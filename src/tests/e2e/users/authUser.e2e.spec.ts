@@ -1,6 +1,6 @@
 import { Server } from "node:http";
 import { afterAll, describe, beforeAll, it, expect, beforeEach } from "vitest";
-import { InvalidBodyError } from "../../../errors/controller/InvalidBodyError.js";
+import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyError.js";
 import { InvalidCredentialsError } from "../../../errors/usecases/InvalidCredentialsError.js";
 import { UserDTO } from "../../../model/User.js";
 import { clearDatabase } from "../../utils/clearDatabase.js";
