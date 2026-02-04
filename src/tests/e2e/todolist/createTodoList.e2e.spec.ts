@@ -61,7 +61,17 @@ describe("create todo list e2e tests", () => {
     expect(createTodoListResponse.status).toBe(201);
   });
 
-  it.todo("blocks unauthenticated user to create a todo list", () => {});
+  it("blocks unauthenticated user to create a todo list", async () => {
+    const response = await fetch(`${_serverAddress}/todolist`, {
+      method: "POST",
+      body: JSON.stringify({
+        title: "Morning tasks",
+        ownerId: "421f209e-566d-4d38-9934-d1ee61573727",
+      }),
+    });
+
+    expect(response.status).toBe(401);
+  });
 
   it.todo("prevents a user to access another user's todo list", () => {});
 });

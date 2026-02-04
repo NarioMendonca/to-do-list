@@ -39,7 +39,7 @@ export class AuthUtils {
       });
     } catch (error) {
       if (error instanceof Error) {
-        throw new InvalidSession("Invalid cookie");
+        throw new InvalidSession("Invalid cookie", 401);
       }
       throw error;
     }
@@ -49,7 +49,7 @@ export class AuthUtils {
 
   public isTokenValid = (token: TokenPayload) => {
     if (token.exp < this.getTimeInSeconds()) {
-      throw new InvalidSession("Refresh token expired");
+      throw new InvalidSession("token expired", 401);
     }
   };
 

@@ -2,16 +2,22 @@ import { createServer, IncomingMessage, ServerResponse } from "http";
 import { errorHandler } from "./errorHandlers/errorHandler.js";
 import { UserControllers } from "./controllers/user/UserControllers.js";
 import { TodoListControllers } from "./controllers/todoList/TodoListControllers.js";
+import { verifyAuthenticationMiddleware } from "./middlewares/verifyAuthenticationMiddleware.js";
 
 export type Req = IncomingMessage;
 export type Res = ServerResponse<IncomingMessage> & {
   req: IncomingMessage;
 };
 
+type FlowMiddleware = (req: Req) => Promise<void>;
+type TerminalMiddleware = (req: Req, res: Res) => Promise<void>;
+type Middleware = FlowMiddleware | TerminalMiddleware;
+
 type Route = {
   path: string;
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   controller: (req: Req, res: Res) => Promise<void>;
+  middlewares?: Middleware[];
 };
 
 const userController = new UserControllers();
@@ -24,7 +30,12 @@ const routes: Route[] = [
     method: "POST",
     controller: userController.refreshSession,
   },
-  { path: "/todolist", method: "POST", controller: todoListController.create },
+  {
+    path: "/todolist",
+    method: "POST",
+    controller: todoListController.create,
+    middlewares: [verifyAuthenticationMiddleware],
+  },
 ];
 
 export const server = createServer(async (req, res) => {
@@ -37,6 +48,13 @@ export const server = createServer(async (req, res) => {
   for (const route of routes) {
     if (req.url === route.path && req.method === route.method) {
       try {
+        if (route.middlewares) {
+          await Promise.all(
+            route.middlewares.map((middleware) => {
+              return middleware(req, res);
+            }),
+          );
+        }
         await route.controller(req, res);
         return;
       } catch (error) {

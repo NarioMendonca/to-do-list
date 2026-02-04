@@ -17,7 +17,7 @@ type SchemaToType<T> = {
 };
 
 export class Controller {
-  protected async getBody(req: Req): Promise<string> {
+  public async getBody(req: Req): Promise<string> {
     const getBodyData = new Promise<string>((resolve, reject) => {
       let data = "";
       req.once("data", (chunk) => {
@@ -44,7 +44,7 @@ export class Controller {
     }
   }
 
-  protected getQueryParams = (req: Req) => {
+  public getQueryParams = (req: Req) => {
     const queryParams: Record<string, string> = {};
     if (req.url?.includes("?")) {
       const urlValues = req.url.split("?");
@@ -99,7 +99,7 @@ export class Controller {
   }
   /* eslint-enable @typescript-eslint/no-explicit-any */
 
-  protected getCookie(req: Req, cookieName: string) {
+  public getCookie(req: Req, cookieName: string) {
     const cookies = req.headers.cookie;
     if (!cookies) {
       throw new CookieNotFoundError();
