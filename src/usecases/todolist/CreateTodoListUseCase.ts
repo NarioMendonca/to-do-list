@@ -11,8 +11,8 @@ type CreateTodoListUseCaseInputDTO = {
   title: string;
   todoMotivationPhrase?: string;
   expirationDt?: string | Date;
-  plannedDayToMake: string | Date;
-  daysWeekToRepeat: DayNumber[];
+  plannedDayToMake?: string | Date;
+  daysWeekToRepeat?: DayNumber[];
 };
 
 type CreateTodoListUseCaseOutputDTO = void;
@@ -35,7 +35,7 @@ export class CreateTodoListUseCase implements UseCase<
     plannedDayToMake,
     expirationDt,
   }: CreateTodoListUseCaseInputDTO): Promise<void> {
-    const todoListHasOwnerId = this.userReadModelRepository.get(ownerId);
+    const todoListHasOwnerId = await this.userReadModelRepository.get(ownerId);
     if (!todoListHasOwnerId) {
       throw new NotFoundError("Owner to todoList not found");
     }

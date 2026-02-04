@@ -28,8 +28,20 @@ export class Controller {
 
       req.once("error", (error) => reject(error));
     });
-    const data = await getBodyData;
-    return JSON.parse(data);
+    const bodyData = await getBodyData;
+    try {
+      const data = JSON.parse(bodyData);
+      return data;
+    } catch (error) {
+      if (error instanceof Error) {
+        const errorMessage =
+          error.message === "Unexpected end of JSON input"
+            ? "Body must be in JSON"
+            : error.message;
+        throw new InvalidBodyError(errorMessage);
+      }
+      throw error;
+    }
   }
 
   protected getQueryParams = (req: Req) => {

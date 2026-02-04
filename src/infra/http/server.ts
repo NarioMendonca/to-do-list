@@ -1,6 +1,7 @@
 import { createServer, IncomingMessage, ServerResponse } from "http";
 import { errorHandler } from "./errorHandlers/errorHandler.js";
 import { UserControllers } from "./controllers/user/UserControllers.js";
+import { TodoListControllers } from "./controllers/todoList/TodoListControllers.js";
 
 export type Req = IncomingMessage;
 export type Res = ServerResponse<IncomingMessage> & {
@@ -14,6 +15,7 @@ type Route = {
 };
 
 const userController = new UserControllers();
+const todoListController = new TodoListControllers();
 const routes: Route[] = [
   { path: "/users", method: "POST", controller: userController.create },
   { path: "/login", method: "POST", controller: userController.auth },
@@ -22,11 +24,11 @@ const routes: Route[] = [
     method: "POST",
     controller: userController.refreshSession,
   },
+  { path: "/todolist", method: "POST", controller: todoListController.create },
 ];
 
 export const server = createServer(async (req, res) => {
   res.setHeader("Content-Type", "application/json");
-
   if (req.url === "/" && req.method === "GET") {
     res.end(JSON.stringify({ message: "Hello World!" }));
     return;
