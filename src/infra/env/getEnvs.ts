@@ -1,4 +1,4 @@
-import { MissingEnvironmentVariableError } from "../../errors/infra/controller/MissingEnvironmentVariableError.js";
+import { MissingEnvironmentVariableError } from "../../errors/infra/MissingEnvironmentVariableError.js";
 
 if (!process.env.PORT) {
   throw new MissingEnvironmentVariableError("Missing env PORT");
