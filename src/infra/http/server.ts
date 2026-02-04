@@ -8,10 +8,13 @@ export type Res = ServerResponse<IncomingMessage> & {
   req: IncomingMessage;
 };
 
+type Middleware = (req: Req, res: Res) => Promise<void>;
+
 type Route = {
   path: string;
   method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
   controller: (req: Req, res: Res) => Promise<void>;
+  middlewares?: Middleware[];
 };
 
 const userController = new UserControllers();
@@ -24,7 +27,11 @@ const routes: Route[] = [
     method: "POST",
     controller: userController.refreshSession,
   },
-  { path: "/todolist", method: "POST", controller: todoListController.create },
+  {
+    path: "/todolist",
+    method: "POST",
+    controller: todoListController.create,
+  },
 ];
 
 export const server = createServer(async (req, res) => {
@@ -37,6 +44,11 @@ export const server = createServer(async (req, res) => {
   for (const route of routes) {
     if (req.url === route.path && req.method === route.method) {
       try {
+        if (route.middlewares) {
+          await Promise.all(
+            route.middlewares.map((middleware) => middleware(req, res)),
+          );
+        }
         await route.controller(req, res);
         return;
       } catch (error) {
