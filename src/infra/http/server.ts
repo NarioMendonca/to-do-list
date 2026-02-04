@@ -2,13 +2,16 @@ import { createServer, IncomingMessage, ServerResponse } from "http";
 import { errorHandler } from "./errorHandlers/errorHandler.js";
 import { UserControllers } from "./controllers/user/UserControllers.js";
 import { TodoListControllers } from "./controllers/todoList/TodoListControllers.js";
+import { verifyAuthenticationMiddleware } from "./middlewares/verifyAuthenticationMiddleware.js";
 
 export type Req = IncomingMessage;
 export type Res = ServerResponse<IncomingMessage> & {
   req: IncomingMessage;
 };
 
-type Middleware = (req: Req, res: Res) => Promise<void>;
+type FlowMiddleware = (req: Req) => Promise<void>;
+type TerminalMiddleware = (req: Req, res: Res) => Promise<void>;
+type Middleware = FlowMiddleware | TerminalMiddleware;
 
 type Route = {
   path: string;
@@ -31,6 +34,7 @@ const routes: Route[] = [
     path: "/todolist",
     method: "POST",
     controller: todoListController.create,
+    middlewares: [verifyAuthenticationMiddleware],
   },
 ];
 
@@ -46,7 +50,9 @@ export const server = createServer(async (req, res) => {
       try {
         if (route.middlewares) {
           await Promise.all(
-            route.middlewares.map((middleware) => middleware(req, res)),
+            route.middlewares.map((middleware) => {
+              return middleware(req, res);
+            }),
           );
         }
         await route.controller(req, res);
