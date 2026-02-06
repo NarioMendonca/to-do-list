@@ -1,42 +1,37 @@
 import { InvalidExpirationDate } from "../../../errors/entitys/todoList/InvalidExpirationDate.js";
-import { InvalidDateError } from "../../../errors/genericErros/InvalidDateError.js";
+import { DateVO } from "../../shared/VOs/DateVO.js";
 
 export class ExpirationDt {
-  private expirationDt: Date | null;
+  private value: DateVO | null;
 
-  constructor(expirationDt?: string | Date | null) {
-    if (!expirationDt) {
-      this.expirationDt = null;
+  private constructor(date: DateVO | null) {
+    if (!date) {
+      this.value = null;
     } else {
-      const expirationDtFormated = new Date(expirationDt);
-      if (isNaN(expirationDtFormated.getTime())) {
-        throw new InvalidDateError();
-      }
-      this.expirationDt = expirationDtFormated;
+      this.value = date;
     }
   }
 
-  static create(expirationDt?: string | Date | null) {
-    const expirationDtInstance = new ExpirationDt(expirationDt);
-    const expirationDtValidated = expirationDtInstance.getExpirationDt();
-
-    if (!expirationDtValidated) {
-      return expirationDtInstance;
+  public static create(input: Date | string | null) {
+    if (input === null) {
+      return new ExpirationDt(null);
     }
+    const date = DateVO.create(input);
 
-    const actualTime = new Date();
-    if (expirationDtValidated < actualTime) {
+    const timeNow = DateVO.create(new Date());
+    if (date.isBefore(timeNow)) {
       throw new InvalidExpirationDate();
     }
-    return expirationDtInstance;
+    return new ExpirationDt(date);
   }
 
-  public getExpirationDt() {
-    return this.expirationDt;
+  public getValue() {
+    return this.value?.getDate() ?? null;
   }
 
   public hasExpired() {
-    if (!this.expirationDt || this.expirationDt > new Date()) return false;
+    const timeNow = DateVO.create(new Date());
+    if (!this.value || this.value.isAfter(timeNow)) return false;
     return true;
   }
 }
