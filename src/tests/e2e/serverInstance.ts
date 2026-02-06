@@ -1,5 +1,4 @@
 import { Server } from "node:http";
-import { AddressInfo } from "node:net";
 
 function testIfServerHasStarted(server: Server) {
   return new Promise((resolve, reject) => {
@@ -10,11 +9,15 @@ function testIfServerHasStarted(server: Server) {
 
 export async function serverInstance() {
   const { default: server } = await import("../../infra/http/index.js");
-  const testServer = server.listen();
+  const serverCore = server.server;
+  const testServer = serverCore.listen();
 
-  await testIfServerHasStarted(server);
+  await testIfServerHasStarted(serverCore);
 
-  const serverUrl = testServer.address() as AddressInfo;
+  const serverUrl = server.getAddress();
+  if (!serverUrl?.port) {
+    throw new Error("Can\'t open test server");
+  }
   const serverAddress = `http://localhost:${serverUrl.port}`;
 
   return { serverAddress, testServer };

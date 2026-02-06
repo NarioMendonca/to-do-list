@@ -1,7 +1,7 @@
 import { ApiError } from "../../../errors/apiError.js";
 import { ControllerError } from "../../../errors/infra/controller/ControllerError.js";
 import env from "../../env/getEnvs.js";
-import { Req, Res } from "../server.js";
+import { Req, Res } from "../core/App.js";
 import { apiErrorToHttp } from "./apiErrorToHttp.js";
 
 export function errorHandler(req: Req, res: Res, error: unknown) {

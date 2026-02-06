@@ -1,7 +1,7 @@
-import { Req, Res } from "../../server.js";
 import { Controller } from "../Controller.js";
 import { AuthUtils, weekInSeconds, getDateInSeconds } from "./AuthUtils.js";
 import { AuthUserUseCase } from "../../../../usecases/user/AuthUserUseCase.js";
+import { Req, Res } from "../../core/App.js";
 
 export class AuthUserController extends Controller {
   private readonly authUtils = new AuthUtils();

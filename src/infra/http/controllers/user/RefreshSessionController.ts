@@ -1,4 +1,4 @@
-import { Req, Res } from "../../server.js";
+import { Req, Res } from "../../core/App.js";
 import { Controller } from "../Controller.js";
 import {
   AuthUtils,
