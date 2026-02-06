@@ -26,7 +26,7 @@ export class AddItemToListUseCase implements UseCase<
     description,
     listId,
   }: AddItemToListUseCaseInputDTO): Promise<void> {
-    const todoList = await this.todoListRepository.getList(listId);
+    const todoList = await this.todoListRepository.restore(listId);
     if (!todoList) {
       throw new NotFoundError("Todo list not found.");
     }

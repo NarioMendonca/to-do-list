@@ -1,5 +1,6 @@
 import { UserEntity } from "../../entities/user/User.js";
 import { User } from "../../model/User.js";
+import { isEmailVerifiedParams } from "../UserRepository.js";
 import { UserRepository } from "../UserRepository.js";
 import { db } from "./client.js";
 
@@ -41,5 +42,35 @@ export class UserPgRepository implements UserRepository {
       passwordHash: data.password_hash,
     };
     return UserEntity.restore(userData);
+  }
+
+  async alreadyExists(email: string): Promise<boolean> {
+    const queryData = await db.query(
+      "SELECT email FROM users WHERE email = $1",
+      [email],
+    );
+    if (queryData.rowCount == 0) {
+      return false;
+    }
+    return true;
+  }
+
+  async exists(userId: string): Promise<boolean> {
+    const queryData = await db.query("SELECT id FROM users WHERE id = $1", [
+      userId,
+    ]);
+    if (queryData.rowCount == 0) {
+      return false;
+    }
+    return true;
+  }
+
+  async isEmailVerified(params: isEmailVerifiedParams): Promise<boolean> {
+    const isEmailVerifiedQuery = await db.query(
+      `SELECT is_email_verified FROM users WHERE ${params.id ? "id" : "email"} = $1`,
+      [params.id ?? params.email],
+    );
+    const isEmailVerified = isEmailVerifiedQuery.rows[0];
+    return isEmailVerified;
   }
 }
