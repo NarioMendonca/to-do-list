@@ -1,5 +1,10 @@
+import { TodoItem } from "../../entities/todoItem/TodoItem.js";
 import { TodoList } from "../../entities/todoList/TodoList.js";
-import { TodoListRepository } from "../TodoListRepository.js";
+import { TodoListDBModel } from "../../model/TodoList.js";
+import {
+  GetTodoItemParams,
+  TodoListRepository,
+} from "../TodoListRepository.js";
 import { db } from "./client.js";
 
 export class TodoListPgRepository implements TodoListRepository {
@@ -31,5 +36,44 @@ export class TodoListPgRepository implements TodoListRepository {
         todoList.getCreatedAt(),
       ],
     );
+  }
+
+  async restore(listId: string): Promise<TodoList | null> {
+    const queryData = await db.query("SELECT * FROM todo_lists WHERE id = $1", [
+      listId,
+    ]);
+    if (queryData.rowCount === 0) {
+      return null;
+    }
+    const list = queryData.rows[0] as TodoListDBModel;
+    return TodoList.restore({
+      id: list.id,
+      ownerId: list.owner_id,
+      title: list.title,
+      todoMotivationPhrase: list.motivation_phrase ?? undefined,
+      plannedDayToMake: list.planned_day_to_make ?? undefined,
+      expirationDt: list.expiration_dt,
+      finishedDt: list.finished_dt ?? undefined,
+      totalItems: list.total_items,
+      createdAt: new Date(list.created_at) ?? undefined,
+      todoItems: [],
+    });
+  }
+
+  async todoItemExists({
+    todoListId,
+    todoItemId,
+  }: GetTodoItemParams): Promise<TodoItem | null> {
+    const queryData = await db.query(
+      `SELECT * FROM todo_items_in_todo_list 
+      WHERE todo_list_id = $1 AND todo_item_id = $2`,
+      [todoListId, todoItemId],
+    );
+
+    if (queryData.rowCount === 0) {
+      return null;
+    }
+
+    return queryData.rows[0];
   }
 }

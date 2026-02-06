@@ -94,6 +94,13 @@ export class TodoList {
     return new TodoList(todoListParams);
   }
 
+  public static restore(params: TodoListConstructorParams) {
+    return new TodoList({
+      ...params,
+      todoItems: [],
+    });
+  }
+
   public getId() {
     return this.id;
   }

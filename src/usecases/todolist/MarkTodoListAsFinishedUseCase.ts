@@ -17,7 +17,7 @@ export class MarkTodoListAsFinishedUseCase implements UseCase<
   async handle({
     listId,
   }: MarkTodoListAsFinishedInputDTO): Promise<MarkTodoListAsFinishedOutputDTO> {
-    const list = await this.todoListRepository.getList(listId);
+    const list = await this.todoListRepository.restore(listId);
     if (!list) {
       throw new NotFoundError("List not found");
     }

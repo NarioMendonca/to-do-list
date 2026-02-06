@@ -19,14 +19,14 @@ export class MarkItemAsCompletedUseCase implements UseCase<
     todoListId,
     todoItemId,
   }: MarkItemAsCompletedInputDTO): Promise<MarkItemAsCompletedOutputDTO> {
-    const todoItem = await this.todoListRepository.getTodoItem({
+    const todoItem = await this.todoListRepository.todoItemExists({
       todoListId,
       todoItemId,
     });
     if (!todoItem) {
       throw new NotFoundError("Todo item not found");
     }
-    const todoList = await this.todoListRepository.getList(todoListId);
+    const todoList = await this.todoListRepository.restore(todoListId);
     if (!todoList) {
       throw new NotFoundError("Todo item not found");
     }
