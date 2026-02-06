@@ -1,3 +1,4 @@
+import { ZodError } from "zod";
 import { ApiError } from "../../../errors/apiError.js";
 import { ControllerError } from "../../../errors/infra/controller/ControllerError.js";
 import env from "../../env/getEnvs.js";
@@ -19,6 +20,16 @@ export function errorHandler(req: Req, res: Res, error: unknown) {
     const { message, statusCode } = apiErrorToHttp(error);
     res.writeHead(statusCode, error.name);
     res.end(JSON.stringify(message));
+    return;
+  }
+
+  if (error instanceof ZodError) {
+    res.writeHead(400, "Bad Request");
+    res.end(
+      JSON.stringify({
+        message: env.NODE_ENV !== "test" ? error.message : error.stack,
+      }),
+    );
     return;
   }
 
