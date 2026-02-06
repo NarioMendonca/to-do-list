@@ -1,6 +1,6 @@
 import { CookieNotFoundError } from "../../../errors/infra/controller/CookieNotFoundError.js";
 import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyError.js";
-import { Req } from "../server.js";
+import { Req } from "../core/App.js";
 
 type Schema = "string" | "number" | "boolean" | { [key: string]: Schema };
 

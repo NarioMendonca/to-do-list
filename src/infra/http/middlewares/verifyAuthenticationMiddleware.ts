@@ -3,7 +3,7 @@ import { InvalidSession } from "../../../errors/infra/controller/InvalidSessionE
 import { PayLoad } from "../../../utils/Encryptor.js";
 import { Controller } from "../controllers/Controller.js";
 import { AuthUtils, TokenPayload } from "../controllers/user/AuthUtils.js";
-import { Req } from "../server.js";
+import { Req } from "../core/App.js";
 
 export async function verifyAuthenticationMiddleware(req: Req) {
   const authUtils = new AuthUtils();
