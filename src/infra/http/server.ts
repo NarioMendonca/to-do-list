@@ -10,6 +10,11 @@ const todoListReading = new TodoListReadings();
 
 const server = new App();
 
+server.get(
+  "/todolists/fetch",
+  [verifyAuthenticationMiddleware],
+  todoListReading.fetch,
+);
 server.get("/todolist", [verifyAuthenticationMiddleware], todoListReading.get);
 
 server.post("/users", [], userController.create);
