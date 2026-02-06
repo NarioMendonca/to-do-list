@@ -3,8 +3,8 @@ import { TodoList } from "../../entities/todoList/TodoList.js";
 import { IdGenerator } from "../../entities/shared/IdGenerator.js";
 import { TodoListRepository } from "../../repositories/TodoListRepository.js";
 import { UseCase } from "../UseCase.js";
-import { UserReadModelRepository } from "../../repositories/UserReadRepository.js";
 import { NotFoundError } from "../../errors/usecases/NotFoundError.js";
+import { UserRepository } from "../../repositories/UserRepository.js";
 
 type CreateTodoListUseCaseInputDTO = {
   ownerId: string;
@@ -22,7 +22,7 @@ export class CreateTodoListUseCase implements UseCase<
   CreateTodoListUseCaseOutputDTO
 > {
   constructor(
-    private userReadModelRepository: UserReadModelRepository,
+    private userRepository: UserRepository,
     private todoListRepository: TodoListRepository,
     private idGeneratorService: IdGenerator,
   ) {}
@@ -35,7 +35,7 @@ export class CreateTodoListUseCase implements UseCase<
     plannedDayToMake,
     expirationDt,
   }: CreateTodoListUseCaseInputDTO): Promise<void> {
-    const todoListHasOwnerId = await this.userReadModelRepository.get(ownerId);
+    const todoListHasOwnerId = await this.userRepository.exists(ownerId);
     if (!todoListHasOwnerId) {
       throw new NotFoundError("Owner to todoList not found");
     }
