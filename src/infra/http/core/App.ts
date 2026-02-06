@@ -1,6 +1,7 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from "http";
 import { errorHandler } from "../errorHandlers/errorHandler.js";
 import { AddressInfo } from "net";
+import { getPath } from "../controllers/getPath.js";
 
 export type Req = IncomingMessage;
 export type Res = ServerResponse<IncomingMessage> & {
@@ -49,7 +50,8 @@ export class App {
       res.setHeader("Content-Type", "application/json");
 
       for (const route of this.routes) {
-        if (req.url === route.path && req.method === route.method) {
+        const path = getPath(req);
+        if (path === route.path && req.method === route.method) {
           try {
             await this.handleController(route, req, res);
             return;
