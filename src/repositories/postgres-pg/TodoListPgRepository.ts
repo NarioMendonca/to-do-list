@@ -12,7 +12,7 @@ export class TodoListPgRepository implements TodoListRepository {
     await db.query(
       `
       INSERT INTO todo_lists (id, owner_id, title, motivation_phrase, total_items,
-      planned_day_to_make, expiration_dt, finished_dt, created_at)
+      planned_dt_to_make, expiration_dt, finished_dt, created_at)
       VALUES (
         $1,
         $2,
@@ -30,8 +30,8 @@ export class TodoListPgRepository implements TodoListRepository {
         todoList.getTitle(),
         todoList.getTodoMotivationPhrase(),
         todoList.getTotalItems(),
-        todoList.getPlannedDayToMake(),
-        todoList.getExpirationAt(),
+        todoList.getPlannedDtToMake(),
+        todoList.getExpirationDt(),
         todoList.getFinishedDt(),
         todoList.getCreatedAt(),
       ],
@@ -50,12 +50,13 @@ export class TodoListPgRepository implements TodoListRepository {
       id: list.id,
       ownerId: list.owner_id,
       title: list.title,
-      todoMotivationPhrase: list.motivation_phrase ?? undefined,
-      plannedDayToMake: list.planned_day_to_make ?? undefined,
+      todoMotivationPhrase: list.motivation_phrase,
+      daysWeekToRepeat: [],
+      plannedDtToMake: list.planned_dt_to_make,
       expirationDt: list.expiration_dt,
-      finishedDt: list.finished_dt ?? undefined,
+      finishedDt: list.finished_dt,
       totalItems: list.total_items,
-      createdAt: new Date(list.created_at) ?? undefined,
+      createdAt: list.created_at,
       todoItems: [],
     });
   }

@@ -1,6 +1,7 @@
 import { ListAlreadyFinished } from "../../errors/entitys/todoList/ListAlreadyFinished.js";
 import { ListExpired } from "../../errors/entitys/todoList/ListExpired.js";
 import { TodoListFull } from "../../errors/entitys/todoList/TodoListFull.js";
+import { DateVO } from "../shared/VOs/DateVO.js";
 import { TodoItem } from "../todoItem/TodoItem.js";
 import { DayWeek } from "./dayWeek/DayWeek.js";
 import { ItemAddedToListEvent } from "./events/ItemAddedToListEvent.js";
@@ -8,47 +9,59 @@ import { ItemMarkedAsCompletedEvent } from "./events/ItemMarkedAsCompletedEvent.
 import { ListFinishedEvent } from "./events/ListFinishedEvent.js";
 import { TodoListEvents } from "./events/TodoListEvents.js";
 import { ExpirationDt } from "./expirationDt/ExpirationDt.js";
-import { TodoListFinishedDt } from "./finishedDt/FinishedDt.js";
+import { FinishedDt } from "./finishedDt/FinishedDt.js";
 import { MotivationPhrase } from "./motivationPhrase/MotivationPhrase.js";
-import { PlannedDayToMake } from "./plannedDayToMake/PlannedDayToMake.js";
+import { PlannedDtToMake } from "./plannedDayToMake/PlannedDtToMake.js";
 import { Title } from "./title/Title.js";
 
 export type TodoListParams = {
   id: string;
   ownerId: string;
   title: string;
-  createdAt: string | Date;
-  expirationDt?: string | Date;
-  todoMotivationPhrase?: string;
-  plannedDayToMake?: string | Date;
-  daysWeekToRepeat?: number[];
-  isFinished?: string | Date;
+  todoMotivationPhrase: string | null;
+  plannedDtToMake: Date | string | null;
+  expirationDt: Date | string | null;
+  finishedDt: Date | string | null;
+  daysWeekToRepeat: number[] | null;
+  todoItems: TodoItem[];
+  totalItems: number;
+  createdAt: Date | string;
+};
+
+export type CreateTodoListParams = {
+  id: string;
+  ownerId: string;
+  title: string;
+  todoMotivationPhrase: string | null;
+  plannedDtToMake: Date | string | null;
+  expirationDt: Date | string | null;
+  daysWeekToRepeat: number[] | null;
 };
 
 type TodoListConstructorParams = {
   id: string;
   ownerId: string;
   title: string;
-  createdAt: Date;
-  expirationDt?: Date | string | null;
-  todoMotivationPhrase?: string;
-  plannedDayToMake?: string | Date;
-  daysWeekToRepeat?: number[];
-  finishedDt?: string | Date;
+  todoMotivationPhrase: string | null;
+  plannedDtToMake: PlannedDtToMake;
+  expirationDt: ExpirationDt;
+  finishedDt: Date | string | null;
+  daysWeekToRepeat: number[] | null;
   todoItems: TodoItem[];
   totalItems: number;
+  createdAt: Date | string;
 };
 
 export class TodoList {
   private id: string;
   private ownerId: string;
   private title: Title;
-  private createdAt: Date;
+  private createdAt: DateVO;
   private expirationDt: ExpirationDt;
-  private todoMotivationPhrase: MotivationPhrase;
-  private plannedDayToMake: PlannedDayToMake;
+  private motivationPhrase: MotivationPhrase;
+  private plannedDtToMake: PlannedDtToMake;
   private daysWeekToRepeat: DayWeek[];
-  private finishedDt: TodoListFinishedDt;
+  private finishedDt: FinishedDt;
   private todoItems: TodoItem[];
   private totalItems: number;
   private readonly itemsLimit = 50;
@@ -61,7 +74,7 @@ export class TodoList {
     createdAt,
     expirationDt,
     daysWeekToRepeat,
-    plannedDayToMake,
+    plannedDtToMake,
     todoMotivationPhrase,
     finishedDt,
     totalItems,
@@ -69,75 +82,77 @@ export class TodoList {
     this.id = id;
     this.title = new Title(title);
     this.ownerId = ownerId;
-    this.createdAt = createdAt;
-    this.expirationDt = new ExpirationDt(expirationDt);
+    this.createdAt = new DateVO(createdAt);
+    this.expirationDt = expirationDt;
     this.daysWeekToRepeat = daysWeekToRepeat
       ? daysWeekToRepeat.map((dayWeek) => new DayWeek(dayWeek))
       : [];
-    this.plannedDayToMake = new PlannedDayToMake(plannedDayToMake);
-    this.todoMotivationPhrase = new MotivationPhrase(todoMotivationPhrase);
-    this.finishedDt = new TodoListFinishedDt(finishedDt);
+    this.plannedDtToMake = plannedDtToMake;
+    this.motivationPhrase = new MotivationPhrase(todoMotivationPhrase);
+    this.finishedDt = new FinishedDt(finishedDt);
     this.todoItems = [];
     this.totalItems = totalItems;
   }
 
-  public static create(
-    params: Omit<TodoListParams, "createdAt" | "isFinished">,
-  ) {
+  public static create(params: CreateTodoListParams) {
     const todoListParams: TodoListConstructorParams = {
       ...params,
       createdAt: new Date(),
-      expirationDt: ExpirationDt.create(params.expirationDt).getExpirationDt(),
+      expirationDt: ExpirationDt.create(params.expirationDt),
       todoItems: [],
       totalItems: 0,
+      finishedDt: null,
+      plannedDtToMake: PlannedDtToMake.create(params.plannedDtToMake),
     };
     return new TodoList(todoListParams);
   }
 
-  public static restore(params: TodoListConstructorParams) {
+  public static restore(params: TodoListParams) {
     return new TodoList({
       ...params,
+      plannedDtToMake: PlannedDtToMake.reconstitute(params.plannedDtToMake),
+      expirationDt: ExpirationDt.reconstitute(params.expirationDt),
       todoItems: [],
     });
   }
 
-  public getId() {
+  public getId(): string {
     return this.id;
   }
 
-  public getOwnerId() {
+  public getOwnerId(): string {
     return this.ownerId;
   }
 
-  public getTitle() {
+  public getTitle(): string {
     return this.title.getTitle();
   }
 
-  public getCreatedAt() {
-    return this.createdAt;
+  public getCreatedAt(): Date {
+    return this.createdAt.getDate();
   }
 
-  public getExpirationAt() {
-    return this.expirationDt.getExpirationDt();
+  public getExpirationDt(): Date | null {
+    return this.expirationDt.getValue();
   }
 
-  public getPlannedDayToMake() {
-    return this.plannedDayToMake.getPlannedDayToMake();
+  public getPlannedDtToMake(): Date | null {
+    return this.plannedDtToMake.getPlannedDtToMake();
   }
 
   public getTodoMotivationPhrase() {
-    return this.todoMotivationPhrase.getMotivationPhrase();
+    return this.motivationPhrase.getMotivationPhrase();
   }
 
-  public getFinishedDt() {
+  public getFinishedDt(): Date | null {
     return this.finishedDt.getFinishedDt();
   }
 
-  public getTodoItems() {
+  public getTodoItems(): TodoItem[] {
     return this.todoItems;
   }
 
-  public getTotalItems() {
+  public getTotalItems(): number {
     return this.totalItems;
   }
 
@@ -147,19 +162,11 @@ export class TodoList {
     return events;
   }
 
-  public isListCompleted() {
-    return this.finishedDt.isFinished();
-  }
-
-  public isListActive() {
-    const expirationDt = this.expirationDt.getExpirationDt();
-    if (!expirationDt) {
-      return true;
+  public isListActive(): boolean {
+    if (this.expirationDt.hasExpired() || this.finishedDt.hasFinished()) {
+      return false;
     }
-    if (expirationDt > new Date()) {
-      return true;
-    }
-    return false;
+    return true;
   }
 
   public shouldListRepeatToday() {

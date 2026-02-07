@@ -10,8 +10,11 @@ export function createMockTodoList() {
     createdAt: new Date(),
     daysWeekToRepeat: [0, 1, 2, 3, 6],
     expirationDt: todoListExpirationDt,
-    plannedDayToMake: faker.date.soon({ refDate: todoListExpirationDt }),
+    finishedDt: faker.date.soon({ refDate: todoListExpirationDt }),
+    plannedDtToMake: faker.date.soon({ refDate: todoListExpirationDt }),
     todoMotivationPhrase: faker.word.words({ count: { min: 5, max: 10 } }),
+    todoItems: [],
+    totalItems: 0,
   };
   return todoListMock;
 }

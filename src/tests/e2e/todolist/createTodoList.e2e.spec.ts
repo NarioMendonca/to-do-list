@@ -3,6 +3,7 @@ import { serverInstance } from "../serverInstance.js";
 import { Server } from "http";
 import { clearDatabase } from "../../utils/clearDatabase.js";
 import { UserDTO } from "../../../model/User.js";
+import { MockTodoListData } from "../../mocks/MockTodoList.js";
 
 describe("create todo list e2e tests", () => {
   let _testServer: Server;
@@ -47,12 +48,13 @@ describe("create todo list e2e tests", () => {
     expect(authResponse.status).toBe(200);
     expect(authCookies).toBeTruthy();
 
+    const todoListCreationParams = {
+      ...MockTodoListData({ ownerId: user.id }),
+    };
+
     const createTodoListResponse = await fetch(`${_serverAddress}/todolist`, {
       method: "POST",
-      body: JSON.stringify({
-        title: "Morning tasks",
-        ownerId: user.id,
-      }),
+      body: JSON.stringify(todoListCreationParams),
       headers: {
         Cookie: authCookies!,
       },

@@ -38,7 +38,7 @@ export async function runMigrations() {
       title TEXT NOT NULL,
       motivation_phrase TEXT,
       total_items SMALLINT NOT NULL,
-      planned_day_to_make TIMESTAMP WITH TIME ZONE,
+      planned_dt_to_make TIMESTAMP WITH TIME ZONE,
       expiration_dt TIMESTAMP WITH TIME ZONE,
       finished_dt TIMESTAMP WITH TIME ZONE,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,

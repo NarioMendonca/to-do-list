@@ -1,36 +1,33 @@
 import { ListAlreadyFinished } from "../../../errors/entitys/todoList/ListAlreadyFinished.js";
-import { InvalidDateError } from "../../../errors/genericErros/InvalidDateError.js";
+import { DateVO } from "../../shared/VOs/DateVO.js";
 
-export class TodoListFinishedDt {
-  private todoListFinishment: Date | null;
+export class FinishedDt {
+  protected value: DateVO | null;
 
-  constructor(isFinished?: string | Date | null) {
-    if (!isFinished) {
-      this.todoListFinishment = null;
-    } else {
-      const isFinishedDateFormat = new Date(isFinished);
-      if (!isNaN(isFinishedDateFormat.getTime())) {
-        throw new InvalidDateError();
-      }
-      this.todoListFinishment = isFinishedDateFormat;
+  constructor(input: Date | string | null) {
+    if (input === null) {
+      this.value = null;
+      return;
     }
+    const date = new DateVO(input);
+    this.value = date;
   }
 
   public getFinishedDt() {
-    return this.todoListFinishment;
+    return this.value?.getDate() ?? null;
   }
 
-  public isFinished(): boolean {
-    if (!this.todoListFinishment) {
+  public hasFinished(): boolean {
+    if (!this.value) {
       return false;
     }
     return true;
   }
 
   public markAsFinished() {
-    if (this.isFinished()) {
+    if (this.hasFinished()) {
       throw new ListAlreadyFinished();
     }
-    this.todoListFinishment = new Date();
+    this.value = new DateVO(new Date());
   }
 }
