@@ -2,18 +2,14 @@ import { EntityError } from "../../../errors/entitys/EntityError.js";
 
 export class DateVO {
   protected readonly value: Date;
-  protected constructor(date: Date) {
-    this.value = date;
-  }
-
-  public static create(input: Date | string) {
+  constructor(input: Date | string) {
     const date = typeof input === "string" ? new Date(input) : input;
 
     if (isNaN(date.getTime())) {
       throw new EntityError("Invalid Date Error");
     }
 
-    return new DateVO(date);
+    this.value = date;
   }
 
   public getDate(): Date {
@@ -26,5 +22,13 @@ export class DateVO {
 
   public isAfter(otherDate: DateVO): boolean {
     return this.value.getTime() > otherDate.value.getTime();
+  }
+
+  public isBeforeNow() {
+    return this.value.getTime() > new Date().getTime();
+  }
+
+  public isAfterNow() {
+    return this.value.getTime() < new Date().getTime();
   }
 }

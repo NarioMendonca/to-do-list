@@ -16,13 +16,18 @@ export class ExpirationDt {
     if (input === null) {
       return new ExpirationDt(null);
     }
-    const date = DateVO.create(input);
-
-    const timeNow = DateVO.create(new Date());
-    if (date.isBefore(timeNow)) {
+    const date = new DateVO(input);
+    if (date.isBeforeNow()) {
       throw new InvalidExpirationDate();
     }
     return new ExpirationDt(date);
+  }
+
+  public static reconstitute(input: Date | string | null) {
+    if (input === null) {
+      return new ExpirationDt(null);
+    }
+    return new ExpirationDt(new DateVO(input));
   }
 
   public getValue() {
@@ -30,8 +35,7 @@ export class ExpirationDt {
   }
 
   public hasExpired() {
-    const timeNow = DateVO.create(new Date());
-    if (!this.value || this.value.isAfter(timeNow)) return false;
+    if (!this.value || this.value.isAfterNow()) return false;
     return true;
   }
 }
