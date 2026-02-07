@@ -1,26 +1,32 @@
 import { createServer, IncomingMessage, Server, ServerResponse } from "http";
 import { errorHandler } from "../errorHandlers/errorHandler.js";
 import { AddressInfo } from "net";
-import { getPath } from "../controllers/getPath.js";
+import { AppUtils } from "./AppUtils.js";
 
-export type Req = IncomingMessage;
-export type Res = ServerResponse<IncomingMessage> & {
+export interface AppRequest extends IncomingMessage {
+  path: string;
+  getBody: () => Promise<string>;
+  queryParams: Record<string, string>;
+  getCookie: (cookieName: string) => string;
+}
+
+export type AppResponse = ServerResponse<IncomingMessage> & {
   req: IncomingMessage;
 };
 
-type FlowMiddleware = (req: Req) => Promise<void>;
-type TerminalMiddleware = (req: Req, res: Res) => Promise<void>;
+type FlowMiddleware = (req: AppRequest) => Promise<void>;
+type TerminalMiddleware = (req: AppRequest, res: AppResponse) => Promise<void>;
 type Middleware = FlowMiddleware | TerminalMiddleware;
 
 type Route = {
   path: string;
   method: string;
-  controller: (req: Req, res: Res) => Promise<void>;
+  controller: (req: AppRequest, res: AppResponse) => Promise<void>;
   middlewares?: Middleware[];
 };
 
 type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
-type ControllerMethod = (req: Req, res: Res) => Promise<void>;
+type ControllerMethod = (req: AppRequest, res: AppResponse) => Promise<void>;
 type RequestFn = (
   path: string,
   middlwares: Middleware[],
@@ -47,16 +53,16 @@ export class App {
 
   constructor() {
     this.server = createServer(async (req, res) => {
+      const request = this.setRequestUtils(req) as AppRequest;
       res.setHeader("Content-Type", "application/json");
 
       for (const route of this.routes) {
-        const path = getPath(req);
-        if (path === route.path && req.method === route.method) {
+        if (request.path === route.path && req.method === route.method) {
           try {
-            await this.handleController(route, req, res);
+            await this.handleController(route, request, res);
             return;
           } catch (error) {
-            errorHandler(req, res, error);
+            errorHandler(request, res, error);
             return;
           }
         }
@@ -85,7 +91,11 @@ export class App {
     this.routes.push({ method, path, controller, middlewares });
   };
 
-  private handleController = async (route: Route, req: Req, res: Res) => {
+  private handleController = async (
+    route: Route,
+    req: AppRequest,
+    res: AppResponse,
+  ) => {
     if (route.middlewares) {
       await Promise.all(
         route.middlewares.map((middleware) => {
@@ -103,5 +113,14 @@ export class App {
   public getAddress() {
     const serverAddress = this.server.address() as AddressInfo | null;
     return serverAddress;
+  }
+
+  private setRequestUtils(req: IncomingMessage): AppRequest {
+    const request = req as AppRequest;
+    request.path = AppUtils.getPath(req);
+    request.queryParams = AppUtils.getQueryParams(req);
+    request.getBody = AppUtils.getBody.bind(this, req);
+    request.getCookie = AppUtils.getCookie.bind(this, req);
+    return request;
   }
 }

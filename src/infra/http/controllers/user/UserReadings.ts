@@ -1,11 +1,11 @@
 import { UserPgReadModelRepository } from "../../../../repositories/postgres-pg/UserPgReadRepository.js";
-import { Req, Res } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/App.js";
 import { Controller } from "../Controller.js";
 
 export class UserReadings extends Controller {
   private readonly userReadModelRepository = new UserPgReadModelRepository();
 
-  public get = async (req: Req, res: Res) => {
+  public get = async (req: AppRequest, res: AppResponse) => {
     const queryParamSchema = {
       userId: "string",
     } as const;

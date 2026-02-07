@@ -1,7 +1,7 @@
 import { Controller } from "../Controller.js";
 import { AuthUtils, weekInSeconds, getDateInSeconds } from "./AuthUtils.js";
 import { AuthUserUseCase } from "../../../../usecases/user/AuthUserUseCase.js";
-import { Req, Res } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/App.js";
 
 export class AuthUserController extends Controller {
   private readonly authUtils = new AuthUtils();
@@ -9,7 +9,7 @@ export class AuthUserController extends Controller {
     super();
   }
 
-  public handle = async (req: Req, res: Res) => {
+  public handle = async (req: AppRequest, res: AppResponse) => {
     const schema = {
       email: "string",
       password: "string",

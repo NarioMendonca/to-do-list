@@ -1,5 +1,5 @@
 import { CreateUserUseCase } from "../../../../usecases/user/CreateUserUseCase.js";
-import { Req, Res } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/App.js";
 import { Controller } from "../Controller.js";
 
 export class CreateUserController extends Controller {
@@ -7,7 +7,7 @@ export class CreateUserController extends Controller {
     super();
   }
 
-  public handle = async (req: Req, res: Res) => {
+  public handle = async (req: AppRequest, res: AppResponse) => {
     const schema = {
       name: "string",
       email: "string",

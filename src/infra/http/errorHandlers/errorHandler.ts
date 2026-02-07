@@ -2,10 +2,10 @@ import { ZodError } from "zod";
 import { ApiError } from "../../../errors/apiError.js";
 import { ControllerError } from "../../../errors/infra/controller/ControllerError.js";
 import env from "../../env/getEnvs.js";
-import { Req, Res } from "../core/App.js";
+import { AppRequest, AppResponse } from "../core/App.js";
 import { apiErrorToHttp } from "./apiErrorToHttp.js";
 
-export function errorHandler(req: Req, res: Res, error: unknown) {
+export function errorHandler(req: AppRequest, res: AppResponse, error: unknown) {
   if (error instanceof ControllerError) {
     res.writeHead(error.statusCode, error.name);
     res.end(
