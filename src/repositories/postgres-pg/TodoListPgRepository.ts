@@ -30,7 +30,7 @@ export class TodoListPgRepository implements TodoListRepository {
         todoList.getTitle(),
         todoList.getTodoMotivationPhrase(),
         todoList.getTotalItems(),
-        todoList.getPlannedDayToMake(),
+        todoList.getPlannedDtToMake(),
         todoList.getExpirationDt(),
         todoList.getFinishedDt(),
         todoList.getCreatedAt(),

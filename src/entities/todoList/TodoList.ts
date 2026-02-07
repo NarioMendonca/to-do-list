@@ -128,15 +128,15 @@ export class TodoList {
     return this.title.getTitle();
   }
 
-  public getCreatedAt(): DateVO {
-    return this.createdAt;
+  public getCreatedAt(): Date {
+    return this.createdAt.getDate();
   }
 
   public getExpirationDt(): Date | null {
     return this.expirationDt.getValue();
   }
 
-  public getPlannedDayToMake(): Date | null {
+  public getPlannedDtToMake(): Date | null {
     return this.plannedDtToMake.getPlannedDtToMake();
   }
 
