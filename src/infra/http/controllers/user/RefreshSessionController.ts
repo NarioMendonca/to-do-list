@@ -1,4 +1,4 @@
-import { Req, Res } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/App.js";
 import { Controller } from "../Controller.js";
 import {
   AuthUtils,
@@ -14,8 +14,8 @@ export class RefreshSessionController extends Controller {
     this.authUtils = new AuthUtils();
   }
 
-  public handle = async (req: Req, res: Res): Promise<void> => {
-    const payload = JSON.parse(this.getCookie(req, "refreshToken"));
+  public handle = async (req: AppRequest, res: AppResponse): Promise<void> => {
+    const payload = JSON.parse(req.getCookie("refreshToken"));
     const cookieToken: TokenPayload =
       await this.authUtils.decryptToken(payload);
 

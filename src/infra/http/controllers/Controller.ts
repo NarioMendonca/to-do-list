@@ -1,6 +1,5 @@
-import { CookieNotFoundError } from "../../../errors/infra/controller/CookieNotFoundError.js";
 import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyError.js";
-import { Req } from "../core/App.js";
+import { AppRequest } from "../core/App.js";
 
 type Schema = "string" | "number" | "boolean" | { [key: string]: Schema };
 
@@ -17,7 +16,7 @@ type SchemaToType<T> = {
 };
 
 export class Controller {
-  public async getBody(req: Req): Promise<string> {
+  public async getBody(req: AppRequest): Promise<string> {
     const getBodyData = new Promise<string>((resolve, reject) => {
       let data = "";
       req.once("data", (chunk) => {
@@ -44,7 +43,7 @@ export class Controller {
     }
   }
 
-  public getQueryParams = (req: Req) => {
+  public getQueryParams = (req: AppRequest) => {
     const queryParams: Record<string, string> = {};
     if (req.url?.includes("?")) {
       const urlValues = req.url.split("?");
@@ -98,25 +97,4 @@ export class Controller {
     return validBody;
   }
   /* eslint-enable @typescript-eslint/no-explicit-any */
-
-  public getCookie(req: Req, cookieName: string) {
-    const cookies = req.headers.cookie;
-    if (!cookies) {
-      throw new CookieNotFoundError();
-    }
-    const cookiePosition = cookies.indexOf(cookieName);
-    if (cookiePosition === -1) {
-      throw new CookieNotFoundError();
-    }
-    const startOfCookie = cookiePosition + (cookieName.length + 1); // cookieName.length + 1, ex: refreshToken={  <- starts here
-    if (cookies[startOfCookie - 1] !== "=") {
-      throw new CookieNotFoundError();
-    }
-    const endOfCookie = cookies.indexOf(";", cookiePosition);
-    const expectedCookie = cookies.slice(
-      startOfCookie,
-      endOfCookie === -1 ? cookies.length : endOfCookie,
-    );
-    return expectedCookie;
-  }
 }

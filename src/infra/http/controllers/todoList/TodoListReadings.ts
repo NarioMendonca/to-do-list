@@ -1,12 +1,12 @@
 import z from "zod";
 import { TodoListPgReadRepository } from "../../../../repositories/postgres-pg/TodoListPgReadRepository.js";
 import { Controller } from "../Controller.js";
-import { Req, Res } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/App.js";
 
 export class TodoListReadings extends Controller {
   private readonly todoListReadRepository = new TodoListPgReadRepository();
 
-  public get = async (req: Req, res: Res) => {
+  public get = async (req: AppRequest, res: AppResponse) => {
     const queryParams = this.getQueryParams(req);
     const queryParamSchema = z.object({
       listId: z.uuid({
@@ -27,7 +27,7 @@ export class TodoListReadings extends Controller {
     res.end(JSON.stringify(todoListDTO));
   };
 
-  public fetch = async (req: Req, res: Res) => {
+  public fetch = async (req: AppRequest, res: AppResponse) => {
     const queryParams = this.getQueryParams(req);
     const queryParamSchema = z.object({
       userId: z.uuid({
