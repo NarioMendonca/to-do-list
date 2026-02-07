@@ -12,6 +12,7 @@ export async function clearDatabase() {
         SELECT tablename
         FROM pg_tables
         WHERE schemaname = 'public'
+        AND tablename != 'week_days'
       )
       LOOP
         EXECUTE 'TRUNCATE TABLE public.' || quote_ident(r.tablename) || ' CASCADE;';

@@ -12,7 +12,7 @@ export class TodoListPgRepository implements TodoListRepository {
     await db.query(
       `
       INSERT INTO todo_lists (id, owner_id, title, motivation_phrase, total_items,
-      planned_day_to_make, expiration_dt, finished_dt, created_at)
+      planned_dt_to_make, expiration_dt, finished_dt, created_at)
       VALUES (
         $1,
         $2,
