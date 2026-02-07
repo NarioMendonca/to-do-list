@@ -25,10 +25,10 @@ export class DateVO {
   }
 
   public isBeforeNow() {
-    return this.value.getTime() > new Date().getTime();
+    return this.value.getTime() < new Date().getTime();
   }
 
   public isAfterNow() {
-    return this.value.getTime() < new Date().getTime();
+    return this.value.getTime() > new Date().getTime();
   }
 }
