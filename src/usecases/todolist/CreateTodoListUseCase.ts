@@ -9,10 +9,10 @@ import { UserRepository } from "../../repositories/UserRepository.js";
 type CreateTodoListUseCaseInputDTO = {
   ownerId: string;
   title: string;
-  todoMotivationPhrase?: string;
-  expirationDt?: string | Date;
-  plannedDayToMake?: string | Date;
-  daysWeekToRepeat?: DayNumber[];
+  todoMotivationPhrase: string | null;
+  expirationDt: Date | string | null;
+  plannedDtToMake: Date | string | null;
+  daysWeekToRepeat: DayNumber[] | null;
 };
 
 type CreateTodoListUseCaseOutputDTO = void;
@@ -32,7 +32,7 @@ export class CreateTodoListUseCase implements UseCase<
     title,
     daysWeekToRepeat,
     todoMotivationPhrase,
-    plannedDayToMake,
+    plannedDtToMake,
     expirationDt,
   }: CreateTodoListUseCaseInputDTO): Promise<void> {
     const todoListHasOwnerId = await this.userRepository.exists(ownerId);
@@ -46,7 +46,7 @@ export class CreateTodoListUseCase implements UseCase<
       title,
       daysWeekToRepeat,
       expirationDt,
-      plannedDayToMake,
+      plannedDtToMake,
       todoMotivationPhrase,
     });
 

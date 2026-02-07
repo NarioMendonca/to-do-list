@@ -28,6 +28,16 @@ export type TodoListParams = {
   createdAt: Date | string;
 };
 
+export type CreateTodoListParams = {
+  id: string;
+  ownerId: string;
+  title: string;
+  todoMotivationPhrase: string | null;
+  plannedDtToMake: Date | string | null;
+  expirationDt: Date | string | null;
+  daysWeekToRepeat: number[] | null;
+};
+
 type TodoListConstructorParams = {
   id: string;
   ownerId: string;
@@ -84,9 +94,7 @@ export class TodoList {
     this.totalItems = totalItems;
   }
 
-  public static create(
-    params: Omit<TodoListParams, "createdAt" | "isFinished">,
-  ) {
+  public static create(params: CreateTodoListParams) {
     const todoListParams: TodoListConstructorParams = {
       ...params,
       createdAt: new Date(),
@@ -154,8 +162,11 @@ export class TodoList {
     return events;
   }
 
-  public isListCompleted() {
-    return this.finishedDt.isFinished();
+  public isListActive(): boolean {
+    if (this.expirationDt.hasExpired() || this.finishedDt.hasFinished()) {
+      return false;
+    }
+    return true;
   }
 
   public shouldListRepeatToday() {

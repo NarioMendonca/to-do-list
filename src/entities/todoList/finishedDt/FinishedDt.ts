@@ -17,7 +17,7 @@ export class FinishedDt {
     return this.value?.getDate() ?? null;
   }
 
-  public isFinished(): boolean {
+  public hasFinished(): boolean {
     if (!this.value) {
       return false;
     }
@@ -25,7 +25,7 @@ export class FinishedDt {
   }
 
   public markAsFinished() {
-    if (this.isFinished()) {
+    if (this.hasFinished()) {
       throw new ListAlreadyFinished();
     }
     this.value = new DateVO(new Date());
