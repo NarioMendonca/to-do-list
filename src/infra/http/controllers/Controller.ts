@@ -1,5 +1,5 @@
 import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyError.js";
-import { AppRequest } from "../core/App.js";
+import { AppRequest } from "../core/AppTypes.js";
 
 type Schema = "string" | "number" | "boolean" | { [key: string]: Schema };
 

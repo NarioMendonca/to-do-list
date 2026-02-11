@@ -1,7 +1,7 @@
 import z from "zod";
 import { TodoListPgReadRepository } from "../../../../repositories/postgres-pg/TodoListPgReadRepository.js";
 import { Controller } from "../Controller.js";
-import { AppRequest, AppResponse } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/AppTypes.js";
 
 export class TodoListReadings extends Controller {
   private readonly todoListReadRepository = new TodoListPgReadRepository();

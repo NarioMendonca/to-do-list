@@ -1,5 +1,5 @@
 import { CreateUserUseCase } from "../../../../usecases/user/CreateUserUseCase.js";
-import { AppRequest, AppResponse } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/AppTypes.js";
 import { Controller } from "../Controller.js";
 
 export class CreateUserController extends Controller {

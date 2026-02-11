@@ -1,6 +1,6 @@
 import { makeAuthUserUseCase } from "../../../../usecases/user/factories/makeAuthUserUseCase.js";
 import { makeCreateUserUseCase } from "../../../../usecases/user/factories/makeCreateUserUseCase.js";
-import { AppRequest, AppResponse } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/AppTypes.js";
 import { AuthUserController } from "./AuthUserController.js";
 import { CreateUserController } from "./CreateUserController.js";
 import { RefreshSessionController } from "./RefreshSessionController.js";
