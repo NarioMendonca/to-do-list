@@ -36,7 +36,12 @@ export class App {
       const request = this.setRequestUtils(req) as AppRequest;
       res.setHeader("Content-Type", "application/json");
       try {
-        const route = this.findRoute(request, res, request.path);
+        const route = this.findRoute(
+          request,
+          res,
+          request.path,
+          request.method,
+        );
         if (route) {
           await this.handleController(route, request, res);
           return;
@@ -93,15 +98,21 @@ export class App {
     req: AppRequest,
     res: AppResponse,
     searchedPathInput: string,
+    method: string | undefined,
   ) {
     const FORMAT_ROUTE_RESOURCES = /\/[^\/]*/g;
     const searchedPath = searchedPathInput.match(FORMAT_ROUTE_RESOURCES);
     if (!searchedPath) {
-      throw new InvalidRouteError(`Invalid Route: ${searchedPathInput}`);
+      throw new InvalidRouteError(
+        `Invalid Route: ${method ?? ""} ${searchedPathInput}`,
+      );
     }
     if (this.routes[searchedPath[0]]) {
       for (const route of this.routes[searchedPath[0]]) {
-        if (searchedPath.length !== route.path.length) {
+        if (
+          searchedPath.length !== route.path.length ||
+          route.method !== method
+        ) {
           continue;
         }
 
