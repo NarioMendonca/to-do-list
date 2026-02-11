@@ -123,6 +123,7 @@ export class App {
           }
         }
         if (findRoute) {
+          req.params = routeParams;
           return route;
         }
         return null;
@@ -160,6 +161,7 @@ export class App {
     request.queryParams = AppUtils.getQueryParams(req);
     request.getBody = AppUtils.getBody.bind(this, req);
     request.getCookie = AppUtils.getCookie.bind(this, req);
+    request.params = {};
     return request;
   }
 }

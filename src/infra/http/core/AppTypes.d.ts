@@ -5,6 +5,7 @@ export interface AppRequest extends IncomingMessage {
   getBody: () => Promise<string>;
   queryParams: Record<string, string>;
   getCookie: (cookieName: string) => string;
+  params: Record<string, string>;
 }
 
 export type AppResponse = ServerResponse<IncomingMessage> & {
