@@ -1,41 +1,21 @@
-import { createServer, IncomingMessage, Server, ServerResponse } from "http";
+import { createServer, IncomingMessage, Server } from "http";
 import { errorHandler } from "../errorHandlers/errorHandler.js";
 import { AddressInfo } from "net";
 import { AppUtils } from "./AppUtils.js";
-
-export interface AppRequest extends IncomingMessage {
-  path: string;
-  getBody: () => Promise<string>;
-  queryParams: Record<string, string>;
-  getCookie: (cookieName: string) => string;
-}
-
-export type AppResponse = ServerResponse<IncomingMessage> & {
-  req: IncomingMessage;
-};
-
-type FlowMiddleware = (req: AppRequest) => Promise<void>;
-type TerminalMiddleware = (req: AppRequest, res: AppResponse) => Promise<void>;
-type Middleware = FlowMiddleware | TerminalMiddleware;
-
-type Route = {
-  path: string;
-  method: string;
-  controller: (req: AppRequest, res: AppResponse) => Promise<void>;
-  middlewares?: Middleware[];
-};
-
-type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
-type ControllerMethod = (req: AppRequest, res: AppResponse) => Promise<void>;
-type RequestFn = (
-  path: string,
-  middlwares: Middleware[],
-  controller: ControllerMethod,
-) => void;
+import {
+  AppRequest,
+  AppResponse,
+  ControllerMethod,
+  HttpMethod,
+  Middleware,
+  RequestFn,
+  Route,
+} from "./AppTypes.js";
+import { InvalidRouteError } from "../../../errors/infra/controller/InvalidRouteError.js";
 
 export class App {
   public server: Server;
-  private routes: Route[] = [];
+  private routes: Record<string, Route[]> = {};
 
   declare get: RequestFn;
   declare post: RequestFn;
@@ -55,17 +35,15 @@ export class App {
     this.server = createServer(async (req, res) => {
       const request = this.setRequestUtils(req) as AppRequest;
       res.setHeader("Content-Type", "application/json");
-
-      for (const route of this.routes) {
-        if (request.path === route.path && req.method === route.method) {
-          try {
-            await this.handleController(route, request, res);
-            return;
-          } catch (error) {
-            errorHandler(request, res, error);
-            return;
-          }
+      try {
+        const route = this.findRoute(request, res, request.path);
+        if (route) {
+          await this.handleController(route, request, res);
+          return;
         }
+      } catch (err) {
+        errorHandler(request, res, err);
+        return;
       }
 
       res.writeHead(404, "Not Found", {
@@ -88,8 +66,69 @@ export class App {
     middlewares: Middleware[] = [],
     controller: ControllerMethod,
   ) => {
-    this.routes.push({ method, path, controller, middlewares });
+    const FORMAT_PATH_REGEX = /\/:?\w+/g;
+    const VALIDATE_PATHS_REGEX = /^\/:?\w+$/;
+    const routePaths = path.match(FORMAT_PATH_REGEX);
+    if (!routePaths) {
+      throw new InvalidRouteError(`Route invalid to create: ${path}`);
+    }
+    for (const routePath of routePaths) {
+      if (!VALIDATE_PATHS_REGEX.test(routePath)) {
+        throw new InvalidRouteError(`Route invalid to create: ${path}`);
+      }
+    }
+    const identificationResource = routePaths[0];
+    if (!this.routes[identificationResource]) {
+      this.routes[identificationResource] = [];
+    }
+    this.routes[identificationResource].push({
+      method,
+      path: routePaths,
+      controller,
+      middlewares,
+    });
   };
+
+  private findRoute(
+    req: AppRequest,
+    res: AppResponse,
+    searchedPathInput: string,
+  ) {
+    const FORMAT_ROUTE_RESOURCES = /\/[^\/]*/g;
+    const searchedPath = searchedPathInput.match(FORMAT_ROUTE_RESOURCES);
+    if (!searchedPath) {
+      throw new InvalidRouteError(`Invalid Route: ${searchedPathInput}`);
+    }
+    if (this.routes[searchedPath[0]]) {
+      for (const route of this.routes[searchedPath[0]]) {
+        if (searchedPath.length !== route.path.length) {
+          continue;
+        }
+
+        const routeParams = {} as Record<string, string>;
+        let findRoute = true;
+        for (const index in route.path) {
+          const pathElement = route.path[index];
+          const searchedPathElement = searchedPath[index];
+          if (
+            pathElement !== searchedPathElement &&
+            !AppUtils.isRouteElementParam(pathElement)
+          ) {
+            findRoute = false;
+            break;
+          }
+
+          if (AppUtils.isRouteElementParam(pathElement)) {
+            routeParams[pathElement.slice(2)] = searchedPathElement.slice(1);
+          }
+        }
+        if (findRoute) {
+          return route;
+        }
+        return null;
+      }
+    }
+  }
 
   private handleController = async (
     route: Route,

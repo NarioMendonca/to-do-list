@@ -16,7 +16,7 @@ type TerminalMiddleware = (req: AppRequest, res: AppResponse) => Promise<void>;
 type Middleware = FlowMiddleware | TerminalMiddleware;
 
 export type Route = {
-  path: string;
+  path: string[];
   method: string;
   controller: (req: AppRequest, res: AppResponse) => Promise<void>;
   middlewares?: Middleware[];
