@@ -1,4 +1,4 @@
-import { AppRequest, AppResponse } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/AppTypes.js";
 import { Controller } from "../Controller.js";
 import {
   AuthUtils,

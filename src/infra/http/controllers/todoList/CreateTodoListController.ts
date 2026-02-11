@@ -1,7 +1,7 @@
 import { CreateTodoListUseCase } from "../../../../usecases/todolist/CreateTodoListUseCase.js";
 import { Controller } from "../Controller.js";
 import { validateCreateTodolistParams } from "../../../validation/zod/todoList/validateCreateTodoListParams.js";
-import { AppRequest, AppResponse } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/AppTypes.js";
 
 export class CreateTodoListController extends Controller {
   constructor(private readonly createTodoListUseCase: CreateTodoListUseCase) {

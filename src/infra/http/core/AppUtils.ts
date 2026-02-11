@@ -3,6 +3,10 @@ import { CookieNotFoundError } from "../../../errors/infra/controller/CookieNotF
 import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyError.js";
 
 export class AppUtils {
+  public static isRouteElementParam(routeElement: string) {
+    return routeElement[1] === ":";
+  }
+
   public static getPath(req: IncomingMessage) {
     if (req.url?.includes("?")) {
       const path = req.url.split("?")[0];

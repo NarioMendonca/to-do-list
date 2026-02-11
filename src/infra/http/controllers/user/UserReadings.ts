@@ -1,5 +1,5 @@
 import { UserPgReadModelRepository } from "../../../../repositories/postgres-pg/UserPgReadRepository.js";
-import { AppRequest, AppResponse } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/AppTypes.js";
 import { Controller } from "../Controller.js";
 
 export class UserReadings extends Controller {

@@ -1,7 +1,7 @@
 import { Controller } from "../Controller.js";
 import { AuthUtils, weekInSeconds, getDateInSeconds } from "./AuthUtils.js";
 import { AuthUserUseCase } from "../../../../usecases/user/AuthUserUseCase.js";
-import { AppRequest, AppResponse } from "../../core/App.js";
+import { AppRequest, AppResponse } from "../../core/AppTypes.js";
 
 export class AuthUserController extends Controller {
   private readonly authUtils = new AuthUtils();
