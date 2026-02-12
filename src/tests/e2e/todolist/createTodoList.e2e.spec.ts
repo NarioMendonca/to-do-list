@@ -52,7 +52,7 @@ describe("create todo list e2e tests", () => {
       ...MockTodoListData({ ownerId: user.id }),
     };
 
-    const createTodoListResponse = await fetch(`${_serverAddress}/todolist`, {
+    const createTodoListResponse = await fetch(`${_serverAddress}/todolists`, {
       method: "POST",
       body: JSON.stringify(todoListCreationParams),
       headers: {
@@ -64,7 +64,7 @@ describe("create todo list e2e tests", () => {
   });
 
   it("blocks unauthenticated user to create a todo list", async () => {
-    const response = await fetch(`${_serverAddress}/todolist`, {
+    const response = await fetch(`${_serverAddress}/todolists`, {
       method: "POST",
       body: JSON.stringify({
         title: "Morning tasks",

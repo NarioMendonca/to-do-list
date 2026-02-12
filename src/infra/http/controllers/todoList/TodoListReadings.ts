@@ -7,13 +7,12 @@ export class TodoListReadings extends Controller {
   private readonly todoListReadRepository = new TodoListPgReadRepository();
 
   public get = async (req: AppRequest, res: AppResponse) => {
-    const queryParams = this.getQueryParams(req);
-    const queryParamSchema = z.object({
+    const routeParamsSchema = z.object({
       listId: z.uuid({
-        error: "query param listId is required and must be a UUID",
+        error: "route param listId is required and must be a UUID",
       }),
     });
-    const { listId } = queryParamSchema.parse(queryParams);
+    const { listId } = routeParamsSchema.parse(req.params);
 
     const todoListDTO = await this.todoListReadRepository.get(listId);
 
@@ -28,13 +27,12 @@ export class TodoListReadings extends Controller {
   };
 
   public fetch = async (req: AppRequest, res: AppResponse) => {
-    const queryParams = this.getQueryParams(req);
-    const queryParamSchema = z.object({
+    const routeParamsSchema = z.object({
       userId: z.uuid({
-        error: "query param userId is required and must be a UUID",
+        error: "route param userId is required and must be a UUID",
       }),
     });
-    const { userId } = queryParamSchema.parse(queryParams);
+    const { userId } = routeParamsSchema.parse(req.params);
 
     const todoListsDTO = await this.todoListReadRepository.fetchByUser(userId);
 

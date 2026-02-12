@@ -11,17 +11,21 @@ const todoListReading = new TodoListReadings();
 const server = new App();
 
 server.get(
-  "/todolists/fetch",
+  "/todolists/:userId/fetch",
   [verifyAuthenticationMiddleware],
   todoListReading.fetch,
 );
-server.get("/todolist", [verifyAuthenticationMiddleware], todoListReading.get);
+server.get(
+  "/todolists/:listId",
+  [verifyAuthenticationMiddleware],
+  todoListReading.get,
+);
 
 server.post("/users", [], userController.create);
 server.post("/login", [], userController.auth);
 server.post("/sessions/refresh", [], userController.refreshSession);
 server.post(
-  "/todolist",
+  "/todolists",
   [verifyAuthenticationMiddleware],
   todoListController.create,
 );
