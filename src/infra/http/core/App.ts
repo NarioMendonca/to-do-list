@@ -1,7 +1,7 @@
 import { createServer, IncomingMessage, Server } from "http";
 import { errorHandler } from "../errorHandlers/errorHandler.js";
 import { AddressInfo } from "net";
-import { AppUtils } from "./AppUtils.js";
+import { GetHttpElements } from "./GetHttpElements.js";
 import {
   AppRequest,
   AppResponse,
@@ -12,6 +12,13 @@ import {
   Route,
 } from "./AppTypes.js";
 import { InvalidRouteError } from "../../../errors/infra/controller/InvalidRouteError.js";
+import {
+  getPathPatternSegments,
+  getRequestPathSegments,
+  pathsMatches,
+  isPathPatternSegmentValid,
+} from "./AppUtils/routes/index.js";
+import { RouteNotFoundError } from "../../../errors/infra/controller/RouteNotFoundError.js";
 
 export class App {
   public server: Server;
@@ -42,19 +49,12 @@ export class App {
           request.path,
           request.method,
         );
-        if (route) {
-          await this.handleController(route, request, res);
-          return;
-        }
+        await this.handleController(route, request, res);
+        return;
       } catch (err) {
         errorHandler(request, res, err);
         return;
       }
-
-      res.writeHead(404, "Not Found", {
-        "content-type": "application/json",
-      });
-      res.end(JSON.stringify({ message: "Route not Found" }));
     });
 
     this.httpMethods.forEach((method) => {
@@ -67,28 +67,26 @@ export class App {
 
   private createRoute = (
     method: string,
-    path: string,
+    pathPattern: string,
     middlewares: Middleware[] = [],
     controller: ControllerMethod,
   ) => {
-    const FORMAT_PATH_REGEX = /\/:?\w+/g;
-    const VALIDATE_PATHS_REGEX = /^\/:?\w+$/;
-    const routePaths = path.match(FORMAT_PATH_REGEX);
-    if (!routePaths) {
-      throw new InvalidRouteError(`Route invalid to create: ${path}`);
+    const pathSegments = getPathPatternSegments(pathPattern);
+    if (!pathSegments) {
+      throw new InvalidRouteError(`Route invalid to create: ${pathPattern}`);
     }
-    for (const routePath of routePaths) {
-      if (!VALIDATE_PATHS_REGEX.test(routePath)) {
-        throw new InvalidRouteError(`Route invalid to create: ${path}`);
+    for (const segment of pathSegments) {
+      if (!isPathPatternSegmentValid(segment)) {
+        throw new InvalidRouteError(`Route invalid to create: ${pathPattern}`);
       }
     }
-    const identificationResource = routePaths[0];
-    if (!this.routes[identificationResource]) {
-      this.routes[identificationResource] = [];
+    const identificationSegment = pathSegments[0];
+    if (!this.routes[identificationSegment]) {
+      this.routes[identificationSegment] = [];
     }
-    this.routes[identificationResource].push({
+    this.routes[identificationSegment].push({
       method,
-      path: routePaths,
+      path: pathSegments,
       controller,
       middlewares,
     });
@@ -97,49 +95,32 @@ export class App {
   private findRoute(
     req: AppRequest,
     res: AppResponse,
-    searchedPathInput: string,
-    method: string | undefined,
+    requestPath: string,
+    requestMethod: string | undefined,
   ) {
-    const FORMAT_ROUTE_RESOURCES = /\/[^\/]*/g;
-    const searchedPath = searchedPathInput.match(FORMAT_ROUTE_RESOURCES);
-    if (!searchedPath) {
+    const requestSegments = getRequestPathSegments(requestPath);
+    if (!requestSegments) {
       throw new InvalidRouteError(
-        `Invalid Route: ${method ?? ""} ${searchedPathInput}`,
+        `Invalid Route: ${requestMethod ?? ""} ${requestPath}`,
       );
     }
-    if (this.routes[searchedPath[0]]) {
-      for (const route of this.routes[searchedPath[0]]) {
+    if (this.routes[requestSegments[0]]) {
+      for (const route of this.routes[requestSegments[0]]) {
         if (
-          searchedPath.length !== route.path.length ||
-          route.method !== method
+          requestSegments.length !== route.path.length ||
+          route.method !== requestMethod
         ) {
           continue;
         }
 
-        const routeParams = {} as Record<string, string>;
-        let findRoute = true;
-        for (const index in route.path) {
-          const pathElement = route.path[index];
-          const searchedPathElement = searchedPath[index];
-          if (
-            pathElement !== searchedPathElement &&
-            !AppUtils.isRouteElementParam(pathElement)
-          ) {
-            findRoute = false;
-            break;
-          }
-
-          if (AppUtils.isRouteElementParam(pathElement)) {
-            routeParams[pathElement.slice(2)] = searchedPathElement.slice(1);
-          }
-        }
-        if (findRoute) {
-          req.params = routeParams;
+        const routeFounded = pathsMatches(route.path, requestSegments);
+        if (routeFounded) {
+          req.params = routeFounded.params;
           return route;
         }
-        return null;
       }
     }
+    throw new RouteNotFoundError();
   }
 
   private handleController = async (
@@ -147,12 +128,11 @@ export class App {
     req: AppRequest,
     res: AppResponse,
   ) => {
-    if (route.middlewares) {
-      await Promise.all(
-        route.middlewares.map((middleware) => {
-          return middleware(req, res);
-        }),
-      );
+    for (const middleware of route.middlewares) {
+      await middleware(req, res);
+      if (res.writableEnded || res.headersSent) {
+        return;
+      }
     }
     await route.controller(req, res);
   };
@@ -168,10 +148,10 @@ export class App {
 
   private setRequestUtils(req: IncomingMessage): AppRequest {
     const request = req as AppRequest;
-    request.path = AppUtils.getPath(req);
-    request.queryParams = AppUtils.getQueryParams(req);
-    request.getBody = AppUtils.getBody.bind(this, req);
-    request.getCookie = AppUtils.getCookie.bind(this, req);
+    request.path = GetHttpElements.getPath(req);
+    request.queryParams = GetHttpElements.getQueryParams(req);
+    request.getBody = GetHttpElements.getBody.bind(this, req);
+    request.getCookie = GetHttpElements.getCookie.bind(this, req);
     request.params = {};
     return request;
   }
