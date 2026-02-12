@@ -2,11 +2,7 @@ import { IncomingMessage } from "http";
 import { CookieNotFoundError } from "../../../errors/infra/controller/CookieNotFoundError.js";
 import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyError.js";
 
-export class AppUtils {
-  public static isRouteElementParam(routeElement: string) {
-    return routeElement[1] === ":";
-  }
-
+export class GetHttpElements {
   public static getPath(req: IncomingMessage) {
     if (req.url?.includes("?")) {
       const path = req.url.split("?")[0];

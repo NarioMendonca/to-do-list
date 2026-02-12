@@ -1,7 +1,7 @@
 import { createServer, IncomingMessage, Server } from "http";
 import { errorHandler } from "../errorHandlers/errorHandler.js";
 import { AddressInfo } from "net";
-import { AppUtils } from "./AppUtils.js";
+import { GetHttpElements } from "./GetHttpElements.js";
 import {
   AppRequest,
   AppResponse,
@@ -12,6 +12,8 @@ import {
   Route,
 } from "./AppTypes.js";
 import { InvalidRouteError } from "../../../errors/infra/controller/InvalidRouteError.js";
+import { isSegmentPathParam } from "./AppUtils/isSegmentPathParams.js";
+import { getRequestPathSegments } from "./AppUtils/getRequestPathSegments.js";
 
 export class App {
   public server: Server;
@@ -67,28 +69,28 @@ export class App {
 
   private createRoute = (
     method: string,
-    path: string,
+    pathPattern: string,
     middlewares: Middleware[] = [],
     controller: ControllerMethod,
   ) => {
-    const FORMAT_PATH_REGEX = /\/:?\w+/g;
-    const VALIDATE_PATHS_REGEX = /^\/:?\w+$/;
-    const routePaths = path.match(FORMAT_PATH_REGEX);
-    if (!routePaths) {
-      throw new InvalidRouteError(`Route invalid to create: ${path}`);
+    const PATH_PATTERN_SEGMENTS_REGEX = /\/:?\w+/g;
+    const IS_SEGMENT_VALID_REGEX = /^\/:?\w+$/;
+    const pathPatternSegments = pathPattern.match(PATH_PATTERN_SEGMENTS_REGEX);
+    if (!pathPatternSegments) {
+      throw new InvalidRouteError(`Route invalid to create: ${pathPattern}`);
     }
-    for (const routePath of routePaths) {
-      if (!VALIDATE_PATHS_REGEX.test(routePath)) {
-        throw new InvalidRouteError(`Route invalid to create: ${path}`);
+    for (const pathSegment of pathPatternSegments) {
+      if (!IS_SEGMENT_VALID_REGEX.test(pathSegment)) {
+        throw new InvalidRouteError(`Route invalid to create: ${pathPattern}`);
       }
     }
-    const identificationResource = routePaths[0];
+    const identificationResource = pathPatternSegments[0];
     if (!this.routes[identificationResource]) {
       this.routes[identificationResource] = [];
     }
     this.routes[identificationResource].push({
       method,
-      path: routePaths,
+      path: pathPatternSegments,
       controller,
       middlewares,
     });
@@ -100,41 +102,41 @@ export class App {
     searchedPathInput: string,
     method: string | undefined,
   ) {
-    const FORMAT_ROUTE_RESOURCES = /\/[^\/]*/g;
-    const searchedPath = searchedPathInput.match(FORMAT_ROUTE_RESOURCES);
-    if (!searchedPath) {
+    const routeElements = getRequestPathSegments(searchedPathInput);
+    if (!routeElements) {
       throw new InvalidRouteError(
         `Invalid Route: ${method ?? ""} ${searchedPathInput}`,
       );
     }
-    if (this.routes[searchedPath[0]]) {
-      for (const route of this.routes[searchedPath[0]]) {
+    if (this.routes[routeElements[0]]) {
+      for (const route of this.routes[routeElements[0]]) {
         if (
-          searchedPath.length !== route.path.length ||
+          routeElements.length !== route.path.length ||
           route.method !== method
         ) {
           continue;
         }
 
-        const routeParams = {} as Record<string, string>;
+        const pathParamsValues = {} as Record<string, string>;
         let findRoute = true;
         for (const index in route.path) {
-          const pathElement = route.path[index];
-          const searchedPathElement = searchedPath[index];
+          const pathPatternSegment = route.path[index];
+          const requestPathSegment = routeElements[index];
           if (
-            pathElement !== searchedPathElement &&
-            !AppUtils.isRouteElementParam(pathElement)
+            pathPatternSegment !== requestPathSegment &&
+            !isSegmentPathParam(pathPatternSegment)
           ) {
             findRoute = false;
             break;
           }
 
-          if (AppUtils.isRouteElementParam(pathElement)) {
-            routeParams[pathElement.slice(2)] = searchedPathElement.slice(1);
+          if (isSegmentPathParam(pathPatternSegment)) {
+            pathParamsValues[pathPatternSegment.slice(2)] =
+              requestPathSegment.slice(1);
           }
         }
         if (findRoute) {
-          req.params = routeParams;
+          req.params = pathParamsValues;
           return route;
         }
         return null;
@@ -168,10 +170,10 @@ export class App {
 
   private setRequestUtils(req: IncomingMessage): AppRequest {
     const request = req as AppRequest;
-    request.path = AppUtils.getPath(req);
-    request.queryParams = AppUtils.getQueryParams(req);
-    request.getBody = AppUtils.getBody.bind(this, req);
-    request.getCookie = AppUtils.getCookie.bind(this, req);
+    request.path = GetHttpElements.getPath(req);
+    request.queryParams = GetHttpElements.getQueryParams(req);
+    request.getBody = GetHttpElements.getBody.bind(this, req);
+    request.getCookie = GetHttpElements.getCookie.bind(this, req);
     request.params = {};
     return request;
   }

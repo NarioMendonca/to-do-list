@@ -3,13 +3,16 @@ import { TodoListControllers } from "./controllers/todoList/TodoListControllers.
 import { verifyAuthenticationMiddleware } from "./middlewares/verifyAuthenticationMiddleware.js";
 import { App } from "./core/App.js";
 import { TodoListReadings } from "./controllers/todoList/TodoListReadings.js";
+import { AppRequest, AppResponse } from "./core/AppTypes.js";
 
 const userController = new UserControllers();
 const todoListController = new TodoListControllers();
 const todoListReading = new TodoListReadings();
 
 const server = new App();
-
+server.get("/", [], async (req: AppRequest, res: AppResponse) => {
+  res.end(JSON.stringify({ message: "Hello world" }));
+});
 server.get(
   "/todolists/:userId/fetch",
   [verifyAuthenticationMiddleware],
