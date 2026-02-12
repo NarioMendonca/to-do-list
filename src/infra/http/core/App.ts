@@ -128,12 +128,11 @@ export class App {
     req: AppRequest,
     res: AppResponse,
   ) => {
-    if (route.middlewares) {
-      await Promise.all(
-        route.middlewares.map((middleware) => {
-          return middleware(req, res);
-        }),
-      );
+    for (const middleware of route.middlewares) {
+      await middleware(req, res);
+      if (res.writableEnded || res.headersSent) {
+        return;
+      }
     }
     await route.controller(req, res);
   };

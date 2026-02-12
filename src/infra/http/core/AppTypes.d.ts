@@ -20,7 +20,7 @@ export type Route = {
   path: string[];
   method: string;
   controller: (req: AppRequest, res: AppResponse) => Promise<void>;
-  middlewares?: Middleware[];
+  middlewares: Middleware[];
 };
 
 export type HttpMethod = "get" | "post" | "put" | "patch" | "delete";
