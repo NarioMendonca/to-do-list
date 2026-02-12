@@ -11,18 +11,18 @@ export function pathsMatches(
   const params = {} as Record<string, string>;
   let isRouteFinded = true;
   for (const index in routePath) {
-    const requestSegment = routePath[index];
-    const routeSegment = requestPathSegments[index];
+    const routeSegment = routePath[index];
+    const requestSegment = requestPathSegments[index];
     if (
-      requestSegment !== routeSegment &&
-      !isSegmentPathParam(requestSegment) // when the segment is a param, the value is diff from route name
+      routeSegment !== requestSegment &&
+      !isSegmentPathParam(routeSegment) // when the segment is a param, the value is diff from route name
     ) {
       isRouteFinded = false;
       break;
     }
 
-    if (isSegmentPathParam(requestSegment)) {
-      params[requestSegment.slice(2)] = routeSegment.slice(1); // pick just the param name, ex: /:userId -> userId // remove the slash from param value
+    if (isSegmentPathParam(routeSegment)) {
+      params[routeSegment.slice(2)] = requestSegment.slice(1); // pick just the param name, ex: /:userId -> userId // remove the slash from param value
     }
   }
   if (!isRouteFinded) {
