@@ -9,12 +9,15 @@ export async function AddItemToTodoListController(
   const bodySchema = z.object({
     title: z.string(),
     description: z.string(),
+  });
+  const paramsSchema = z.object({
     listId: z.uuid(),
   });
-  const todoItemData = bodySchema.parse(await req.getBody());
+  const { title, description } = bodySchema.parse(await req.getBody());
+  const { listId } = paramsSchema.parse(req.params);
 
   const addItemToTodoList = makeAddItemToTodoList();
-  await addItemToTodoList.handle(todoItemData);
+  await addItemToTodoList.handle({ title, description, listId });
 
   res.writeHead(201, "Created");
   res.end();
