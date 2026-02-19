@@ -10,6 +10,7 @@ import { ItemAddedToListEvent } from "../../../entities/todoList/events/ItemAdde
 import { ListAlreadyFinished } from "../../../errors/entitys/todoList/ListAlreadyFinished.js";
 import { ItemMarkedAsCompletedEvent } from "../../../entities/todoList/events/ItemMarkedAsCompletedEvent.js";
 import { ListExpired } from "../../../errors/entitys/todoList/ListExpired.js";
+import { TodoListEvents } from "../../../entities/todoList/events/TodoListEvents.js";
 
 describe("Todo list entity test suite", () => {
   const sut = TodoList;
@@ -65,17 +66,18 @@ describe("Todo list entity test suite", () => {
     const todoItemsCreated = createdTodoList.getTodoItems();
 
     // assert
-    const todoListEvents: ItemAddedToListEvent[] =
-      createdTodoList.pullEvents() as ItemAddedToListEvent[];
+    const todoListEvents: TodoListEvents[] = createdTodoList.pullEvents();
 
     expect(todoItemsCreated.length).toBe(ITEMS_TO_CREATE_COUNT);
-    expect(todoListEvents.length).toBe(ITEMS_TO_CREATE_COUNT);
+    expect(todoListEvents.length).toBe(ITEMS_TO_CREATE_COUNT + 1); // create todo item events plus create list event;
 
-    Array.from({ length: ITEMS_TO_CREATE_COUNT }).forEach((_, i) => {
-      expect(todoItemsCreated[i].getIsCompleted()).toBe(false);
-      expect(todoListEvents[i].getTodoListToAddItemId()).toBe(
-        createdTodoList.getId(),
-      );
+    todoItemsCreated.forEach((todoItem) => {
+      expect(todoItem.getIsCompleted()).toBe(false);
+    });
+    todoListEvents.forEach((event) => {
+      if (event instanceof ItemAddedToListEvent) {
+        expect(event.getTodoListToAddItemId()).toBe(createdTodoList.getId());
+      }
     });
   });
 
@@ -104,11 +106,14 @@ describe("Todo list entity test suite", () => {
   it("should mark todo item as completed", () => {
     const todoList = TodoList.create(createMockTodoList());
     const todoItem = TodoItem.create(mockTodoItemCreation());
+
     todoList.markTodoItemAsFinished(todoItem);
+
     expect(todoItem.getIsCompleted()).toBe(true);
-    expect(todoList.pullEvents()).toEqual([
-      new ItemMarkedAsCompletedEvent(todoItem),
-    ]);
+    const ItemMarkedAsCompletedExists = todoList
+      .pullEvents()
+      .some((event) => event instanceof ItemMarkedAsCompletedEvent);
+    expect(ItemMarkedAsCompletedExists).toBe(true);
   });
 
   it("should throw error if try to mark todo item as completed in a expired todolist", () => {

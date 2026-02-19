@@ -7,6 +7,7 @@ import { DayWeek } from "./dayWeek/DayWeek.js";
 import { ItemAddedToListEvent } from "./events/ItemAddedToListEvent.js";
 import { ItemMarkedAsCompletedEvent } from "./events/ItemMarkedAsCompletedEvent.js";
 import { ListFinishedEvent } from "./events/ListFinishedEvent.js";
+import { TodoListCreatedEvent } from "./events/TodoListCreatedEvent.js";
 import { TodoListEvents } from "./events/TodoListEvents.js";
 import { ExpirationDt } from "./expirationDt/ExpirationDt.js";
 import { FinishedDt } from "./finishedDt/FinishedDt.js";
@@ -104,7 +105,9 @@ export class TodoList {
       finishedDt: null,
       plannedDtToMake: PlannedDtToMake.create(params.plannedDtToMake),
     };
-    return new TodoList(todoListParams);
+    const todoListEntity = new TodoList(todoListParams);
+    todoListEntity.events.push(new TodoListCreatedEvent());
+    return todoListEntity;
   }
 
   public static restore(params: TodoListParams) {
