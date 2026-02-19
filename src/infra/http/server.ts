@@ -20,7 +20,17 @@ server.get(
   [verifyAuthenticationMiddleware],
   todoListReading.get,
 );
+server.get(
+  "/todolists/:listId/todos",
+  [verifyAuthenticationMiddleware],
+  todoListReading.fetchTodoItems,
+);
 
+server.post(
+  "/todolists/:listId/todos",
+  [verifyAuthenticationMiddleware],
+  todoListController.addItemToList,
+);
 server.post("/users", [], userController.create);
 server.post("/login", [], userController.auth);
 server.post("/sessions/refresh", [], userController.refreshSession);
