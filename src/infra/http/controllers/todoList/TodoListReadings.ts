@@ -39,4 +39,16 @@ export class TodoListReadings extends Controller {
     res.writeHead(200);
     res.end(JSON.stringify(todoListsDTO));
   };
+
+  public fetchTodoItems = async (req: AppRequest, res: AppResponse) => {
+    const paramsSchema = z.object({
+      listId: z.uuid(),
+    });
+    const { listId } = paramsSchema.parse(req.params);
+
+    const todoItems = await this.todoListReadRepository.fetchListItems(listId);
+
+    res.writeHead(200);
+    res.end(JSON.stringify(todoItems));
+  };
 }
