@@ -1,3 +1,4 @@
+import { TodoItemDTO } from "../../model/TodoItem.js";
 import { TodoListDBModel, TodoListDTO } from "../../model/TodoList.js";
 import { TodoListReadRepository } from "../TodoListReadRepository.js";
 import { db } from "./client.js";
@@ -45,5 +46,17 @@ export class TodoListPgReadRepository implements TodoListReadRepository {
       total_items: list.total_items,
       createdAt: list.created_at,
     }));
+  }
+
+  async fetchListItems(listId: string): Promise<TodoItemDTO[]> {
+    const query = await db.query(
+      `
+      SELECT id, title, description, is_completed, created_at 
+      FROM todo_items 
+      WHERE todo_list_id = $1 
+      `,
+      [listId],
+    );
+    return query.rows as TodoItemDTO[];
   }
 }
