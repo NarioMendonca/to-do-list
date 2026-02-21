@@ -27,12 +27,7 @@ export class TodoListReadings extends Controller {
   };
 
   public fetch = async (req: AppRequest, res: AppResponse) => {
-    const routeParamsSchema = z.object({
-      userId: z.uuid({
-        error: "route param userId is required and must be a UUID",
-      }),
-    });
-    const { userId } = routeParamsSchema.parse(req.params);
+    const userId = req.user.id;
 
     const todoListsDTO = await this.todoListReadRepository.fetchByUser(userId);
 

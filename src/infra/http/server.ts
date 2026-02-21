@@ -11,7 +11,7 @@ const todoListReading = new TodoListReadings();
 const server = new App();
 
 server.get(
-  "/todolists/:userId/fetch",
+  "/todolists/fetch",
   [verifyAuthenticationMiddleware],
   todoListReading.fetch,
 );

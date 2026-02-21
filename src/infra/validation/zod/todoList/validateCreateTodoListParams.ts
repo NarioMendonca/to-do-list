@@ -3,7 +3,6 @@ import { InvalidBodyError } from "../../../../errors/infra/controller/InvalidBod
 
 export function validateCreateTodolistParams(data: unknown) {
   const schema = z.object({
-    ownerId: z.uuid(),
     title: z.string(),
     daysWeekToRepeat: z
       .array(
