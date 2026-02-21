@@ -12,7 +12,10 @@ export class CreateTodoListController extends Controller {
     const body = await this.getBody(req);
     const todoListData = validateCreateTodolistParams(body);
 
-    await this.createTodoListUseCase.handle(todoListData);
+    await this.createTodoListUseCase.handle({
+      ...todoListData,
+      ownerId: req.user.id,
+    });
 
     res.writeHead(201, "Created");
     res.end();

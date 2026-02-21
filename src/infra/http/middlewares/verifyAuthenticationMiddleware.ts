@@ -10,6 +10,7 @@ export async function verifyAuthenticationMiddleware(req: AppRequest) {
     const payload: PayLoad = JSON.parse(req.getCookie("accessToken"));
     const token: TokenPayload = await authUtils.decryptToken(payload);
     authUtils.isTokenValid(token);
+    req.user = { id: token.userId };
   } catch (error) {
     if (error instanceof ApiError) {
       throw new InvalidSession("Session invalid", 401);
