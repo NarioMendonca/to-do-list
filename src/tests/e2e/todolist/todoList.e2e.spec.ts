@@ -1,48 +1,31 @@
-import { describe, beforeAll, afterAll, beforeEach, expect, it } from "vitest";
-import { serverInstance } from "../serverInstance.js";
-import { Server } from "http";
-import { clearDatabase } from "../../dbUtils/clearDatabase.js";
+import { describe, expect, it } from "vitest";
 import { createAndAuthenticate } from "../utils/createAndAuthenticate.js";
 import { createTodoList } from "../utils/createTodoList.js";
-import { TodoListDTO } from "../../../model/TodoList.js";
 import { mockCreateTodoListData } from "../e2emocks/mockCreateTodoListData.js";
+import { fetchLists } from "../utils/fetchLists.js";
 
 describe("create todo list e2e tests", () => {
-  let _testServer: Server;
-  let _serverAddress: string;
-  beforeAll(async () => {
-    const { testServer, serverAddress } = await serverInstance();
-    _testServer = testServer;
-    _serverAddress = serverAddress;
-  });
-
-  beforeEach(async () => {
-    await clearDatabase();
-  });
-
-  afterAll(async () => {
-    await clearDatabase();
-    _testServer.close();
-  });
-
   it("allows a authenticated user to create and list a todo list", async () => {
-    const { sessionCookie } = await createAndAuthenticate(_serverAddress);
+    const { sessionCookie } = await createAndAuthenticate(__SERVER_ADDRESS__);
 
     const todoListCreationParams = mockCreateTodoListData();
 
-    const createTodoListResponse = await fetch(`${_serverAddress}/todolists`, {
-      method: "POST",
-      body: JSON.stringify(todoListCreationParams),
-      headers: {
-        Cookie: sessionCookie!,
+    const createTodoListResponse = await fetch(
+      `${__SERVER_ADDRESS__}/todolists`,
+      {
+        method: "POST",
+        body: JSON.stringify(todoListCreationParams),
+        headers: {
+          Cookie: sessionCookie!,
+        },
       },
-    });
+    );
 
     expect(createTodoListResponse.status).toBe(201);
   });
 
   it("blocks unauthenticated user to create a todo list", async () => {
-    const response = await fetch(`${_serverAddress}/todolists`, {
+    const response = await fetch(`${__SERVER_ADDRESS__}/todolists`, {
       method: "POST",
       body: JSON.stringify({
         title: "Morning tasks",
@@ -53,43 +36,34 @@ describe("create todo list e2e tests", () => {
   });
 
   it("prevents a user to access another user's todo list", async () => {
-    const firstUser = await createAndAuthenticate(_serverAddress);
-    const secondUser = await createAndAuthenticate(_serverAddress);
+    const firstUser = await createAndAuthenticate(__SERVER_ADDRESS__);
+    const secondUser = await createAndAuthenticate(__SERVER_ADDRESS__);
 
     const firstUserListCreated = await createTodoList(
-      _serverAddress,
+      __SERVER_ADDRESS__,
       firstUser.sessionCookie,
     );
     const secondUserListCreated = await createTodoList(
-      _serverAddress,
+      __SERVER_ADDRESS__,
       secondUser.sessionCookie,
     );
 
-    const firstUserListRequest = await fetch(
-      `${_serverAddress}/todolists/fetch`,
-      {
-        method: "GET",
-        headers: {
-          Cookie: firstUser.sessionCookie,
-        },
-      },
+    const firstUserResponse = await fetchLists(
+      __SERVER_ADDRESS__,
+      firstUser.sessionCookie,
     );
-    const secondUserListRequest = await fetch(
-      `${_serverAddress}/todolists/fetch`,
-      {
-        method: "GET",
-        headers: {
-          Cookie: secondUser.sessionCookie,
-        },
-      },
+    const secondUserResponse = await fetchLists(
+      __SERVER_ADDRESS__,
+      secondUser.sessionCookie,
     );
-    const firstUserList = (await firstUserListRequest.json()) as TodoListDTO[];
-    const secondUserList =
-      (await secondUserListRequest.json()) as TodoListDTO[];
 
-    expect(firstUserList.length).toBe(1);
-    expect(secondUserList.length).toBe(1);
-    expect(firstUserList[0].ownerId).toBe(firstUserListCreated.list.ownerId);
-    expect(secondUserList[0].ownerId).toBe(secondUserListCreated.list.ownerId);
+    expect(firstUserResponse.lists.length).toBe(1);
+    expect(secondUserResponse.lists.length).toBe(1);
+    expect(firstUserResponse.lists[0].ownerId).toBe(
+      firstUserListCreated.list.ownerId,
+    );
+    expect(secondUserResponse.lists[0].ownerId).toBe(
+      secondUserListCreated.list.ownerId,
+    );
   });
 });

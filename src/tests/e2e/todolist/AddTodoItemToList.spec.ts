@@ -1,52 +1,21 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { serverInstance } from "../serverInstance.js";
-import { Server } from "http";
-import { clearDatabase } from "../../dbUtils/clearDatabase.js";
-import { TodoListDTO } from "../../../model/TodoList.js";
+import { describe, expect, it } from "vitest";
 import { mockTodoItemCreation } from "../e2emocks/mockTodoItemCreation.js";
 import { TodoItemDTO } from "../../../model/TodoItem.js";
 import { createAndAuthenticate } from "../utils/createAndAuthenticate.js";
 import { createTodoList } from "../utils/createTodoList.js";
+import { fetchLists } from "../utils/fetchLists.js";
 
 describe("TodoItems E2E test suite", () => {
-  let _testServer: Server;
-  let _serverAddress: string;
-
-  beforeAll(async () => {
-    const { testServer, serverAddress } = await serverInstance();
-    _testServer = testServer;
-    _serverAddress = serverAddress;
-  });
-
-  beforeEach(async () => {
-    await clearDatabase();
-  });
-
-  afterAll(async () => {
-    await clearDatabase();
-    _testServer.close();
-  });
-
   it("allows authenticated user to create a list and add todo item", async () => {
-    const { sessionCookie } = await createAndAuthenticate(_serverAddress);
+    const { sessionCookie } = await createAndAuthenticate(__SERVER_ADDRESS__);
 
-    await createTodoList(_serverAddress, sessionCookie);
-
-    const getTodoListResponse = await fetch(
-      `${_serverAddress}/todolists/fetch`,
-      {
-        method: "GET",
-        headers: {
-          Cookie: sessionCookie!,
-        },
-      },
-    );
-    const todoList = ((await getTodoListResponse.json()) as TodoListDTO[])[0];
+    await createTodoList(__SERVER_ADDRESS__, sessionCookie);
+    const { lists } = await fetchLists(__SERVER_ADDRESS__, sessionCookie);
 
     const todoItem = mockTodoItemCreation();
 
     const createTodoItemResponse = await fetch(
-      `${_serverAddress}/todolists/${todoList.id}/todos`,
+      `${__SERVER_ADDRESS__}/todolists/${lists[0].id}/todos`,
       {
         method: "POST",
         body: JSON.stringify(todoItem),
@@ -59,7 +28,7 @@ describe("TodoItems E2E test suite", () => {
     expect(createTodoItemResponse.status).toBe(201);
 
     const getTodoItemsResponse = await fetch(
-      `${_serverAddress}/todolists/${todoList.id}/todos`,
+      `${__SERVER_ADDRESS__}/todolists/${lists[0].id}/todos`,
       {
         method: "GET",
         headers: {
