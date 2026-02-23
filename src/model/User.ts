@@ -9,6 +9,12 @@ export type UserWithPassword = UserDTO & {
   passwordHash: string;
 };
 
+export type CreateUserDTO = {
+  name: string;
+  email: string;
+  password: string;
+};
+
 export type User = {
   id: string;
   name: string;
