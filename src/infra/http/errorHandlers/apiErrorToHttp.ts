@@ -1,4 +1,5 @@
 import { ApiError } from "../../../errors/apiError.js";
+import { EventNotHandled } from "../../../errors/infra/EventNotHandled.js";
 import { AlreadyExistsError } from "../../../errors/usecases/AlreadyExistsError.js";
 import { InvalidCredentialsError } from "../../../errors/usecases/InvalidCredentialsError.js";
 import { NotFoundError } from "../../../errors/usecases/NotFoundError.js";
@@ -16,6 +17,10 @@ export function apiErrorToHttp(apiError: ApiError) {
 
   if (apiError instanceof InvalidCredentialsError) {
     errorStatusCode = 401;
+  }
+
+  if (apiError instanceof EventNotHandled) {
+    errorStatusCode = 500;
   }
 
   const errorMessage =

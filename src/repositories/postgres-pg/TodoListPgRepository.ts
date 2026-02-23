@@ -1,7 +1,9 @@
 import { TodoItem } from "../../entities/todoItem/TodoItem.js";
 import { ItemAddedToListEvent } from "../../entities/todoList/events/ItemAddedToListEvent.js";
+import { ListFinishedEvent } from "../../entities/todoList/events/ListFinishedEvent.js";
 import { TodoListCreatedEvent } from "../../entities/todoList/events/TodoListCreatedEvent.js";
 import { TodoList } from "../../entities/todoList/TodoList.js";
+import { EventNotHandled } from "../../errors/infra/EventNotHandled.js";
 import { TodoListDBModel } from "../../model/TodoList.js";
 import {
   GetTodoItemParams,
@@ -41,6 +43,7 @@ export class TodoListPgRepository implements TodoListRepository {
             todoList.getCreatedAt(),
           ],
         );
+        continue;
       }
       if (event instanceof ItemAddedToListEvent) {
         const todoData = event.getItemAdded();
@@ -66,7 +69,17 @@ export class TodoListPgRepository implements TodoListRepository {
           await db.query("ROLLBACK");
           throw error;
         }
+        continue;
       }
+
+      if (event instanceof ListFinishedEvent) {
+        await db.query(`UPDATE todo_lists SET finished_dt=$1`, [
+          todoList.getFinishedDt(),
+        ]);
+        continue;
+      }
+
+      throw new EventNotHandled(`Event ${event.getName()} was not handled.`);
     }
   }
 
