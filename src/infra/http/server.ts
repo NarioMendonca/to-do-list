@@ -3,6 +3,7 @@ import { TodoListControllers } from "./controllers/todoList/TodoListControllers.
 import { verifyAuthenticationMiddleware } from "./middlewares/verifyAuthenticationMiddleware.js";
 import { App } from "./core/App.js";
 import { TodoListReadings } from "./controllers/todoList/TodoListReadings.js";
+import { finishListController } from "./controllers/todoList/finishListController.js";
 
 const userController = new UserControllers();
 const todoListController = new TodoListControllers();
@@ -26,6 +27,12 @@ server.get(
   todoListReading.fetchTodoItems,
 );
 
+server.post("/todolists/:listId/finish", [], finishListController);
+server.post(
+  "/todolists",
+  [verifyAuthenticationMiddleware],
+  todoListController.create,
+);
 server.post(
   "/todolists/:listId/todos",
   [verifyAuthenticationMiddleware],
@@ -34,10 +41,5 @@ server.post(
 server.post("/users", [], userController.create);
 server.post("/login", [], userController.auth);
 server.post("/sessions/refresh", [], userController.refreshSession);
-server.post(
-  "/todolists",
-  [verifyAuthenticationMiddleware],
-  todoListController.create,
-);
 
 export { server };
