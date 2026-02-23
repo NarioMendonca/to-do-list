@@ -60,7 +60,7 @@ describe("TodoItems E2E test suite", () => {
     });
 
     const getTodoListResponse = await fetch(
-      `${_serverAddress}/todolists/${user.id}/fetch`,
+      `${_serverAddress}/todolists/fetch`,
       {
         method: "GET",
         headers: {
@@ -68,13 +68,12 @@ describe("TodoItems E2E test suite", () => {
         },
       },
     );
-    const todoListId = ((await getTodoListResponse.json()) as TodoListDTO[])[0]
-      .id;
+    const todoList = ((await getTodoListResponse.json()) as TodoListDTO[])[0];
 
     const todoItem = mockTodoItemCreation();
 
     const createTodoItemResponse = await fetch(
-      `${_serverAddress}/todolists/${todoListId}/todos`,
+      `${_serverAddress}/todolists/${todoList.id}/todos`,
       {
         method: "POST",
         body: JSON.stringify(todoItem),
@@ -87,7 +86,7 @@ describe("TodoItems E2E test suite", () => {
     expect(createTodoItemResponse.status).toBe(201);
 
     const getTodoItemsResponse = await fetch(
-      `${_serverAddress}/todolists/${todoListId}/todos`,
+      `${_serverAddress}/todolists/${todoList.id}/todos`,
       {
         method: "GET",
         headers: {
