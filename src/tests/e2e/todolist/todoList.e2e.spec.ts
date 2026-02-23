@@ -1,11 +1,11 @@
 import { describe, beforeAll, afterAll, beforeEach, expect, it } from "vitest";
 import { serverInstance } from "../serverInstance.js";
 import { Server } from "http";
-import { clearDatabase } from "../../utils/clearDatabase.js";
-import { createAndAuthenticate } from "../createAndAuthenticate.js";
-import { createTodoList } from "../createTodoList.js";
+import { clearDatabase } from "../../dbUtils/clearDatabase.js";
+import { createAndAuthenticate } from "../utils/createAndAuthenticate.js";
+import { createTodoList } from "../utils/createTodoList.js";
 import { TodoListDTO } from "../../../model/TodoList.js";
-import { mockCreateTodoListData } from "../mockCreateTodoListData.js";
+import { mockCreateTodoListData } from "../e2emocks/mockCreateTodoListData.js";
 
 describe("create todo list e2e tests", () => {
   let _testServer: Server;

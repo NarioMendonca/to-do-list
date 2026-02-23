@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
-import { CreateTodoListDTO } from "../../model/TodoList.js";
-import { mockDaysWeekToRepeat } from "../entities/todoList/MockDaysWeekToRepeat.js";
+import { CreateTodoListDTO } from "../../../model/TodoList.js";
+import { mockDaysWeekToRepeat } from "../../mocks/MockDaysWeekToRepeat.js";
 
 export function mockCreateTodoListData(): CreateTodoListDTO {
   return {

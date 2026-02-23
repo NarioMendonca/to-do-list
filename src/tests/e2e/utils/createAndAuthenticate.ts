@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { CreateUserDTO, UserDTO } from "../../model/User.js";
+import { CreateUserDTO, UserDTO } from "../../../model/User.js";
 
 type OutputData = {
   user: UserDTO;

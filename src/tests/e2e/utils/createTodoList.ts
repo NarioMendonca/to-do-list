@@ -1,5 +1,5 @@
-import { CreateTodoListDTO, TodoListDTO } from "../../model/TodoList.js";
-import { mockCreateTodoListData } from "./mockCreateTodoListData.js";
+import { CreateTodoListDTO, TodoListDTO } from "../../../model/TodoList.js";
+import { mockCreateTodoListData } from "../e2emocks/mockCreateTodoListData.js";
 
 type OutputData = {
   list: TodoListDTO;

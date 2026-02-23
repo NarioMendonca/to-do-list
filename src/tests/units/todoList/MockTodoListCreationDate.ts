@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { TodoListParams } from "../../../entities/todoList/TodoList.js";
-import { mockDaysWeekToRepeat } from "./MockDaysWeekToRepeat.js";
+import { mockDaysWeekToRepeat } from "../../mocks/MockDaysWeekToRepeat.js";
 
 export function createMockTodoList() {
   const todoListExpirationDt = faker.date.soon();

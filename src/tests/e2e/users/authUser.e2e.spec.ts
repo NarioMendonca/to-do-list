@@ -3,7 +3,7 @@ import { afterAll, describe, beforeAll, it, expect, beforeEach } from "vitest";
 import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyError.js";
 import { InvalidCredentialsError } from "../../../errors/usecases/InvalidCredentialsError.js";
 import { UserDTO } from "../../../model/User.js";
-import { clearDatabase } from "../../utils/clearDatabase.js";
+import { clearDatabase } from "../../dbUtils/clearDatabase.js";
 import { serverInstance } from "../serverInstance.js";
 
 describe("Auth user e2e tests", async () => {

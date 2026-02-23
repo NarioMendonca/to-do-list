@@ -4,7 +4,7 @@ import {
   TodoListParams,
 } from "../../../entities/todoList/TodoList.js";
 import { createMockTodoList } from "./MockTodoListCreationDate.js";
-import { mockTodoItemCreation } from "../todoItem/mockTodoItemCreation.js";
+import { mockTodoItemCreation } from "../../e2e/e2emocks/mockTodoItemCreation.js";
 import { TodoItem } from "../../../entities/todoItem/TodoItem.js";
 import { ItemAddedToListEvent } from "../../../entities/todoList/events/ItemAddedToListEvent.js";
 import { ListAlreadyFinished } from "../../../errors/entitys/todoList/ListAlreadyFinished.js";

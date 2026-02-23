@@ -3,7 +3,7 @@ import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyEr
 import { AlreadyExistsError } from "../../../errors/usecases/AlreadyExistsError.js";
 import { db } from "../../../repositories/postgres-pg/client.js";
 import { Server } from "node:http";
-import { clearDatabase } from "../../utils/clearDatabase.js";
+import { clearDatabase } from "../../dbUtils/clearDatabase.js";
 import { serverInstance } from "../serverInstance.js";
 
 describe("Create user e2e tests", () => {
