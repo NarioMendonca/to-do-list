@@ -4,6 +4,8 @@ import { ControllerError } from "../../../errors/infra/controller/ControllerErro
 import env from "../../env/getEnvs.js";
 import { AppRequest, AppResponse } from "../core/AppTypes.js";
 import { apiErrorToHttp } from "./apiErrorToHttp.js";
+import { EntityError } from "../../../errors/entitys/EntityError.js";
+import { entityErrorToHttp } from "./entityErrorToHttp.js";
 
 export function errorHandler(
   req: AppRequest,
@@ -17,6 +19,13 @@ export function errorHandler(
         [error.name]: env.NODE_ENV !== "test" ? error.message : error.stack,
       }),
     );
+    return;
+  }
+
+  if (error instanceof EntityError) {
+    const { message, statusCode } = entityErrorToHttp(error);
+    res.writeHead(statusCode, error.name);
+    res.end(JSON.stringify(message));
     return;
   }
 

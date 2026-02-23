@@ -11,6 +11,6 @@ export async function finishListController(req: AppRequest, res: AppResponse) {
   const markListAsFinishedUseCase = makeMarkListAsFinished();
   await markListAsFinishedUseCase.handle({ listId });
 
-  res.writeHead(200);
+  res.writeHead(204);
   res.end();
 }
