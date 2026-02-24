@@ -1,3 +1,5 @@
+import { DayNumber } from "../entities/todoList/dayWeek/DayWeek.js";
+
 export type TodoListData = {
   id: string;
   ownerId: string;
@@ -19,6 +21,7 @@ export type TodoListDTO = {
   total_items: number;
   plannedDtToMake: string | null;
   expirationDt: string | null;
+  daysWeekToRepeat: number[];
   finishedDt: string | null;
   createdAt: string;
 };
@@ -41,4 +44,5 @@ export type TodoListDBModel = {
   expiration_dt: string | null;
   finished_dt: string | null;
   created_at: string;
+  days_week_to_repeat: DayNumber[];
 };

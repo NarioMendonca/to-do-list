@@ -3,7 +3,7 @@ import { ListExpired } from "../../errors/entitys/todoList/ListExpired.js";
 import { TodoListFull } from "../../errors/entitys/todoList/TodoListFull.js";
 import { DateVO } from "../shared/VOs/DateVO.js";
 import { TodoItem } from "../todoItem/TodoItem.js";
-import { DayWeek } from "./dayWeek/DayWeek.js";
+import { DayNumber, DayWeek } from "./dayWeek/DayWeek.js";
 import { ItemAddedToListEvent } from "./events/ItemAddedToListEvent.js";
 import { ItemMarkedAsCompletedEvent } from "./events/ItemMarkedAsCompletedEvent.js";
 import { ListFinishedEvent } from "./events/ListFinishedEvent.js";
@@ -137,6 +137,10 @@ export class TodoList {
 
   public getExpirationDt(): Date | null {
     return this.expirationDt.getValue();
+  }
+
+  public getDaysWeekToRepeat(): DayNumber[] {
+    return this.daysWeekToRepeat.map((dayWeek) => dayWeek.getDayNumber());
   }
 
   public getPlannedDtToMake(): Date | null {
