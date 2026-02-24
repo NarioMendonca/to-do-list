@@ -10,18 +10,20 @@ describe("create todo list e2e tests", () => {
 
     const todoListCreationParams = mockCreateTodoListData();
 
-    const createTodoListResponse = await fetch(
-      `${__SERVER_ADDRESS__}/todolists`,
-      {
-        method: "POST",
-        body: JSON.stringify(todoListCreationParams),
-        headers: {
-          Cookie: sessionCookie!,
-        },
+    await fetch(`${__SERVER_ADDRESS__}/todolists`, {
+      method: "POST",
+      body: JSON.stringify(todoListCreationParams),
+      headers: {
+        Cookie: sessionCookie!,
       },
-    );
+    });
+    const { lists } = await fetchLists(__SERVER_ADDRESS__, sessionCookie);
 
-    expect(createTodoListResponse.status).toBe(201);
+    expect(lists.length).toBe(1);
+    expect(lists[0].title).toEqual(todoListCreationParams.title);
+    expect(lists[0].daysWeekToRepeat).toEqual(
+      todoListCreationParams.daysWeekToRepeat,
+    );
   });
 
   it("blocks unauthenticated user to create a todo list", async () => {
