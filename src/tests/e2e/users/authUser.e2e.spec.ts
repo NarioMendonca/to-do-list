@@ -1,32 +1,11 @@
-import { Server } from "node:http";
-import { afterAll, describe, beforeAll, it, expect, beforeEach } from "vitest";
+import { describe, it, expect } from "vitest";
 import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyError.js";
 import { InvalidCredentialsError } from "../../../errors/usecases/InvalidCredentialsError.js";
 import { UserDTO } from "../../../model/User.js";
-import { clearDatabase } from "../../utils/clearDatabase.js";
-import { serverInstance } from "../serverInstance.js";
 
 describe("Auth user e2e tests", async () => {
-  let _serverAddress: string;
-  let _testServer: Server;
-
-  beforeAll(async () => {
-    const { testServer, serverAddress } = await serverInstance();
-    _serverAddress = serverAddress;
-    _testServer = testServer;
-  });
-
-  beforeEach(async () => {
-    await clearDatabase();
-  });
-
-  afterAll(async () => {
-    await clearDatabase();
-    _testServer.close();
-  });
-
   it("should returns 400 if request body is invalid", async () => {
-    const response = await fetch(`${_serverAddress}/login`, {
+    const response = await fetch(`${__SERVER_ADDRESS__}/login`, {
       method: "POST",
       body: JSON.stringify({ email: "Roger@gmail.com" }),
     });
@@ -36,7 +15,7 @@ describe("Auth user e2e tests", async () => {
   });
 
   it("should return status 401 if try to login a user witch not exists", async () => {
-    const response = await fetch(`${_serverAddress}/login`, {
+    const response = await fetch(`${__SERVER_ADDRESS__}/login`, {
       method: "POST",
       body: JSON.stringify({
         email: "roger@gmail.com",
@@ -49,7 +28,7 @@ describe("Auth user e2e tests", async () => {
   });
 
   it("should return status 401 if try to login a user with invalid credentials", async () => {
-    await fetch(`${_serverAddress}/users`, {
+    await fetch(`${__SERVER_ADDRESS__}/users`, {
       method: "POST",
       body: JSON.stringify({
         name: "roger tech",
@@ -58,14 +37,14 @@ describe("Auth user e2e tests", async () => {
       }),
     });
 
-    const firstLoginTry = await fetch(`${_serverAddress}/login`, {
+    const firstLoginTry = await fetch(`${__SERVER_ADDRESS__}/login`, {
       method: "POST",
       body: JSON.stringify({
         email: "roger@gmail.com",
         password: "roger123",
       }),
     });
-    const SecondLoginTry = await fetch(`${_serverAddress}/login`, {
+    const SecondLoginTry = await fetch(`${__SERVER_ADDRESS__}/login`, {
       method: "POST",
       body: JSON.stringify({
         email: "roge@gmail.com",
@@ -79,7 +58,7 @@ describe("Auth user e2e tests", async () => {
   });
 
   it("should create a user and login it", async () => {
-    await fetch(`${_serverAddress}/users`, {
+    await fetch(`${__SERVER_ADDRESS__}/users`, {
       method: "POST",
       body: JSON.stringify({
         name: "roger tech",
@@ -88,7 +67,7 @@ describe("Auth user e2e tests", async () => {
       }),
     });
 
-    const response = await fetch(`${_serverAddress}/login`, {
+    const response = await fetch(`${__SERVER_ADDRESS__}/login`, {
       method: "POST",
       body: JSON.stringify({
         email: "roger@gmail.com",

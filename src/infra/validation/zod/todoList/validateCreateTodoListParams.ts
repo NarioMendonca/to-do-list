@@ -16,7 +16,12 @@ export function validateCreateTodolistParams(data: unknown) {
           z.literal(6),
         ]),
       )
-      .nonempty()
+      .transform((value) => {
+        if (value.length === 0) {
+          return null;
+        }
+        return value;
+      })
       .nullable(),
     todoMotivationPhrase: z.string().nullable(),
     plannedDtToMake: z.coerce.date().nullable(),

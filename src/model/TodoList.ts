@@ -23,6 +23,14 @@ export type TodoListDTO = {
   createdAt: string;
 };
 
+export type CreateTodoListDTO = {
+  title: string;
+  expirationDt: Date | string | null;
+  daysWeekToRepeat: number[];
+  plannedDtToMake: string | Date | null;
+  todoMotivationPhrase: string | null;
+};
+
 export type TodoListDBModel = {
   id: string;
   owner_id: string;
