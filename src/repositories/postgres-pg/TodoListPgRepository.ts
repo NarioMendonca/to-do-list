@@ -16,8 +16,7 @@ export class TodoListPgRepository implements TodoListRepository {
     const events = todoList.pullEvents();
     for (const event of events) {
       if (event instanceof TodoListCreatedEvent) {
-        await db.query(
-          `
+        const createListQuery = `
             INSERT INTO todo_lists (id, owner_id, title, motivation_phrase, total_items,
             planned_dt_to_make, expiration_dt, finished_dt, created_at)
             VALUES (
@@ -30,19 +29,47 @@ export class TodoListPgRepository implements TodoListRepository {
               $7,
               $8,
               $9
-            )`,
-          [
-            todoList.getId(),
-            todoList.getOwnerId(),
-            todoList.getTitle(),
-            todoList.getTodoMotivationPhrase(),
-            todoList.getTotalItems(),
-            todoList.getPlannedDtToMake(),
-            todoList.getExpirationDt(),
-            todoList.getFinishedDt(),
-            todoList.getCreatedAt(),
-          ],
-        );
+            )`;
+        const createListValues = [
+          todoList.getId(),
+          todoList.getOwnerId(),
+          todoList.getTitle(),
+          todoList.getTodoMotivationPhrase(),
+          todoList.getTotalItems(),
+          todoList.getPlannedDtToMake(),
+          todoList.getExpirationDt(),
+          todoList.getFinishedDt(),
+          todoList.getCreatedAt(),
+        ];
+
+        let queryKeys: string = "";
+        let queryKeyCount = 0;
+        const daysWeekValues = [];
+        // for each day in daysWeekToRepeat, create keys to insert in DB -> ($1, $2)
+        // and save their values in valuesToSave
+        const listDaysRepeat = todoList.getDaysWeekToRepeat();
+        for (const index in listDaysRepeat) {
+          if (index != "0") {
+            queryKeys += ",";
+          }
+          queryKeys += `($${queryKeyCount + 1}, $${queryKeyCount + 2})`;
+          queryKeyCount += 2;
+          daysWeekValues.push(listDaysRepeat[index], todoList.getId());
+        }
+        const daysWeekQuery = `INSERT INTO days_who_todo_list_repeat (day_id, todo_list_id) VALUES ${queryKeys}`;
+
+        try {
+          await db.query("BEGIN");
+          await db.query(createListQuery, createListValues);
+          if (listDaysRepeat.length != 0) {
+            await db.query(daysWeekQuery, daysWeekValues);
+          }
+          await db.query("COMMIT");
+        } catch (error) {
+          await db.query("ROLLBACK");
+          throw error;
+        }
+
         continue;
       }
       if (event instanceof ItemAddedToListEvent) {

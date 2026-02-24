@@ -16,7 +16,7 @@ export function errorHandler(
     res.writeHead(error.statusCode, error.name);
     res.end(
       JSON.stringify({
-        [error.name]: env.NODE_ENV !== "test" ? error.message : error.stack,
+        [error.name]: env.NODE_ENV !== "prod" ? error.stack : error.message,
       }),
     );
     return;
@@ -25,14 +25,22 @@ export function errorHandler(
   if (error instanceof EntityError) {
     const { message, statusCode } = entityErrorToHttp(error);
     res.writeHead(statusCode, error.name);
-    res.end(JSON.stringify(message));
+    res.end(
+      JSON.stringify({
+        message: env.NODE_ENV !== "prod" ? error.stack : message,
+      }),
+    );
     return;
   }
 
   if (error instanceof ApiError) {
     const { message, statusCode } = apiErrorToHttp(error);
     res.writeHead(statusCode, error.name);
-    res.end(JSON.stringify(message));
+    res.end(
+      JSON.stringify({
+        message: env.NODE_ENV !== "prod" ? error.stack : message,
+      }),
+    );
     return;
   }
 
@@ -40,7 +48,7 @@ export function errorHandler(
     res.writeHead(400, "Bad Request");
     res.end(
       JSON.stringify({
-        message: env.NODE_ENV !== "test" ? error.message : error.stack,
+        message: env.NODE_ENV !== "prod" ? error.stack : error.message,
       }),
     );
     return;
@@ -50,7 +58,7 @@ export function errorHandler(
     res.writeHead(500, "Internal Server Error");
     res.end(
       JSON.stringify({
-        message: env.NODE_ENV !== "test" ? error.message : error.stack,
+        message: env.NODE_ENV !== "prod" ? error.stack : error.message,
       }),
     );
     return;

@@ -5,15 +5,23 @@ import { db } from "./client.js";
 
 export class TodoListPgReadRepository implements TodoListReadRepository {
   async get(listId: string): Promise<TodoListDTO | null> {
-    const queryData = await db.query(`SELECT * FROM todo_lists WHERE id = $1`, [
-      listId,
-    ]);
+    const listData = await db.query(
+      `SELECT 
+        tl.*, 
+        ARRAY_AGG(tr.day_id) FILTER (WHERE tr.day_id IS NOT NULL) as days_week_to_repeat 
+      FROM todo_lists tl 
+      LEFT JOIN days_who_todo_list_repeat tr 
+        ON tl.id = tr.todo_list_id 
+      WHERE tl.id = $1 
+      GROUP BY tl.id`,
+      [listId],
+    );
 
-    if (queryData.rowCount == 0) {
+    if (listData.rowCount == 0) {
       return null;
     }
-    const list = queryData.rows[0] as TodoListDBModel;
 
+    const list = listData.rows[0] as TodoListDBModel;
     return {
       id: list.id,
       ownerId: list.owner_id,
@@ -24,12 +32,20 @@ export class TodoListPgReadRepository implements TodoListReadRepository {
       finishedDt: list.finished_dt,
       total_items: list.total_items,
       createdAt: list.created_at,
+      daysWeekToRepeat: list.days_week_to_repeat,
     };
   }
 
   async fetchByUser(userId: string): Promise<TodoListDTO[]> {
     const queryData = await db.query(
-      `SELECT * FROM todo_lists WHERE owner_id = $1`,
+      `SELECT 
+        tl.*, 
+        ARRAY_AGG(tr.day_id) FILTER (WHERE tr.day_id IS NOT NULL) as days_week_to_repeat
+      FROM todo_lists tl
+      LEFT JOIN days_who_todo_list_repeat tr 
+        ON tl.id = tr.todo_list_id
+      WHERE owner_id = $1
+      GROUP BY tl.id`,
       [userId],
     );
 
@@ -42,6 +58,7 @@ export class TodoListPgReadRepository implements TodoListReadRepository {
       motivationPhrase: list.motivation_phrase,
       plannedDtToMake: list.planned_dt_to_make,
       expirationDt: list.expiration_dt,
+      daysWeekToRepeat: list.days_week_to_repeat,
       finishedDt: list.finished_dt,
       total_items: list.total_items,
       createdAt: list.created_at,
