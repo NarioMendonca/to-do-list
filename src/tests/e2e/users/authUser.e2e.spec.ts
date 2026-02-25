@@ -5,7 +5,7 @@ import { UserDTO } from "../../../model/User.js";
 
 describe("Auth user e2e tests", async () => {
   it("should returns 400 if request body is invalid", async () => {
-    const response = await fetch(`${__SERVER_ADDRESS__}/login`, {
+    const response = await fetch(`${__SERVER_ADDRESS__}/sessions`, {
       method: "POST",
       body: JSON.stringify({ email: "Roger@gmail.com" }),
     });
@@ -15,7 +15,7 @@ describe("Auth user e2e tests", async () => {
   });
 
   it("should return status 401 if try to login a user witch not exists", async () => {
-    const response = await fetch(`${__SERVER_ADDRESS__}/login`, {
+    const response = await fetch(`${__SERVER_ADDRESS__}/sessions`, {
       method: "POST",
       body: JSON.stringify({
         email: "roger@gmail.com",
@@ -37,24 +37,24 @@ describe("Auth user e2e tests", async () => {
       }),
     });
 
-    const firstLoginTry = await fetch(`${__SERVER_ADDRESS__}/login`, {
+    const firstInvalidLoginTry = await fetch(`${__SERVER_ADDRESS__}/sessions`, {
       method: "POST",
       body: JSON.stringify({
         email: "roger@gmail.com",
         password: "roger123",
       }),
     });
-    const SecondLoginTry = await fetch(`${__SERVER_ADDRESS__}/login`, {
+    const secondValidLoginTry = await fetch(`${__SERVER_ADDRESS__}/sessions`, {
       method: "POST",
       body: JSON.stringify({
         email: "roge@gmail.com",
         password: "roger",
       }),
     });
-    expect(firstLoginTry.status).toBe(401);
-    expect(SecondLoginTry.status).toBe(401);
-    expect(firstLoginTry.statusText).toBe(InvalidCredentialsError.name);
-    expect(SecondLoginTry.statusText).toBe(InvalidCredentialsError.name);
+    expect(firstInvalidLoginTry.status).toBe(401);
+    expect(secondValidLoginTry.status).toBe(401);
+    expect(firstInvalidLoginTry.statusText).toBe(InvalidCredentialsError.name);
+    expect(secondValidLoginTry.statusText).toBe(InvalidCredentialsError.name);
   });
 
   it("should create a user and login it", async () => {
@@ -67,7 +67,7 @@ describe("Auth user e2e tests", async () => {
       }),
     });
 
-    const response = await fetch(`${__SERVER_ADDRESS__}/login`, {
+    const response = await fetch(`${__SERVER_ADDRESS__}/sessions`, {
       method: "POST",
       body: JSON.stringify({
         email: "roger@gmail.com",
