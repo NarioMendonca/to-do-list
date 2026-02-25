@@ -11,7 +11,12 @@ export class GetHttpElements {
     return req.url ?? "";
   }
 
-  public static async getBody(req: IncomingMessage): Promise<string> {
+  public static async getBody(
+    req: IncomingMessage,
+  ): Promise<string | undefined> {
+    if (req.method === "GET" || req.headers["content-length"] === "0") {
+      return undefined;
+    }
     const getBodyData = new Promise<string>((resolve, reject) => {
       let data = "";
       req.once("data", (chunk) => {
@@ -24,8 +29,8 @@ export class GetHttpElements {
     });
     const bodyData = await getBodyData;
     try {
-      const data = JSON.parse(bodyData);
-      return data;
+      const bodyDataInJson = JSON.parse(bodyData);
+      return bodyDataInJson;
     } catch (error) {
       if (error instanceof Error) {
         throw new InvalidBodyError(error.message);
