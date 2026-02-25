@@ -28,11 +28,7 @@ export class GetHttpElements {
       return data;
     } catch (error) {
       if (error instanceof Error) {
-        const errorMessage =
-          error.message === "Unexpected end of JSON input"
-            ? "Body must be in JSON"
-            : error.message;
-        throw new InvalidBodyError(errorMessage);
+        throw new InvalidBodyError(error.message);
       }
       throw error;
     }
