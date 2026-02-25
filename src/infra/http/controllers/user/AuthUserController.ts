@@ -1,41 +1,35 @@
-import { Controller } from "../Controller.js";
 import { AuthUtils, weekInSeconds, getDateInSeconds } from "./AuthUtils.js";
-import { AuthUserUseCase } from "../../../../usecases/user/AuthUserUseCase.js";
 import { AppRequest, AppResponse } from "../../core/AppTypes.js";
+import { makeAuthUserUseCase } from "../../../../usecases/user/factories/makeAuthUserUseCase.js";
+import z from "zod";
 
-export class AuthUserController extends Controller {
-  private readonly authUtils = new AuthUtils();
-  constructor(private readonly authUserUseCase: AuthUserUseCase) {
-    super();
-  }
+const authUtils = new AuthUtils();
+export async function authUserController(req: AppRequest, res: AppResponse) {
+  const authUserUseCase = makeAuthUserUseCase();
+  const bodySchema = z.object({
+    email: z.string(),
+    password: z.string(),
+  });
 
-  public handle = async (req: AppRequest, res: AppResponse) => {
-    const schema = {
-      email: "string",
-      password: "string",
-    } as const;
+  const { email, password } = bodySchema.parse(req.body);
+  const userDTO = await authUserUseCase.handle({ email, password });
 
-    const data = req.body;
-    const { email, password } = this.validateData({ data, schema });
-    const userDTO = await this.authUserUseCase.handle({ email, password });
+  const accessTokenPayload = await authUtils.makeToken({
+    userId: userDTO.id,
+    exp: getDateInSeconds() + 60 * 10, // 10 minutes,
+  });
 
-    const accessTokenPayload = await this.authUtils.makeToken({
-      userId: userDTO.id,
-      exp: getDateInSeconds() + 60 * 10, // 10 minutes,
-    });
+  const refreshTokenPayload = await authUtils.makeToken({
+    userId: userDTO.id,
+    exp: getDateInSeconds() + weekInSeconds, // 1 week
+  });
 
-    const refreshTokenPayload = await this.authUtils.makeToken({
-      userId: userDTO.id,
-      exp: getDateInSeconds() + weekInSeconds, // 1 week
-    });
-
-    res.writeHead(200, "Authenticated", {
-      "Set-Cookie": [
-        `accessToken=${accessTokenPayload}; HttpOnly; SameSite=Strict; Path=/`,
-        `refreshToken=${refreshTokenPayload}; HttpOnly; SameSite=Strict; Path=/`,
-      ],
-    });
-    res.write(JSON.stringify(userDTO));
-    res.end();
-  };
+  res.writeHead(200, "Authenticated", {
+    "Set-Cookie": [
+      `accessToken=${accessTokenPayload}; HttpOnly; SameSite=Strict; Path=/`,
+      `refreshToken=${refreshTokenPayload}; HttpOnly; SameSite=Strict; Path=/`,
+    ],
+  });
+  res.write(JSON.stringify(userDTO));
+  res.end();
 }

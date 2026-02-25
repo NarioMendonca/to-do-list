@@ -1,5 +1,4 @@
 import { AppRequest, AppResponse } from "../../core/AppTypes.js";
-import { Controller } from "../Controller.js";
 import {
   AuthUtils,
   getDateInSeconds,
@@ -7,37 +6,33 @@ import {
   weekInSeconds,
 } from "./AuthUtils.js";
 
-export class RefreshSessionController extends Controller {
-  private readonly authUtils: AuthUtils;
-  constructor() {
-    super();
-    this.authUtils = new AuthUtils();
-  }
+const authUtils = new AuthUtils();
 
-  public handle = async (req: AppRequest, res: AppResponse): Promise<void> => {
-    const payload = JSON.parse(req.getCookie("refreshToken"));
-    const cookieToken: TokenPayload =
-      await this.authUtils.decryptToken(payload);
+export async function refreshSessionController(
+  req: AppRequest,
+  res: AppResponse,
+) {
+  const payload = JSON.parse(req.getCookie("refreshToken"));
+  const cookieToken: TokenPayload = await authUtils.decryptToken(payload);
 
-    this.authUtils.isTokenValid(cookieToken);
+  authUtils.isTokenValid(cookieToken);
 
-    const accessToken = await this.authUtils.makeToken({
-      userId: cookieToken.userId,
-      exp: getDateInSeconds() + 60 * 10,
-    });
+  const accessToken = await authUtils.makeToken({
+    userId: cookieToken.userId,
+    exp: getDateInSeconds() + 60 * 10,
+  });
 
-    const refreshToken = await this.authUtils.makeToken({
-      userId: cookieToken.userId,
-      exp: getDateInSeconds() + weekInSeconds,
-    });
+  const refreshToken = await authUtils.makeToken({
+    userId: cookieToken.userId,
+    exp: getDateInSeconds() + weekInSeconds,
+  });
 
-    res.writeHead(200, "refresh session", {
-      "Set-Cookie": [
-        `accessToken=${accessToken}; HttpOnly; SameSite=Strict; Path=/`,
-        `refreshToken=${refreshToken}; HttpOnly; SameSite=Strict; Path=/`,
-      ],
-    });
-    res.write(JSON.stringify({ userId: cookieToken.userId }));
-    res.end();
-  };
+  res.writeHead(200, "refresh session", {
+    "Set-Cookie": [
+      `accessToken=${accessToken}; HttpOnly; SameSite=Strict; Path=/`,
+      `refreshToken=${refreshToken}; HttpOnly; SameSite=Strict; Path=/`,
+    ],
+  });
+  res.write(JSON.stringify({ userId: cookieToken.userId }));
+  res.end();
 }
