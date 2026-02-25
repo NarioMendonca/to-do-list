@@ -1,7 +1,7 @@
 import { TodoListDTO } from "../../../model/TodoList.js";
 
 export async function fetchLists(serverAddress: string, sessionCookie: string) {
-  const getTodoItemsResponse = await fetch(`${serverAddress}/todolists/fetch`, {
+  const getTodoItemsResponse = await fetch(`${serverAddress}/todolists`, {
     method: "GET",
     headers: {
       Cookie: sessionCookie!,

@@ -20,7 +20,7 @@ export async function createAndAuthenticate(
     body: JSON.stringify(userData),
   });
 
-  const authenticateUserResponse = await fetch(`${serverAddress}/login`, {
+  const authenticateUserResponse = await fetch(`${serverAddress}/sessions`, {
     method: "POST",
     body: JSON.stringify({
       email: userData.email,

@@ -19,7 +19,7 @@ export async function createTodoList(
     },
   });
 
-  const getListResponse = await fetch(`${serverAddress}/todolists/fetch`, {
+  const getListResponse = await fetch(`${serverAddress}/todolists`, {
     method: "GET",
     headers: {
       Cookie: sessionCookie,
