@@ -13,7 +13,7 @@ export async function AddItemToTodoListController(
   const paramsSchema = z.object({
     listId: z.uuid(),
   });
-  const { title, description } = bodySchema.parse(await req.getBody());
+  const { title, description } = bodySchema.parse(req.body);
   const { listId } = paramsSchema.parse(req.params);
 
   const addItemToTodoList = makeAddItemToTodoList();

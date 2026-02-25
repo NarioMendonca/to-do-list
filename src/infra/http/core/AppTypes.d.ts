@@ -2,7 +2,7 @@ import { IncomingMessage, ServerResponse } from "node:http";
 
 interface AppRequest extends IncomingMessage {
   path: string;
-  getBody: () => Promise<string>;
+  body: unknown;
   queryParams: Record<string, string>;
   getCookie: (cookieName: string) => string;
   params: Record<string, string>;

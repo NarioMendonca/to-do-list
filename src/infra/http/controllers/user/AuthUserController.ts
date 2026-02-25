@@ -15,7 +15,7 @@ export class AuthUserController extends Controller {
       password: "string",
     } as const;
 
-    const data = await this.getBody(req);
+    const data = req.body;
     const { email, password } = this.validateData({ data, schema });
     const userDTO = await this.authUserUseCase.handle({ email, password });
 

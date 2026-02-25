@@ -49,6 +49,7 @@ export class App {
           request.path,
           request.method,
         );
+        request.body = await GetHttpElements.getBody(req);
         await this.handleController(route, request, res);
         return;
       } catch (err) {
@@ -150,7 +151,6 @@ export class App {
     const request = req as AppRequest;
     request.path = GetHttpElements.getPath(req);
     request.queryParams = GetHttpElements.getQueryParams(req);
-    request.getBody = GetHttpElements.getBody.bind(this, req);
     request.getCookie = GetHttpElements.getCookie.bind(this, req);
     request.params = {};
     return request;
