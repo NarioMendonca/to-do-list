@@ -9,7 +9,7 @@ import {
   GetTodoItemParams,
   TodoListRepository,
 } from "../TodoListRepository.js";
-import { db } from "./client.js";
+import { pool } from "./client.js";
 
 export class TodoListPgRepository implements TodoListRepository {
   async save(todoList: TodoList): Promise<void> {
@@ -45,7 +45,7 @@ export class TodoListPgRepository implements TodoListRepository {
         let queryKeys: string = "";
         let queryKeyCount = 0;
         const daysWeekValues = [];
-        // for each day in daysWeekToRepeat, create keys to insert in DB -> ($1, $2)
+        // for each day in daysWeekToRepeat, create keys to insert in db -> ($1, $2)
         // and save their values in valuesToSave
         const listDaysRepeat = todoList.getDaysWeekToRepeat();
         for (const index in listDaysRepeat) {
@@ -58,16 +58,19 @@ export class TodoListPgRepository implements TodoListRepository {
         }
         const daysWeekQuery = `INSERT INTO days_who_todo_list_repeat (day_id, todo_list_id) VALUES ${queryKeys}`;
 
+        const client = await pool.connect();
         try {
-          await db.query("BEGIN");
-          await db.query(createListQuery, createListValues);
+          await client.query("BEGIN");
+          await client.query(createListQuery, createListValues);
           if (listDaysRepeat.length != 0) {
-            await db.query(daysWeekQuery, daysWeekValues);
+            await client.query(daysWeekQuery, daysWeekValues);
           }
-          await db.query("COMMIT");
+          await client.query("COMMIT");
         } catch (error) {
-          await db.query("ROLLBACK");
+          await client.query("ROLLBACK");
           throw error;
+        } finally {
+          client.release();
         }
 
         continue;
@@ -75,8 +78,9 @@ export class TodoListPgRepository implements TodoListRepository {
       if (event instanceof ItemAddedToListEvent) {
         const todoData = event.getItemAdded();
         const listId = event.getTodoListToAddItemId();
+        const client = await pool.connect();
         try {
-          await db.query("BEGIN");
+          await client.query("BEGIN");
           const createTodoQuery = `INSERT INTO todo_items (id, title, description, is_completed, todo_list_id) 
           VALUES ($1,$2,$3,$4,$5)`;
           const createTodoValues = [
@@ -86,21 +90,23 @@ export class TodoListPgRepository implements TodoListRepository {
             todoData.getIsCompleted(),
             listId,
           ];
-          await db.query(createTodoQuery, createTodoValues);
-          await db.query(
+          await client.query(createTodoQuery, createTodoValues);
+          await client.query(
             `INSERT INTO todo_items_in_todo_list (todo_list_id, todo_item_id) VALUES ($1, $2)`,
             [listId, todoData.getId()],
           );
-          await db.query("COMMIT");
+          await client.query("COMMIT");
         } catch (error) {
-          await db.query("ROLLBACK");
+          await client.query("ROLLBACK");
           throw error;
+        } finally {
+          client.release();
         }
         continue;
       }
 
       if (event instanceof ListFinishedEvent) {
-        await db.query(`UPDATE todo_lists SET finished_dt=$1`, [
+        await pool.query(`UPDATE todo_lists SET finished_dt=$1`, [
           todoList.getFinishedDt(),
         ]);
         continue;
@@ -111,9 +117,10 @@ export class TodoListPgRepository implements TodoListRepository {
   }
 
   async restore(listId: string): Promise<TodoList | null> {
-    const queryData = await db.query("SELECT * FROM todo_lists WHERE id = $1", [
-      listId,
-    ]);
+    const queryData = await pool.query(
+      "SELECT * FROM todo_lists WHERE id = $1",
+      [listId],
+    );
     if (queryData.rowCount === 0) {
       return null;
     }
@@ -137,7 +144,7 @@ export class TodoListPgRepository implements TodoListRepository {
     todoListId,
     todoItemId,
   }: GetTodoItemParams): Promise<TodoItem | null> {
-    const queryData = await db.query(
+    const queryData = await pool.query(
       `SELECT * FROM todo_items_in_todo_list 
       WHERE todo_list_id = $1 AND todo_item_id = $2`,
       [todoListId, todoItemId],
