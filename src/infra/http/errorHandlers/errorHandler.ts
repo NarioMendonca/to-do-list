@@ -45,7 +45,7 @@ export function errorHandler(
   }
 
   if (error instanceof ZodError) {
-    res.writeHead(400, "Bad Request");
+    res.writeHead(400, "InvalidBodyError");
     res.end(
       JSON.stringify({
         message: env.NODE_ENV !== "prod" ? error.stack : error.message,

@@ -1,19 +1,15 @@
+import z from "zod";
 import { UserPgReadModelRepository } from "../../../../repositories/postgres-pg/UserPgReadRepository.js";
 import { AppRequest, AppResponse } from "../../core/AppTypes.js";
-import { Controller } from "../Controller.js";
 
-export class UserReadings extends Controller {
+export class UserReadings {
   private readonly userReadModelRepository = new UserPgReadModelRepository();
 
   public get = async (req: AppRequest, res: AppResponse) => {
-    const queryParamSchema = {
-      userId: "string",
-    } as const;
-    const queryParams = this.getQueryParams(req);
-    const { userId } = this.validateData({
-      schema: queryParamSchema,
-      data: queryParams,
+    const queryParamsSchema = z.object({
+      userId: z.string(),
     });
+    const { userId } = queryParamsSchema.parse(req.queryParams);
 
     const user = await this.userReadModelRepository.get(userId);
 

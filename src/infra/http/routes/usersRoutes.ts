@@ -1,10 +1,10 @@
-import { UserControllers } from "../controllers/user/UserControllers.js";
+import { authUserController } from "../controllers/user/AuthUserController.js";
+import { createUserController } from "../controllers/user/CreateUserController.js";
+import { refreshSessionController } from "../controllers/user/RefreshSessionController.js";
 import { App } from "../core/App.js";
 
-const userController = new UserControllers();
-
 export function usersRoutes(server: App) {
-  server.post("/users", [], userController.create);
-  server.post("/sessions", [], userController.auth);
-  server.put("/sessions", [], userController.refreshSession);
+  server.post("/users", [], createUserController);
+  server.post("/sessions", [], authUserController);
+  server.put("/sessions", [], refreshSessionController);
 }
