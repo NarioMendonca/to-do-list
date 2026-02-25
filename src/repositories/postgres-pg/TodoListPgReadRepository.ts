@@ -58,7 +58,7 @@ export class TodoListPgReadRepository implements TodoListReadRepository {
       motivationPhrase: list.motivation_phrase,
       plannedDtToMake: list.planned_dt_to_make,
       expirationDt: list.expiration_dt,
-      daysWeekToRepeat: list.days_week_to_repeat,
+      daysWeekToRepeat: list.days_week_to_repeat ?? [],
       finishedDt: list.finished_dt,
       total_items: list.total_items,
       createdAt: list.created_at,

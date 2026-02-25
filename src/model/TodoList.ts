@@ -44,5 +44,5 @@ export type TodoListDBModel = {
   expiration_dt: string | null;
   finished_dt: string | null;
   created_at: string;
-  days_week_to_repeat: DayNumber[];
+  days_week_to_repeat: DayNumber[] | null;
 };
