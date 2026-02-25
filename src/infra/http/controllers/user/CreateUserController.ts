@@ -13,7 +13,7 @@ export class CreateUserController extends Controller {
       email: "string",
       password: "string",
     } as const;
-    const data = await this.getBody(req);
+    const data = req.body;
     const userData = this.validateData({ data, schema });
     await this.createUserUseCase.handle(userData);
     res.writeHead(201, "Created");

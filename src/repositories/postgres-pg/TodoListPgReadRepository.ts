@@ -50,7 +50,6 @@ export class TodoListPgReadRepository implements TodoListReadRepository {
     );
 
     const lists = queryData.rows as TodoListDBModel[];
-
     return lists.map((list) => ({
       id: list.id,
       ownerId: list.owner_id,

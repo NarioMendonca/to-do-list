@@ -6,7 +6,7 @@ export async function createTodoListController(
   req: AppRequest,
   res: AppResponse,
 ) {
-  const body = await req.getBody();
+  const body = req.body;
   const todoListData = validateCreateTodolistParams(body);
 
   const createTodoListUseCase = makeCreateTodoListUseCase();
