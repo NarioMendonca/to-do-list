@@ -1,9 +1,9 @@
 import env from "../../infra/env/getEnvs.js";
-import { db } from "../../repositories/postgres-pg/client.js";
+import { pool } from "../../repositories/postgres-pg/client.js";
 
 export async function clearDatabase() {
   if (env.NODE_ENV === "test") {
-    await db.query(
+    await pool.query(
       `DO $$
       DECLARE
         r RECORD;

@@ -1,11 +1,11 @@
 import { TodoItemDTO } from "../../model/TodoItem.js";
 import { TodoListDBModel, TodoListDTO } from "../../model/TodoList.js";
 import { TodoListReadRepository } from "../TodoListReadRepository.js";
-import { db } from "./client.js";
+import { pool } from "./client.js";
 
 export class TodoListPgReadRepository implements TodoListReadRepository {
   async get(listId: string): Promise<TodoListDTO | null> {
-    const listData = await db.query(
+    const listData = await pool.query(
       `SELECT 
         tl.*, 
         ARRAY_AGG(tr.day_id) FILTER (WHERE tr.day_id IS NOT NULL) as days_week_to_repeat 
@@ -37,7 +37,7 @@ export class TodoListPgReadRepository implements TodoListReadRepository {
   }
 
   async fetchByUser(userId: string): Promise<TodoListDTO[]> {
-    const queryData = await db.query(
+    const queryData = await pool.query(
       `SELECT 
         tl.*, 
         ARRAY_AGG(tr.day_id) FILTER (WHERE tr.day_id IS NOT NULL) as days_week_to_repeat
@@ -66,7 +66,7 @@ export class TodoListPgReadRepository implements TodoListReadRepository {
   }
 
   async fetchListItems(listId: string): Promise<TodoItemDTO[]> {
-    const query = await db.query(
+    const query = await pool.query(
       `
       SELECT id, title, description, is_completed, created_at 
       FROM todo_items 

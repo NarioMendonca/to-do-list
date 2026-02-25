@@ -1,10 +1,10 @@
 import { UserDTO, UserWithPassword } from "../../model/User.js";
 import { UserReadModelRepository } from "../UserReadRepository.js";
-import { db } from "./client.js";
+import { pool } from "./client.js";
 
 export class UserPgReadModelRepository implements UserReadModelRepository {
   async get(userId: string): Promise<UserDTO | null> {
-    const userQuery = await db.query(
+    const userQuery = await pool.query(
       `SELECT id, name, email, is_email_verified FROM users WHERE id = $1`,
       [userId],
     );
@@ -21,7 +21,7 @@ export class UserPgReadModelRepository implements UserReadModelRepository {
   }
 
   async getAllDataByEmail(email: string): Promise<UserWithPassword | null> {
-    const userQuery = await db.query(
+    const userQuery = await pool.query(
       `SELECT id, name, email, is_email_verified, password_hash FROM users WHERE email = $1`,
       [email],
     );

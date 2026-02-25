@@ -16,4 +16,4 @@ pool.on("error", (error) => {
   throw new DatabaseConnectionError("error to connect with database");
 });
 
-export { pool as db };
+export { pool };

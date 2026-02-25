@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { InvalidBodyError } from "../../../errors/infra/controller/InvalidBodyError.js";
 import { AlreadyExistsError } from "../../../errors/usecases/AlreadyExistsError.js";
-import { db } from "../../../repositories/postgres-pg/client.js";
+import { pool } from "../../../repositories/postgres-pg/client.js";
 
 describe("Create user e2e tests", () => {
   it("should returns 400 if request body is invalid", async () => {
@@ -10,7 +10,7 @@ describe("Create user e2e tests", () => {
       body: JSON.stringify({ name: "Roger" }),
     });
 
-    const userDBData = await db.query(`SELECT * FROM users`);
+    const userDBData = await pool.query(`SELECT * FROM users`);
 
     expect(response.status).toBe(400);
     expect(response.statusText).toBe(InvalidBodyError.name);
@@ -34,7 +34,7 @@ describe("Create user e2e tests", () => {
       body: JSON.stringify({ ...userData }),
     });
 
-    const userDBData = await db.query(`SELECT * FROM users`);
+    const userDBData = await pool.query(`SELECT * FROM users`);
 
     expect(response.status).toBe(409);
     expect(response.statusText).toBe(AlreadyExistsError.name);
@@ -52,7 +52,7 @@ describe("Create user e2e tests", () => {
       method: "POST",
       body: JSON.stringify(userData),
     });
-    const userDBData = await db.query(`SELECT * FROM users`);
+    const userDBData = await pool.query(`SELECT * FROM users`);
 
     expect(response.status).toBe(201);
     expect(response.statusText).toBe("Created");

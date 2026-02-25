@@ -2,11 +2,11 @@ import { UserEntity } from "../../entities/user/User.js";
 import { User } from "../../model/User.js";
 import { isEmailVerifiedParams } from "../UserRepository.js";
 import { UserRepository } from "../UserRepository.js";
-import { db } from "./client.js";
+import { pool } from "./client.js";
 
 export class UserPgRepository implements UserRepository {
   async create(userEntity: UserEntity): Promise<void> {
-    await db.query(
+    await pool.query(
       `INSERT INTO users (id, name, email, is_email_verified, password_hash, created_at) 
     VALUES (
       $1,
@@ -28,9 +28,10 @@ export class UserPgRepository implements UserRepository {
   }
 
   async findByEmail(email: string): Promise<UserEntity | null> {
-    const queryResult = await db.query("SELECT * FROM users WHERE email = $1", [
-      email,
-    ]);
+    const queryResult = await pool.query(
+      "SELECT * FROM users WHERE email = $1",
+      [email],
+    );
     if (queryResult.rowCount === 0) {
       return null;
     }
@@ -45,7 +46,7 @@ export class UserPgRepository implements UserRepository {
   }
 
   async alreadyExists(email: string): Promise<boolean> {
-    const queryData = await db.query(
+    const queryData = await pool.query(
       "SELECT email FROM users WHERE email = $1",
       [email],
     );
@@ -56,7 +57,7 @@ export class UserPgRepository implements UserRepository {
   }
 
   async exists(userId: string): Promise<boolean> {
-    const queryData = await db.query("SELECT id FROM users WHERE id = $1", [
+    const queryData = await pool.query("SELECT id FROM users WHERE id = $1", [
       userId,
     ]);
     if (queryData.rowCount == 0) {
@@ -66,7 +67,7 @@ export class UserPgRepository implements UserRepository {
   }
 
   async isEmailVerified(params: isEmailVerifiedParams): Promise<boolean> {
-    const isEmailVerifiedQuery = await db.query(
+    const isEmailVerifiedQuery = await pool.query(
       `SELECT is_email_verified FROM users WHERE ${params.id ? "id" : "email"} = $1`,
       [params.id ?? params.email],
     );
