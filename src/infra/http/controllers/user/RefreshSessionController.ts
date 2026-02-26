@@ -6,23 +6,21 @@ import {
   weekInSeconds,
 } from "./AuthUtils.js";
 
-const authUtils = new AuthUtils();
-
 export async function refreshSessionController(
   req: AppRequest,
   res: AppResponse,
 ) {
   const payload = JSON.parse(req.getCookie("refreshToken"));
-  const cookieToken: TokenPayload = await authUtils.decryptToken(payload);
+  const cookieToken: TokenPayload = await AuthUtils.decryptToken(payload);
 
-  authUtils.isTokenValid(cookieToken);
+  AuthUtils.isTokenValid(cookieToken);
 
-  const accessToken = await authUtils.makeToken({
+  const accessToken = await AuthUtils.makeToken({
     userId: cookieToken.userId,
     exp: getDateInSeconds() + 60 * 10,
   });
 
-  const refreshToken = await authUtils.makeToken({
+  const refreshToken = await AuthUtils.makeToken({
     userId: cookieToken.userId,
     exp: getDateInSeconds() + weekInSeconds,
   });

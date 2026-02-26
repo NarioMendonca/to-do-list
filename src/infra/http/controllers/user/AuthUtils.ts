@@ -11,12 +11,9 @@ export type TokenPayload = {
 };
 
 export class AuthUtils {
-  private readonly encryptor: Encryptor;
-  constructor() {
-    this.encryptor = new Encryptor();
-  }
+  private static readonly encryptor: Encryptor = new Encryptor();
 
-  public makeToken = async ({ userId, exp }: TokenPayload) => {
+  public static makeToken = async ({ userId, exp }: TokenPayload) => {
     const tokenPayload = JSON.stringify(
       await this.encryptor.encrypt(
         JSON.stringify({
@@ -29,7 +26,7 @@ export class AuthUtils {
     return tokenPayload;
   };
 
-  public decryptToken = async (payload: PayLoad) => {
+  public static decryptToken = async (payload: PayLoad) => {
     let cookieDecrypted: string;
     try {
       cookieDecrypted = await this.encryptor.decrypt({
@@ -47,13 +44,13 @@ export class AuthUtils {
     return refreshToken;
   };
 
-  public isTokenValid = (token: TokenPayload) => {
+  public static isTokenValid = (token: TokenPayload) => {
     if (token.exp < this.getTimeInSeconds()) {
       throw new InvalidSession("token expired", 401);
     }
   };
 
-  public getTimeInSeconds() {
+  public static getTimeInSeconds() {
     return Math.floor(new Date().getTime() / 1000);
   }
 }
