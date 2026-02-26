@@ -3,7 +3,6 @@ import { AppRequest, AppResponse } from "../../core/AppTypes.js";
 import { makeAuthUserUseCase } from "../../../../usecases/user/factories/makeAuthUserUseCase.js";
 import z from "zod";
 
-const authUtils = new AuthUtils();
 export async function authUserController(req: AppRequest, res: AppResponse) {
   const authUserUseCase = makeAuthUserUseCase();
   const bodySchema = z.object({
@@ -14,12 +13,12 @@ export async function authUserController(req: AppRequest, res: AppResponse) {
   const { email, password } = bodySchema.parse(req.body);
   const userDTO = await authUserUseCase.handle({ email, password });
 
-  const accessTokenPayload = await authUtils.makeToken({
+  const accessTokenPayload = await AuthUtils.makeToken({
     userId: userDTO.id,
     exp: getDateInSeconds() + 60 * 10, // 10 minutes,
   });
 
-  const refreshTokenPayload = await authUtils.makeToken({
+  const refreshTokenPayload = await AuthUtils.makeToken({
     userId: userDTO.id,
     exp: getDateInSeconds() + weekInSeconds, // 1 week
   });
