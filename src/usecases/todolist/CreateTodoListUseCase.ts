@@ -6,7 +6,7 @@ import { UseCase } from "../UseCase.js";
 import { NotFoundError } from "../../errors/usecases/NotFoundError.js";
 import { UserRepository } from "../../repositories/UserRepository.js";
 
-type CreateTodoListUseCaseInputDTO = {
+type InputDTO = {
   ownerId: string;
   title: string;
   todoMotivationPhrase: string | null;
@@ -15,12 +15,9 @@ type CreateTodoListUseCaseInputDTO = {
   daysWeekToRepeat: DayNumber[] | null;
 };
 
-type CreateTodoListUseCaseOutputDTO = void;
+type OutputDTO = string;
 
-export class CreateTodoListUseCase implements UseCase<
-  CreateTodoListUseCaseInputDTO,
-  CreateTodoListUseCaseOutputDTO
-> {
+export class CreateTodoListUseCase implements UseCase<InputDTO, OutputDTO> {
   constructor(
     private userRepository: UserRepository,
     private todoListRepository: TodoListRepository,
@@ -34,14 +31,16 @@ export class CreateTodoListUseCase implements UseCase<
     todoMotivationPhrase,
     plannedDtToMake,
     expirationDt,
-  }: CreateTodoListUseCaseInputDTO): Promise<void> {
+  }: InputDTO): Promise<OutputDTO> {
     const todoListHasOwnerId = await this.userRepository.exists(ownerId);
     if (!todoListHasOwnerId) {
       throw new NotFoundError("Owner to todoList not found");
     }
 
+    const id = this.idGeneratorService.generateUUID();
+
     const todoList = TodoList.create({
-      id: this.idGeneratorService.generateUUID(),
+      id,
       ownerId,
       title,
       daysWeekToRepeat,
@@ -51,5 +50,7 @@ export class CreateTodoListUseCase implements UseCase<
     });
 
     await this.todoListRepository.save(todoList);
+
+    return id;
   }
 }
