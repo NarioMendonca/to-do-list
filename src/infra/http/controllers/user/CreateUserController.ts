@@ -11,6 +11,8 @@ export async function createUserController(req: AppRequest, res: AppResponse) {
   });
   const userData = bodySchema.parse(req.body);
   await createUserUseCase.handle(userData);
-  res.writeHead(201, "Created");
+  res.writeHead(201, "Created", {
+    location: `/users/me`,
+  });
   res.end();
 }

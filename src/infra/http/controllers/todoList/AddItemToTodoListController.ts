@@ -17,8 +17,14 @@ export async function AddItemToTodoListController(
   const { listId } = paramsSchema.parse(req.params);
 
   const addItemToTodoList = makeAddItemToTodoList();
-  await addItemToTodoList.handle({ title, description, listId });
+  await addItemToTodoList.handle({
+    title,
+    description,
+    listId,
+  });
 
-  res.writeHead(201, "Created");
+  res.writeHead(201, "Created", {
+    location: `/todolists/:listId/todos`,
+  });
   res.end();
 }
