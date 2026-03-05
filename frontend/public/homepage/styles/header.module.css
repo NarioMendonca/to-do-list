@@ -1,0 +1,56 @@
+@import url("../../globalStyles/globals.css");
+
+#header {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 10;
+    background-color: #ffffffcc;
+    backdrop-filter: blur(1rem);
+    display: flex;
+    padding: .75rem;
+    justify-content: space-around;
+    border-bottom: 1px solid var(--color-gray-200);
+
+    .logo {
+        display: flex;
+        align-items: center;
+        font-weight: bold;
+        font-size: 1.25rem;
+        gap: .5rem;
+
+        .logo-icon { 
+            width: 2rem; height: 2rem;
+            color: var(--color-blue-600);
+        };
+    }
+
+    .navbar {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        
+        .login {
+            text-decoration: none;
+            color: var(--color-gray-600);
+            transition: color .2s;
+
+            &:hover {
+                color: var(--black);
+            }
+        }
+
+        .registration {
+            text-decoration: none;
+            color: var(--color-white);
+            padding: .65rem 1.5rem;
+            border-radius: 8px;
+            background-color: var(--color-blue-600);
+            transition: background-color .2s;
+
+            &:hover {
+                background-color: var(--color-blue-700);
+            }
+        }
+    }
+}
