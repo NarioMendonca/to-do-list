@@ -7,6 +7,9 @@
     <link rel="stylesheet" href="styles/styles.module.css">
     <link rel="stylesheet" href="styles/hero.module.css">
     <link rel="stylesheet" href="styles/header.module.css">
+    <link rel="stylesheet" href="styles/functionalities-section.module.css">
+    <link rel="stylesheet" href="styles/how-works-section.module.css">
+    <link rel="stylesheet" href="styles/footer.module.css">
 </head>
 <body>
     <header id="header">
@@ -89,9 +92,12 @@
             <p>Criamos a ferramenta perfeita para simplificar seu dia a dia sem adicionar complexidade</p>
             <div class="cards">
                 <div class="card">
-                    <svg xmlns="http://www.w3.org/2000/svg">
-                        <use href="./icons.svg#square-check"></use>
-                    </svg>
+                    
+                    <div class="icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg">
+                            <use href="./icons.svg#square-check"></use>
+                        </svg>
+                    </div>
                     <h2>Interface Intuitiva</h2>
                     <p>
                         Design limpo e fácil de usar.
@@ -99,9 +105,11 @@
                     </p>
                 </div>
                 <div class="card">
-                    <svg xmlns="http://www.w3.org/2000/svg">
-                        <use href="./icons.svg#zap"></use>
-                    </svg>
+                    <div class="icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg">
+                            <use href="./icons.svg#zap"></use>
+                        </svg>
+                    </div>
                     <h2>Rápido e Eficiente</h2>
                     <p>
                         Acesse suas tarefas instantaneamente de qualquer dispositivo.
@@ -109,9 +117,11 @@
                     </p>
                 </div>
                 <div class="card">
-                    <svg xmlns="http://www.w3.org/2000/svg">
-                        <use href="./icons.svg#smile"></use>
-                    </svg>
+                    <div class="icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg">
+                            <use href="./icons.svg#smile"></use>
+                        </svg>
+                    </div>
                     <h2>Simplifique sua Rotina</h2>
                     <p>
                         Menos estresse, mais produtividade.
@@ -119,9 +129,11 @@
                     </p>
                 </div>
                 <div class="card">
-                    <svg xmlns="http://www.w3.org/2000/svg">
-                        <use href="./icons.svg#shield"></use>
-                    </svg>
+                    <div class="icon-wrapper">
+                        <svg xmlns="http://www.w3.org/2000/svg">
+                            <use href="./icons.svg#shield"></use>
+                        </svg>
+                    </div>
                     <h2>Seus Dados Seguros</h2>
                     <p>
                         Privacidade em primeiro lugar.
@@ -135,7 +147,104 @@
             <h1>Três passos para uma vida mais organizada</h1>
             <p>Simplicidade é a chave. Sem curvas de aprendizado, sem manual de instruções.</p>
             <div class="demonstration">
-                <div class="list-example"></div>
+                <div class="list-example">
+                    <div class="example-title">
+                        <h2>Minhas Tarefas</h2>
+                        <div class="example-window-buttons">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                    <div class="progress-bar">
+
+                    </div>
+                    <div class="example-todos-wrap">
+                        <div class="example-todo example-todo-finished">
+                            <div class="icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg">
+                                    <use href="./icons.svg#circle-check"></use>
+                                </svg>
+                            </div>
+                            Fazer compras do mês
+                        </div>
+                        <div class="example-todo">
+                            <div class="icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg">
+                                    <use href="./icons.svg#circle"></use>
+                                </svg>
+                            </div>
+                            Estudar
+                        </div>
+                        <div class="example-todo">
+                            <div class="icon-wrapper">
+                                <svg xmlns="http://www.w3.org/2000/svg">
+                                    <use href="./icons.svg#circle"></use>
+                                </svg>
+                            </div>
+                            Fazer exercícios
+                        </div>
+                    </div>
+                    <button>
+                        + Adicionar Tarefa
+                    </button>
+                </div>
+                <div class="steps">
+                    <ol type="1">
+                        <li>
+                            <div class="step-count">
+                                1
+                                <div class="icon-wrapper">
+                                    <svg xmlns="http://www.w3.org/2000.svg">
+                                        <use href="./icons.svg#plus"></use>
+                                    </svg>
+                                </div>
+                            </div>
+                           <div class="step-description">
+                               <h2>Crie sua conta</h2>
+                               <p>
+                                Em menos de 30 segundos você está pronto para
+                                começar a organizar suas tarefas.
+                               </p>
+                           </div>
+                        </li>
+                        <li>
+                            <div class="step-count">
+                                2 
+                                <div class="icon-wrapper">
+                                    <svg xmlns="http://www.w3.org/2000.svg">
+                                        <use href="./icons.svg#circle-check"></use>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="step-description">
+                                <h2>Adicione suas tarefas</h2>
+                                <p>
+                                    Digite e pronto.
+                                    Sem formulários complicados,
+                                    sem configurações desnecessárias.
+                                </p>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="step-count">
+                                3
+                                <div class="icon-wrapper">
+                                    <svg xmlns="http://www.w3.org/2000.svg">
+                                        <use href="./icons.svg#trophy"></use>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="step-description">
+                                <h2>Conquiste seus objetivos</h2>
+                                <p>
+                                    Marque como concluído e sinta
+                                    a satisfação de ver seu progresso todos os dias.
+                                </p>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
                 <div class="steps-to-use"></div>
             </div>
         </section>
@@ -146,41 +255,65 @@
                 <p>
                     Junte-se a milhares de pessoas que já transformaram a maneira como organizam suas atividades diárias.
                 </p>
-                <a href="#">Começar Gratuitamente <span class="left-arrow-icon"></span></a>
+                <a href="#">
+                    Começar Gratuitamente
+                     <svg xmlns="http://www.w3.org/2000.svg">
+                        <use href="./icons.svg#arrow-right"></use>
+                    </svg>
+                </a>
                 <ul>
-                    <li><span class="check-circle-icon"></span>Sem cartão de crédito></li>
-                    <li><span class="check-circle-icon"></span>Setup em 30 segundos></li>
-                    <li><span class="check-circle-icon"></span>Cancele quando quiser></li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000.svg">
+                            <use href="./icons.svg#circle-check"></use>
+                        </svg>
+                        Sem cartão de crédito
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000.svg">
+                            <use href="./icons.svg#circle-check"></use>
+                        </svg>
+                        Setup em 30 segundos
+                    </li>
+                    <li>
+                        <svg xmlns="http://www.w3.org/2000.svg">
+                            <use href="./icons.svg#circle-check"></use>
+                        </svg>
+                        Cancele quando quiser
+                    </li>
                 </ul>
             </div>
         </section>
     </main>
     <footer>
-        <div class="project-info">
-            <div>
-                <div class="Logo">
-                   <span class="logo-icon"></span>
-                   <span class="logo-text">Todo List</span>
-               </div>
-               <p>
-                    Organize sua vida de forma simples e sem dificuldades.
-                    A plataforma de tarefas que realmente funciona.
-                </p>
-                <div class="social-media">
-                    <div class="github"></div>
-                    <div class="linkedin"></div>
+        <div>
+            <div class="project-info">
+                <div class="enterprise-info">
+                    <div class="logo">
+                       <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg">
+                            <use href="./icons.svg#circle-check"></use>
+                        </svg>
+                       <span class="logo-text">Todo List</span>
+                   </div>
+                   <p>
+                        Organize sua vida de forma simples e sem dificuldades.
+                        A plataforma de tarefas que realmente funciona.
+                    </p>
+                    <div class="social-media">
+                        <div class="github"></div>
+                        <div class="linkedin"></div>
+                    </div>
+                </div>
+                <div class="footer-product">
+                    <h2>Produto</h2>
+                    <ul>
+                        <li>Funcionalidades</li>
+                        <li>Iniciar Gratis</li>
+                    </ul>
                 </div>
             </div>
-            <div class="footer-product">
-                <h2>Produto</h2>
-                <ul>
-                    <li>Funcionalidades</li>
-                    <li>Iniciar Gratis</li>
-                </ul>
+            <div class="dev-info">
+                Desenvolvedor: <a href="https://github.com/NarioMendonca">Nário Mendonça</a>
             </div>
-        </div>
-        <div class="dev-info">
-            Desenvolvedor: <a href="https://github.com/NarioMendonca">Nário Mendonça</a>
         </div>
     </footer>
 </body>

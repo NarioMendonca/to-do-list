@@ -1,0 +1,72 @@
+footer {
+    padding: 4rem 6rem;
+    background-color: var(--color-gray-900);
+    color: var(--color-white);
+
+    > div {
+        max-width: 70rem;
+        min-width: 40rem;
+        margin: auto;
+    }
+    
+    .project-info {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 2px solid var(--color-gray-800);
+        width: 100%;
+        padding: 1rem 0;
+
+        .enterprise-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            flex-basis: 40rem;
+            flex-shrink: 1;
+            .logo {
+                font-size: 1.5rem;
+    
+                .logo-icon { 
+                    width: 2.5rem; height: 2.5rem;
+                };
+            }
+
+            p {
+                font-size: 1.125rem;
+                line-height: 2rem;
+                width: 28rem;
+                color: var(--color-gray-400);
+            }
+        }
+
+        .footer-product {
+            margin-right: 4rem;
+            h2 {
+                font-size: 1.125rem;
+                margin-bottom: 1.5rem;
+                text-transform: uppercase;
+            }
+            ul {
+                list-style-type: none;
+                li {
+                    color: var(--color-gray-300);
+                    margin-bottom: 1rem;
+                }
+            }
+        }
+    }
+
+    .dev-info {
+        padding: 2rem 0;
+        font-weight: bold;
+        color: var(--color-gray-400);
+
+        a {
+            color: var(--color-blue-600);
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
