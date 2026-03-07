@@ -1,5 +1,3 @@
-@import url("../../globalStyles/globals.css");
-
 #hero {
     position: relative;
     height: 100vh;
@@ -9,6 +7,10 @@
         display: flex;
         align-items: center;
         gap: .5rem;
+        font-size: .9rem;
+        text-transform: capitalize;
+        font-weight: 500;
+        margin-bottom: 2rem;
 
         svg {
             width: 1rem;
@@ -108,7 +110,7 @@
         svg:nth-child(1) {
             top: 15%;
             left: 10%;
-            animation-delay: -.5s;
+            animation-delay: -2.5s;
         }
 
         /* trophy */
@@ -155,7 +157,7 @@
         svg:nth-child(8) {
             top: 80%;
             left: 25%;
-            animation-delay: -.8s;
+            animation-delay: -2.8s;
         }
 
         /* clock */
@@ -169,12 +171,14 @@
         svg:nth-child(10) {
             top: 85%;
             left: 75%;
+            animation-delay: -1.3s;
         }
 
         /* bell */
         svg:nth-child(11) {
             top: 80%;
             left: 85%;
+            animation-delay: -2.3s;
         }
 
         /* star */
