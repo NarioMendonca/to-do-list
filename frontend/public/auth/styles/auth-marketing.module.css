@@ -1,0 +1,122 @@
+@import url("../../shared/styles/todo-demonstration.module.css");
+
+#marketing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-image: linear-gradient(135deg, var(--color-blue-600), 30%, var(--color-purple-600));
+
+  .demonstration {
+
+    .list-example {
+      box-shadow: 5px 5px 10px 1px #0000001b;
+      max-width: 32rem;
+
+      .title-icon {
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+      }
+  
+      .icon-wrap {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+  
+        background-color: var(--color-blue-600);
+  
+        svg {
+          color: var(--color-white);
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .example-todos-wrap {
+        padding: 1.5rem 0;
+        border-bottom: 1px solid var(--color-gray-200);
+      }
+    }
+
+    .progress-bar {
+      .bar-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: .875rem;
+        font-weight: 600;
+        margin-top: 1rem;
+        margin-bottom: .5rem;
+
+        .progress {
+          color: var(--color-gray-700);
+        }
+
+        .percent {
+          color: var(--color-blue-700);
+        }
+      }
+
+      .bar {
+        width: 100%;
+        height: .5rem;
+        background-color: var(--color-gray-200);
+        border-radius: 1rem;
+
+        .bar-loaded {
+          width: 33%;
+          height: .5rem;
+          background-image: linear-gradient(90deg, var(--color-blue-600), var(--color-purple-600));
+          border-radius: 1rem;
+        }
+      }
+    }
+  }
+
+  .description {
+    text-align: center;
+    margin-top: 2rem;
+
+    h2 {
+      color: var(--color-gray-100);
+      margin-bottom: 1.5rem;
+    }
+
+    p {
+      color: var(--color-gray-300);
+      font-size: 1.125rem;
+      margin-bottom: 2rem;
+    }
+
+    .cards {
+      display: flex;
+      gap: 1rem;
+
+      .card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 16px;
+        padding: 1rem 3rem;
+        font-size: 1.5rem;
+        font-weight: bold;
+
+        backdrop-filter: blur(16px);
+        background-color: #ffffff2a;
+        border: 1px solid #ffffff2a;
+        color: var(--color-gray-200);
+
+        span {
+          font-size: .875rem;
+          font-weight: 400;
+          color: var(--color-gray-300);
+        }
+      }
+    }
+  }
+}

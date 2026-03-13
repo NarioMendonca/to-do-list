@@ -1,9 +1,5 @@
 @import url("../../globalStyles/globals.css");
 
-body {
-    font-family: var(--font-sans);
-}
-
 .logo {
     display: flex;
     align-items: center;
