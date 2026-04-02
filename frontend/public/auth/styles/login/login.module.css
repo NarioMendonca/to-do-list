@@ -1,0 +1,39 @@
+@import url("../../../globalStyles/globals.css");
+@import url("../auth-form.module.css");
+
+main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+}
+
+#form-container {
+  background-image: linear-gradient(var(--color-blue-50), var(--color-white));
+}
+
+.logo {
+  .icon-wrap {
+      background-color: var(--color-blue-600);
+  }
+}
+
+form {
+  a {
+    color: var(--color-blue-600);
+    align-self: flex-end;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--color-blue-700);
+      text-decoration: underline;
+    }
+  }
+
+  button {
+    background-color: var(--color-blue-600);
+
+    &:hover {
+      background-color: var(--color-blue-700);
+    }
+  }
+}

@@ -1,0 +1,78 @@
+@import url("../../shared/styles/todo-demonstration.module.css");
+
+#how-works {
+    background-image: linear-gradient(var(--color-purple-50), var(--color-blue-50));
+
+    .section-information {
+        background-color: var(--color-purple-100);
+        color: var(--color-purple-600);
+    }
+
+    .demonstration {
+        .steps {
+            ol {
+                list-style-type: none;
+            }
+
+            li {
+                display: flex;
+                align-items: flex-start;
+                gap: 1rem;
+                margin: 2rem;
+
+                .step-count {
+                    position: relative;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 3.5rem;
+                    height: 3.5rem;
+                    border-radius: 1rem;
+                    font-size: 1.5rem;
+                    font-weight: bolder;
+                    box-shadow: 5px 5px 10px var(--color-gray-300);
+
+                    background-image: linear-gradient(135deg, var(--color-blue-600), var(--color-purple-600));
+                    color: var(--color-white);
+
+                    .icon-wrapper {
+                        position: absolute;
+                        top: -15%;
+                        right: -15%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+
+                        width: 2rem;
+                        height: 2rem;
+
+                        background-color: var(--color-purple-100);
+                        color: var(--color-purple-600);
+                        border: 2px solid var(--color-white);
+                        border-radius: 50%;
+
+                        svg {
+                            width: 1rem;
+                            height: 1rem;
+                        }
+                    }
+                }
+
+                .step-description {
+                    display: flex;
+                    flex-direction: column;
+                    gap: .5rem;
+
+                    h2 {
+                        font-size: 1.25rem;
+                    }
+
+                    p {
+                        width: 33rem;
+                        line-height: 1.5rem;
+                    }
+                }
+            }
+        }
+    }
+}

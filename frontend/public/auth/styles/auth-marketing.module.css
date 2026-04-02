@@ -1,0 +1,8 @@
+@import url("../../shared/styles/todo-demonstration.module.css");
+
+#marketing-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}

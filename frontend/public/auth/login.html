@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="styles/login/login.module.css">
+  <link rel="stylesheet" href="styles/login/login-marketing.module.css">
+</head>
+<body>
+  <main>
+      <section id="form-container">
+        <div class="form-wrap">
+          <div class="logo">
+            <div class="icon-wrap">
+              <svg xmlns="http://www.w3.org/2000/svg">
+                <use href="../icons/icons.svg#circle-check"></use>
+              </svg>
+            </div>
+            Todo List
+          </div>
+          <div class="welcome-message">
+            <h1>Bem-vindo de volta!</h1>
+            <p>Entre para continuar organizando suas tarefas</p>
+          </div>
+          <form>
+            <div class="input-wrap">
+              <label for="email-input">E-mail</label>
+              <input 
+                type="email" 
+                id="email-input"
+                placeholder="seu@email.com"
+              >
+            </div>
+            <div class="input-wrap">
+              <label for="password-input">Senha</label>
+              <input 
+                type="password" 
+                id="password-input"
+                placeholder="••••••••"
+              >
+            </div>
+            <a href="#">Esqueceu a senha?</a>
+            <button type="button">
+              Entrar 
+              <svg xmlns="http://www.w3.org/2000/svg">
+                <use href="../icons/icons.svg#arrow-right"></use>
+              </svg>
+            </button>
+          </form>
+          <div class="content-divisor">
+            <div></div><span>ou</span><div></div>
+          </div>
+          <span class="no-account">
+            Não tem uma conta? <a href="#">Criar conta gratuita</a>
+          </span>
+        </div>
+      </section>
+      <section id="marketing-container">
+        <div class="demonstration">
+          <div class="list-example">
+              <div class="example-title">
+                  <div class="title-icon">
+                    <div class="icon-wrap">
+                      <svg xmlns="http://www.w3.org/2000/svg">
+                        <use href="../icons/icons.svg#list-todo"></use>
+                      </svg>
+                    </div>
+                    <h2>Minhas Tarefas</h2>
+                  </div>
+                  <div class="example-window-buttons">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                  </div>
+              </div>
+              <div class="example-todos-wrap">
+                  <div class="example-todo example-todo-finished">
+                      <div class="icon-wrapper">
+                          <svg xmlns="http://www.w3.org/2000/svg">
+                              <use href="../icons/icons.svg#circle-check"></use>
+                          </svg>
+                      </div>
+                      Revisar projeto
+                  </div>
+                  <div class="example-todo">
+                      <div class="icon-wrapper">
+                          <svg xmlns="http://www.w3.org/2000/svg">
+                              <use href="../icons/icons.svg#circle"></use>
+                          </svg>
+                      </div>
+                      Estudar idioma
+                  </div>
+                  <div class="example-todo">
+                      <div class="icon-wrapper">
+                          <svg xmlns="http://www.w3.org/2000/svg">
+                              <use href="../icons/icons.svg#circle"></use>
+                          </svg>
+                      </div>
+                      Exercicios
+                  </div>
+              </div>
+              <div class="progress-bar">
+                <div class="bar-info">
+                  <span class="progress">Progresso</span>
+                  <span class="percent">33%</span>
+                </div>
+                <div class="bar">
+                  <div class="bar-loaded"></div>
+                </div>
+              </div>
+          </div>
+        </div>
+        <div class="description">
+          <h2>Organize seu dia em minutos</h2>
+          <p>Milhares de pessoas já transformaram sua produtividade</p>
+          <div class="cards">
+            <div class="card">
+              10k+
+              <span>Usuários</span>
+            </div>
+            <div class="card">
+              50k+
+              <span>Tarefas</span>
+            </div>
+            <div class="card">
+              4.9★
+              <span>Avaliação</span>
+            </div>
+          </div>
+        </div>
+      </section>
+  </main>
+</body>
+</html>

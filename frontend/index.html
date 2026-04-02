@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="src/styles/global.css">
+  <link rel="stylesheet" href="dist/styles/output.css">
+</head>
+<body>
+  <div id="app">
+    <div class="flex h-svh">
+      <aside class="flex flex-col flex-grow-0 border-r border-r-gray-200">
+        <div class="flex gap-2 p-4 font-semibold border-b border-b-gray-200">
+          <svg class="h-6 w-6 text-blue-600" xmlns="http://www.w3.org/2000/svg">
+            <use href="public/icons/icons.svg#circle-check"></use>
+          </svg>
+          Todo List
+        </div>
+        <div class="p-2">
+          <ul class="flex flex-col gap-2">
+            <li class="flex items-center gap-3 px-4 py-2 text-md font-medium rounded-lg w-[15rem] text-blue-600 bg-blue-50 hover:bg-gray-100">
+              <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg">
+                <use href="public/icons/icons.svg#inbox"></use>
+              </svg>
+              Entrada
+            </li>
+            <li class="flex items-center gap-3 px-4 py-2 text-md font-medium rounded-lg w-[15rem] hover:bg-gray-100">
+              <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg">
+                <use href="public/icons/icons.svg#calendar"></use>
+              </svg>
+              Hoje
+            </li>
+            <li class="flex items-center gap-3 px-4 py-2 text-md font-medium rounded-lg w-[15rem] hover:bg-gray-100">
+              <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg">
+                <use href="public/icons/icons.svg#tag"></use>
+              </svg>
+              Etiquetas
+            </li>
+          </ul>
+        </div>
+        <div class="lists flex-grow">
+        </div>
+        <div class="account">
+          <div class="user-pic">
+
+          </div>
+          <div class="flex gap-2 items-center p-4 border-t border-t-gray-200 cursor-pointer">
+            <div class="rounded-full bg-blue-500 w-8 h-8">
+            </div>
+            <div class="flex flex-col">
+              <div class="text-gray-700 mb-[-4px]">Usuário</div>
+              <span class="text-sm text-gray-700">Gerenciar minha conta</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+      <main class="flex justify-center py-8 flex-grow bg-gradient-to-br from-blue-50 via-white to-white">
+        <div class="w-[45rem]">
+          <div class="flex justify-between items-center">
+            <div>
+              <h2 class="font-semibold text-2xl">Entrada</h2>
+              <span class="text-sm text-gray-600">1 tarefas pendente</span>
+            </div>
+            <button class="bg-blue-600 text-white h-12 rounded-xl px-6 transition-colors hover:bg-blue-700">
+              Adicionar tarefa
+            </button>
+          </div>
+          <div class="flex flex-col gap-2 py-6">
+            <div class="flex justify-between items-center p-4 border border-gray-200 rounded-xl bg-white hover:shadow-md cursor-pointer">
+              <div class="flex gap-2 items-center">
+                <svg class="text-gray-400 h-5 w-5" xmlns="http://www.w3.org/2000/svg">
+                  <use href="./public/icons/icons.svg#circle"></use>
+                </svg>
+                Revisar projeto inteiro
+              </div>
+              <div class="h-3 w-3 border-r-2 border-r-gray-500 border-b-2 border-b-gray-500 rotate-45 -translate-y-1"></div>
+            </div>
+          </div>
+          <div class="finished-tasks-wrap">
+            <div class="text-sm text-gray-600 font-medium mb-4">Concluídas (1)</div>
+            <div class="finished-tasks">
+            <div class="flex justify-between items-center p-4 border border-gray-200 rounded-xl bg-white hover:shadow-md cursor-pointer">
+              <div class="flex gap-2 line-through text-gray-600 items-center">
+                <svg class="text-blue-600 h-5 w-5" xmlns="http://www.w3.org/2000/svg">
+                  <use href="./public/icons/icons.svg#circle-check"></use>
+                </svg>
+                Revisar projeto inteiro
+              </div>
+            </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script type="module" src="dist/main.js"></script>
+</body>
+</html>
