@@ -11,7 +11,7 @@ type InputDTO = {
   password: string;
 };
 
-type OutputDTO = void;
+type OutputDTO = string;
 
 export class CreateUserUseCase implements UseCase<InputDTO, OutputDTO> {
   constructor(
@@ -20,7 +20,7 @@ export class CreateUserUseCase implements UseCase<InputDTO, OutputDTO> {
     private userRepository: UserRepository,
   ) {}
 
-  async handle({ name, email, password }: InputDTO): Promise<void> {
+  async handle({ name, email, password }: InputDTO): Promise<OutputDTO> {
     const userAlreadyExists = await this.userRepository.alreadyExists(email);
 
     if (userAlreadyExists) {
@@ -38,5 +38,7 @@ export class CreateUserUseCase implements UseCase<InputDTO, OutputDTO> {
     });
 
     await this.userRepository.create(user);
+
+    return id;
   }
 }

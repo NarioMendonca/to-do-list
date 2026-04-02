@@ -10,11 +10,13 @@ export async function createTodoListController(
   const todoListData = validateCreateTodolistParams(body);
 
   const createTodoListUseCase = makeCreateTodoListUseCase();
-  await createTodoListUseCase.handle({
+  const resourceId = await createTodoListUseCase.handle({
     ...todoListData,
     ownerId: req.user.id,
   });
 
-  res.writeHead(201, "Created");
+  res.writeHead(201, "Created", {
+    location: `/todolists/${resourceId}`,
+  });
   res.end();
 }
